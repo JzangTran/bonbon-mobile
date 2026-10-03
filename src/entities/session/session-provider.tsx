@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { api, setAuthHandlers } from '@/shared/api'
 import { loadSession, saveLastRole, saveSession, SessionContext, toSession, type Session, type SignInInput } from './model'
@@ -6,12 +7,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [restoring, setRestoring] = useState(true)
   const current = useRef<Session | null>(null)
+  const queryClient = useQueryClient()
 
-  const update = useCallback(async (next: Session | null) => {
-    current.current = next
-    setSession(next)
-    await saveSession(next)
-  }, [])
+  const update = useCallback(
+    async (next: Session | null) => {
+      const previous = current.current
+      current.current = next
+      // Cached server data belongs to whoever fetched it: another user or role must never see it.
+      // New tokens for the same user and role (refresh, password change) keep the cache.
+      if (previous?.userId !== next?.userId || previous?.role !== next?.role) {
+        queryClient.clear()
+      }
+      setSession(next)
+      await saveSession(next)
+    },
+    [queryClient],
+  )
 
   useEffect(() => {
     loadSession().then((stored) => {

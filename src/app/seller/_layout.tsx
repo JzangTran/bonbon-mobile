@@ -1,9 +1,15 @@
 import { Tabs } from 'expo-router'
 import { ClipboardList, MessageCircle, Store, UtensilsCrossed } from 'lucide-react-native'
+import { shopStatus, useShop } from '@/entities/shop'
+import ShopStatusScreen from '@/screens/seller/shop-status'
 import { fonts, useTheme } from '@/shared/ui'
 
+/** Until the shop is approved, the seller side shows its application status instead of the tabs (open-shop.md). */
 export default function SellerTabsLayout() {
   const theme = useTheme()
+  const shop = useShop()
+  if (shop.isPending) return null
+  if (shopStatus(shop.data) !== 'APPROVED') return <ShopStatusScreen />
   return (
     <Tabs
       screenOptions={{

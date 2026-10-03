@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
 import { z } from 'zod'
 import { loadLastRole, useSession, type Role } from '@/entities/session'
+import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
 import { Button, Captcha, Card, Input, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
 
@@ -135,6 +136,7 @@ export default function LoginScreen() {
           </Link>
         ) : null}
       </Card>
+      <GoogleSignIn />
     </Screen>
   )
 }

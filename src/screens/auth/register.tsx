@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Linking, StyleSheet, View } from 'react-native'
 import { z } from 'zod'
 import type { Role } from '@/entities/session'
+import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
 import { Button, Captcha, Card, Checkbox, Input, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
@@ -142,6 +143,7 @@ export default function RegisterScreen() {
         <Button title={form.formState.isSubmitting ? 'Đang tạo tài khoản…' : 'Đăng ký'} size="lg" fullWidth
           loading={form.formState.isSubmitting} disabled={terms.isLoading || privacy.isLoading} onPress={onSubmit} />
       </Card>
+      <GoogleSignIn role={role} />
       <Link href="/">
         <Text variant="bodySm" color={theme.primary}>Đã có tài khoản? Đăng nhập</Text>
       </Link>

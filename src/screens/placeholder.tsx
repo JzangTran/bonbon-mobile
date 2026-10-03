@@ -8,7 +8,7 @@ export function PlaceholderScreen({ title, sprint }: { title: string; sprint: nu
     <Screen>
       <Text variant="headline">{title}</Text>
       <Text muted>Màn hình này làm ở Sprint {sprint}.</Text>
-      {__DEV__ ? <Button title="Đăng xuất (dev)" variant="ghost" onPress={signOut} /> : null}
+      {__DEV__ ? <Button title="Đăng xuất (dev)" variant="ghost" onPress={() => signOut()} /> : null}
     </Screen>
   )
 }

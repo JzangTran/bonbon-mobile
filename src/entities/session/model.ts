@@ -22,7 +22,8 @@ export type SessionContextValue = {
   /** True until the stored session has been read at startup. */
   restoring: boolean
   signIn: (input: SignInInput) => Promise<void>
-  signOut: () => Promise<void>
+  /** `alreadyRevoked`: the server ended every session already (logout-all), so only local state is cleared. */
+  signOut: (options?: { alreadyRevoked?: boolean }) => Promise<void>
 }
 
 export const SessionContext = createContext<SessionContextValue | null>(null)

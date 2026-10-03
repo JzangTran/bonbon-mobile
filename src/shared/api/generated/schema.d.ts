@@ -4,6 +4,150 @@
  */
 
 export interface paths {
+    "/api/merchant/shop/steps/4": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["identity"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop/steps/3": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["taxAndPayout"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop/steps/2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["shipping"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop/steps/1": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["shopInfo"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop/opening-hours": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["openingHours"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop/accepting-orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["acceptingOrders"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settings/delivery-radius-cap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["radiusCap"];
+        put: operations["setRadiusCap"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop/files/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/switch-role": {
         parameters: {
             query?: never;
@@ -164,6 +308,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/login/oauth": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["loginWithProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/forgot-password": {
         parameters: {
             query?: never;
@@ -180,6 +340,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/merchant-approval/requests/{vendorId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchant-approval/requests/{vendorId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/manage/admins": {
         parameters: {
             query?: never;
@@ -190,6 +382,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["tree"];
+        put?: never;
+        post: operations["create_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -244,6 +452,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/account/addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list"];
+        put?: never;
+        post: operations["create_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/shop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["current"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["update"];
+        trace?: never;
+    };
+    "/api/admin/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["delete"];
+        options?: never;
+        head?: never;
+        patch: operations["update_1"];
+        trace?: never;
+    };
     "/api/account/me": {
         parameters: {
             query?: never;
@@ -257,7 +513,39 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["update"];
+        patch: operations["update_2"];
+        trace?: never;
+    };
+    "/api/account/addresses/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["delete_1"];
+        options?: never;
+        head?: never;
+        patch: operations["update_3"];
+        trace?: never;
+    };
+    "/api/account/addresses/{id}/default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["makeDefault"];
         trace?: never;
     };
     "/api/legal/documents/{type}": {
@@ -267,7 +555,39 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["current"];
+        get: operations["current_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/geo/autocomplete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["autocomplete"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["tree_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -292,10 +612,197 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/merchant-approval/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["queue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchant-approval/requests/{vendorId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["application"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchant-approval/requests/{vendorId}/identity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["identity_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ShopApplicationStep4Request: {
+            /** @enum {string} */
+            docType?: "CCCD" | "CMND";
+            docNumber?: string;
+            fullName?: string;
+            accuracyConfirmed?: boolean;
+            /** Format: uuid */
+            sellerTermsDocumentId?: string;
+            /** Format: uuid */
+            privacyPolicyDocumentId?: string;
+        };
+        ShopAddress: {
+            placeId?: string;
+            formattedAddress?: string;
+            ward?: string;
+            province?: string;
+            detail?: string;
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
+        };
+        ShopApplicationShopInfo: {
+            name?: string;
+            phone?: string;
+            email?: string;
+            address?: components["schemas"]["ShopAddress"];
+        };
+        ShopApplicationStep: {
+            /** Format: int32 */
+            step?: number;
+            complete?: boolean;
+            missing?: string[];
+        };
+        ShopApplicationView: {
+            status?: string;
+            rejectionReason?: string;
+            /** Format: date-time */
+            submittedAt?: string;
+            /** Format: int32 */
+            firstIncompleteStep?: number;
+            steps?: components["schemas"]["ShopApplicationStep"][];
+            maxDeliveryRadiusKm?: number;
+            acceptingOrders?: boolean;
+            openNow?: boolean;
+            shop?: components["schemas"]["ShopApplicationShopInfo"];
+            shipping?: components["schemas"]["ShopShipping"];
+            tax?: components["schemas"]["ShopTaxInfo"];
+            identity?: components["schemas"]["ShopIdentity"];
+        };
+        ShopIdentity: {
+            docType?: string;
+            docNumberLast4?: string;
+            fullName?: string;
+            frontPhotoUrl?: string;
+            selfiePhotoUrl?: string;
+            accuracyConfirmed?: boolean;
+            sellerTermsAccepted?: boolean;
+            identityConsentGiven?: boolean;
+        };
+        ShopOpeningWindow: {
+            /** Format: int32 */
+            weekday?: number;
+            /** Format: time-local */
+            opensAt?: string;
+            /** Format: time-local */
+            closesAt?: string;
+        };
+        ShopPayoutAccount: {
+            bankName?: string;
+            accountLast4?: string;
+            accountHolderName?: string;
+            holderMatchesIdentity?: boolean;
+        };
+        ShopShipping: {
+            openingHours?: components["schemas"]["ShopOpeningWindow"][];
+            deliveryRadiusKm?: number;
+            /** Format: int32 */
+            deliveryFee?: number;
+            /** Format: int32 */
+            freeDeliveryThreshold?: number;
+            /** Format: int32 */
+            minOrderValue?: number;
+        };
+        ShopTaxInfo: {
+            businessType?: string;
+            businessName?: string;
+            businessAddress?: string;
+            taxCode?: string;
+            invoiceEmails?: string[];
+            businessLicenseUrl?: string;
+            payout?: components["schemas"]["ShopPayoutAccount"];
+        };
+        ShopApplicationStep3Request: {
+            /** @enum {string} */
+            businessType?: "INDIVIDUAL" | "HOUSEHOLD";
+            businessName?: string;
+            businessAddress?: string;
+            taxCode?: string;
+            invoiceEmails?: string[];
+            bankName?: string;
+            accountNumber?: string;
+            accountHolderName?: string;
+        };
+        OpeningWindowInput: {
+            /** Format: int32 */
+            weekday: number;
+            /** Format: time-local */
+            opensAt: string;
+            /** Format: time-local */
+            closesAt: string;
+        };
+        ShopApplicationStep2Request: {
+            openingHours?: components["schemas"]["OpeningWindowInput"][];
+            deliveryRadiusKm?: number;
+            /** Format: int32 */
+            deliveryFee?: number;
+            /** Format: int32 */
+            freeDeliveryThreshold?: number;
+            /** Format: int32 */
+            minOrderValue?: number;
+        };
+        ShopApplicationStep1Request: {
+            name?: string;
+            phone?: string;
+            /** Format: email */
+            email?: string;
+            placeId?: string;
+            addressDetail?: string;
+        };
+        ShopOpeningHoursRequest: {
+            openingHours: components["schemas"]["OpeningWindowInput"][];
+        };
+        AcceptingOrdersRequest: {
+            accepting: boolean;
+        };
+        DeliveryRadiusCapSetting: {
+            maxRadiusKm: number;
+        };
         RoleRequest: {
             /** @enum {string} */
             role: "CUSTOMER" | "SELLER" | "ADMIN";
@@ -368,10 +875,54 @@ export interface components {
             password: string;
             captchaToken?: string;
         };
+        OAuthLoginRequest: {
+            /** @enum {string} */
+            provider: "GOOGLE" | "FACEBOOK";
+            token: string;
+            /** @enum {string} */
+            role?: "CUSTOMER" | "SELLER" | "ADMIN";
+            acceptedDocumentIds?: string[];
+            marketingConsent?: boolean;
+            password?: string;
+            captchaToken?: string;
+        };
+        ShopRejectRequest: {
+            reason: string;
+        };
+        ShopDecision: {
+            /** Format: uuid */
+            vendorId?: string;
+            /** Format: uuid */
+            ownerUserId?: string;
+            shopName?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
+        };
         CreateAdminRequest: {
             /** Format: email */
             email: string;
             name: string;
+        };
+        CategoryCreateRequest: {
+            /** Format: uuid */
+            parentId: string;
+            name: string;
+            commissionRate?: number;
+        };
+        CategoryNode: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            parentId?: string;
+            /** Format: int32 */
+            level?: number;
+            name?: string;
+            /** Format: int32 */
+            sortOrder?: number;
+            active?: boolean;
+            commissionRate?: number;
+            effectiveCommissionRate?: number;
+            children?: components["schemas"]["CategoryNode"][];
         };
         AdminLogoutRequest: {
             refreshToken?: string;
@@ -397,6 +948,58 @@ export interface components {
             currentPassword: string;
             newPassword: string;
         };
+        AddressCreateRequest: {
+            label: string;
+            placeId: string;
+            detail?: string;
+            recipientName: string;
+            recipientPhone: string;
+            makeDefault?: boolean;
+        };
+        DeliveryAddress: {
+            /** Format: uuid */
+            id?: string;
+            label?: string;
+            placeId?: string;
+            formattedAddress?: string;
+            ward?: string;
+            province?: string;
+            detail?: string;
+            recipientName?: string;
+            recipientPhone?: string;
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
+            isDefault?: boolean;
+        };
+        ShopProfileUpdateRequest: {
+            name?: string;
+            phone?: string;
+            /** Format: email */
+            email?: string;
+            placeId?: string;
+            addressDetail?: string;
+            deliveryRadiusKm?: number;
+            /** Format: int32 */
+            deliveryFee?: number;
+            /** Format: int32 */
+            freeDeliveryThreshold?: number;
+            /** Format: int32 */
+            minOrderValue?: number;
+            clearFreeDeliveryThreshold?: boolean;
+            clearMinOrderValue?: boolean;
+        };
+        CategoryUpdateRequest: {
+            name?: string;
+            commissionRate?: number;
+            clearCommissionRate?: boolean;
+            active?: boolean;
+            /** Format: int32 */
+            sortOrder?: number;
+            /** Format: uuid */
+            parentId?: string;
+        };
         UpdateProfileRequest: {
             name?: string;
             phone?: string;
@@ -411,6 +1014,13 @@ export interface components {
             hasPassword?: boolean;
             roles?: ("CUSTOMER" | "SELLER" | "ADMIN")[];
         };
+        AddressUpdateRequest: {
+            label?: string;
+            placeId?: string;
+            detail?: string;
+            recipientName?: string;
+            recipientPhone?: string;
+        };
         LegalDocumentView: {
             /** Format: uuid */
             id?: string;
@@ -424,6 +1034,104 @@ export interface components {
             /** Format: date-time */
             effectiveAt?: string;
         };
+        PlaceSuggestion: {
+            placeId?: string;
+            description?: string;
+            mainText?: string;
+            secondaryText?: string;
+            ward?: string;
+            province?: string;
+        };
+        ShopApplicationSummary: {
+            /** Format: uuid */
+            vendorId?: string;
+            /** Format: uuid */
+            ownerUserId?: string;
+            name?: string;
+            ward?: string;
+            province?: string;
+            businessType?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
+            /** Format: date-time */
+            submittedAt?: string;
+            payoutHolderMatchesIdentity?: boolean;
+        };
+        ShopReviewQueueRow: {
+            shop?: components["schemas"]["ShopApplicationSummary"];
+            resubmitted?: boolean;
+        };
+        ShopApplicationDetail: {
+            /** Format: uuid */
+            vendorId?: string;
+            /** Format: uuid */
+            ownerUserId?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
+            rejectionReason?: string;
+            /** Format: date-time */
+            submittedAt?: string;
+            /** Format: date-time */
+            decidedAt?: string;
+            name?: string;
+            phone?: string;
+            email?: string;
+            formattedAddress?: string;
+            addressDetail?: string;
+            ward?: string;
+            province?: string;
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
+            openingHours?: components["schemas"]["ShopReviewOpeningWindow"][];
+            deliveryRadiusKm?: number;
+            /** Format: int32 */
+            deliveryFee?: number;
+            /** Format: int32 */
+            freeDeliveryThreshold?: number;
+            /** Format: int32 */
+            minOrderValue?: number;
+            businessType?: string;
+            businessName?: string;
+            businessAddress?: string;
+            taxCode?: string;
+            invoiceEmails?: string[];
+            businessLicenseUrl?: string;
+            bankName?: string;
+            accountLast4?: string;
+            accountHolderName?: string;
+            payoutHolderMatchesIdentity?: boolean;
+            identityDocType?: string;
+            identityFullName?: string;
+        };
+        ShopReviewApplication: {
+            shop?: components["schemas"]["ShopApplicationDetail"];
+            history?: components["schemas"]["ShopReviewDecision"][];
+        };
+        ShopReviewDecision: {
+            decision?: string;
+            reason?: string;
+            /** Format: uuid */
+            decidedBy?: string;
+            /** Format: date-time */
+            decidedAt?: string;
+        };
+        ShopReviewOpeningWindow: {
+            /** Format: int32 */
+            weekday?: number;
+            /** Format: time-local */
+            opensAt?: string;
+            /** Format: time-local */
+            closesAt?: string;
+        };
+        ShopIdentityDocuments: {
+            docType?: string;
+            docNumber?: string;
+            fullName?: string;
+            frontPhotoUrl?: string;
+            selfiePhotoUrl?: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -433,6 +1141,243 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    identity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopApplicationStep4Request"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    taxAndPayout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopApplicationStep3Request"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    shipping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopApplicationStep2Request"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    shopInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopApplicationStep1Request"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    openingHours: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopOpeningHoursRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    acceptingOrders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptingOrdersRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    radiusCap: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DeliveryRadiusCapSetting"];
+                };
+            };
+        };
+    };
+    setRadiusCap: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeliveryRadiusCapSetting"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DeliveryRadiusCapSetting"];
+                };
+            };
+        };
+    };
+    submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
     switchRole: {
         parameters: {
             query?: never;
@@ -665,6 +1610,30 @@ export interface operations {
             };
         };
     };
+    loginWithProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OAuthLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LoginResponse"];
+                };
+            };
+        };
+    };
     forgotPassword: {
         parameters: {
             query?: never;
@@ -685,6 +1654,54 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["StatusResponse"];
+                };
+            };
+        };
+    };
+    reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopRejectRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopDecision"];
+                };
+            };
+        };
+    };
+    approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopDecision"];
                 };
             };
         };
@@ -711,6 +1728,50 @@ export interface operations {
                     "*/*": {
                         [key: string]: string;
                     };
+                };
+            };
+        };
+    };
+    tree: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryNode"][];
+                };
+            };
+        };
+    };
+    create_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategoryCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryNode"];
                 };
             };
         };
@@ -785,6 +1846,140 @@ export interface operations {
             };
         };
     };
+    list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DeliveryAddress"][];
+                };
+            };
+        };
+    };
+    create_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddressCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DeliveryAddress"];
+                };
+            };
+        };
+    };
+    current: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopProfileUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategoryUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryNode"];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
@@ -805,7 +2000,7 @@ export interface operations {
             };
         };
     };
-    update: {
+    update_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -829,7 +2024,75 @@ export interface operations {
             };
         };
     };
-    current: {
+    delete_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    update_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddressUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DeliveryAddress"];
+                };
+            };
+        };
+    };
+    makeDefault: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DeliveryAddress"];
+                };
+            };
+        };
+    };
+    current_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -847,6 +2110,50 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["LegalDocumentView"];
+                };
+            };
+        };
+    };
+    autocomplete: {
+        parameters: {
+            query: {
+                input: string;
+                lat?: number;
+                lng?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PlaceSuggestion"][];
+                };
+            };
+        };
+    };
+    tree_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CategoryNode"][];
                 };
             };
         };
@@ -869,6 +2176,73 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["StatusResponse"];
+                };
+            };
+        };
+    };
+    queue: {
+        parameters: {
+            query?: {
+                status?: string;
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopReviewQueueRow"][];
+                };
+            };
+        };
+    };
+    application: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopReviewApplication"];
+                };
+            };
+        };
+    };
+    identity_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopIdentityDocuments"];
                 };
             };
         };

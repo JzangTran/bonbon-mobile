@@ -96,3 +96,9 @@ export function problemCode(error: unknown): string | undefined {
 export function problemMessage(error: unknown, fallback = 'Có lỗi xảy ra, vui lòng thử lại.'): string {
   return isApiProblem(error) && error.detail ? error.detail : fallback
 }
+
+/** Field-level messages of a VALIDATION_FAILED problem, keyed by field name. */
+export function problemFieldErrors(error: unknown): Record<string, string> {
+  if (!isApiProblem(error) || !error.errors) return {}
+  return Object.fromEntries(error.errors.map((e) => [e.field, e.message]))
+}

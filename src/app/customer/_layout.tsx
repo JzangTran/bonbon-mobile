@@ -1,23 +1,21 @@
-import { Tabs } from 'expo-router'
-import { ClipboardList, House, MessageCircle, UserRound } from 'lucide-react-native'
+import { Stack } from 'expo-router'
 import { fonts, useTheme } from '@/shared/ui'
 
-export default function CustomerTabsLayout() {
+/** Customer tabs, plus screens that open on top of them (addresses). */
+export default function CustomerLayout() {
   const theme = useTheme()
   return (
-    <Tabs
+    <Stack
       screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: theme.primary,
-        tabBarInactiveTintColor: theme.textMuted,
-        tabBarStyle: { backgroundColor: theme.surface, borderTopColor: theme.divider },
-        tabBarLabelStyle: { fontFamily: fonts.medium },
+        headerTintColor: theme.text,
+        headerStyle: { backgroundColor: theme.surface },
+        headerTitleStyle: { fontFamily: fonts.semibold },
+        contentStyle: { backgroundColor: theme.background },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Trang chủ', tabBarIcon: ({ color }) => <House color={color} size={22} /> }} />
-      <Tabs.Screen name="orders" options={{ title: 'Đơn hàng', tabBarIcon: ({ color }) => <ClipboardList color={color} size={22} /> }} />
-      <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
-      <Tabs.Screen name="account" options={{ title: 'Tài khoản', tabBarIcon: ({ color }) => <UserRound color={color} size={22} /> }} />
-    </Tabs>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="addresses" options={{ title: 'Địa chỉ giao hàng' }} />
+      <Stack.Screen name="address-form" options={{ title: 'Địa chỉ' }} />
+    </Stack>
   )
 }

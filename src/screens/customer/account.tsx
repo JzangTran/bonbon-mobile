@@ -1,5 +1,11 @@
-import { PlaceholderScreen } from '../placeholder'
+import { Screen, Text } from '@/shared/ui'
+import { AccountPanel } from '@/widgets/account-panel'
 
 export default function CustomerAccountScreen() {
-  return <PlaceholderScreen title="Tài khoản" sprint={1} />
+  return (
+    <Screen>
+      <Text variant="headline">Tài khoản</Text>
+      <AccountPanel />
+    </Screen>
+  )
 }

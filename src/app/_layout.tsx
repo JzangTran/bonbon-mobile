@@ -12,7 +12,9 @@ export default function RootLayout() {
 
 /** Each role sees only its own route group; the active role decides (one role per session). */
 function RootNavigator() {
-  const { session } = useSession()
+  const { session, restoring } = useSession()
+  // Keep the splash up until the stored session is read, so a signed-in user never flashes the login screen.
+  if (restoring) return null
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={!session}>

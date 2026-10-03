@@ -37,11 +37,26 @@ function refreshOnce(): Promise<string | null> {
 const appVersion = Constants.expoConfig?.version ?? 'dev'
 const pending = new Map<string, Request>()
 
+function isRefreshRequest(request: Request): boolean {
+  return request.url.includes('/api/auth/refresh')
+}
+
+async function isTokenRejection(response: Response): Promise<boolean> {
+  try {
+    const body = (await response.clone().json()) as { code?: unknown }
+    return body.code === 'UNAUTHENTICATED'
+  } catch {
+    return true
+  }
+}
+
 const authMiddleware: Middleware = {
   onRequest({ request, id }) {
     request.headers.set('X-Client-Channel', 'MOBILE')
     request.headers.set('X-App-Version', appVersion)
-    const token = auth.getAccessToken()
+    // The refresh call must not carry the (possibly expired) access token: the resource server rejects
+    // any invalid bearer token, even on public endpoints.
+    const token = isRefreshRequest(request) ? null : auth.getAccessToken()
     if (token) request.headers.set('Authorization', `Bearer ${token}`)
     pending.set(id, request.clone())
     return request
@@ -50,8 +65,10 @@ const authMiddleware: Middleware = {
     const original = pending.get(id)
     pending.delete(id)
     const wasAuthenticated = request.headers.has('Authorization')
-    const isRefreshCall = request.url.includes('/api/auth/refresh')
+    const isRefreshCall = isRefreshRequest(request)
     if (response.status !== 401 || !wasAuthenticated || isRefreshCall || !original) return response
+    // A 401 for a wrong password on a re-auth action (change password, logout-all) is not an expired token.
+    if (!(await isTokenRejection(response))) return response
     const fresh = await refreshOnce()
     if (!fresh) return response
     const retry = new Request(original, { headers: new Headers(original.headers) })

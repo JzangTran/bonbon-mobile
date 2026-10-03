@@ -46,9 +46,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [update],
   )
 
-  const signOut = useCallback(async () => {
+  const signOut = useCallback(async (options?: { alreadyRevoked?: boolean }) => {
     const active = current.current
-    if (active) {
+    if (active && !options?.alreadyRevoked) {
       await api.POST('/api/auth/logout', { body: { refreshToken: active.refreshToken } }).catch(() => undefined)
     }
     await update(null)

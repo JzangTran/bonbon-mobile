@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, type PressableProps, type ViewStyle } from 'react-native'
 import { Text } from './text'
 import { useTheme } from './theme'
-import { radius, spacing, touchTarget } from './tokens'
+import { fonts, radius, spacing, touchTarget } from './tokens'
 
 type Variant = 'primary' | 'outline' | 'ghost' | 'destructive'
 type Size = 'md' | 'lg'
@@ -23,7 +23,7 @@ export function Button({ title, variant = 'primary', size = 'md', loading, fullW
     primary: { bg: theme.primary, bgPressed: theme.primaryPressed, fg: theme.onPrimary },
     outline: { bg: 'transparent', bgPressed: theme.surfaceMuted, fg: theme.text, border: theme.borderInput },
     ghost: { bg: 'transparent', bgPressed: theme.surfaceMuted, fg: theme.text },
-    destructive: { bg: theme.danger, bgPressed: theme.danger, fg: '#FFFFFF' },
+    destructive: { bg: theme.danger, bgPressed: theme.danger, fg: theme.onDanger },
   }
   const p = palette[variant]
 
@@ -58,11 +58,11 @@ export function Button({ title, variant = 'primary', size = 'md', loading, fullW
 
 const styles = StyleSheet.create({
   base: {
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.md,
+    paddingHorizontal: spacing.xl,
+    borderRadius: radius.pill,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: { fontFamily: 'BeVietnamPro_600SemiBold' },
+  label: { fontFamily: fonts.semibold },
 })

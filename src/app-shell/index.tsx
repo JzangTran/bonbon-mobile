@@ -1,10 +1,11 @@
 import {
-  BeVietnamPro_400Regular,
-  BeVietnamPro_500Medium,
-  BeVietnamPro_600SemiBold,
-  BeVietnamPro_700Bold,
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
   useFonts,
-} from '@expo-google-fonts/be-vietnam-pro'
+} from '@expo-google-fonts/plus-jakarta-sans'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState, type ReactNode } from 'react'
@@ -19,10 +20,11 @@ SplashScreen.preventAutoHideAsync()
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const [fontsLoaded, fontError] = useFonts({
-    BeVietnamPro_400Regular,
-    BeVietnamPro_500Medium,
-    BeVietnamPro_600SemiBold,
-    BeVietnamPro_700Bold,
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+    PlusJakartaSans_800ExtraBold,
   })
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } }),

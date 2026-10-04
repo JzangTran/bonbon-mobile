@@ -102,7 +102,7 @@ export default function LoginScreen() {
 
   return (
     <Screen>
-      <Text variant="display" color={theme.primary}>
+      <Text variant="brand" color={theme.primary}>
         bonbon
       </Text>
       <Text muted>Đặt món từ quán ăn trong khu của bạn.</Text>

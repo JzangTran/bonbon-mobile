@@ -16,6 +16,7 @@ export default function CustomerLayout() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="addresses" options={{ title: 'Địa chỉ giao hàng' }} />
       <Stack.Screen name="address-form" options={{ title: 'Địa chỉ' }} />
+      <Stack.Screen name="vendor" options={{ title: 'Quán' }} />
     </Stack>
   )
 }

@@ -100,6 +100,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/option-groups/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["update"];
+        post?: never;
+        delete: operations["delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu-sections/{id}/items/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["reorderItems"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu-sections/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["reorderSections"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu-items/{id}/photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["setPhoto"];
+        post?: never;
+        delete: operations["removePhoto"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu-items/{id}/option-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["setOptionGroups"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/settings/delivery-radius-cap": {
         parameters: {
             query?: never;
@@ -142,6 +222,54 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/option-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list"];
+        put?: never;
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu-sections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createSection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createItem"];
         delete?: never;
         options?: never;
         head?: never;
@@ -381,7 +509,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create"];
+        post: operations["create_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -397,7 +525,7 @@ export interface paths {
         };
         get: operations["tree"];
         put?: never;
-        post: operations["create_1"];
+        post: operations["create_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -459,9 +587,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list"];
+        get: operations["list_1"];
         put?: never;
-        post: operations["create_2"];
+        post: operations["create_3"];
         delete?: never;
         options?: never;
         head?: never;
@@ -481,7 +609,71 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["update"];
+        patch: operations["update_1"];
+        trace?: never;
+    };
+    "/api/merchant/options/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["setStatus"];
+        trace?: never;
+    };
+    "/api/merchant/menu-sections/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteSection"];
+        options?: never;
+        head?: never;
+        patch: operations["renameSection"];
+        trace?: never;
+    };
+    "/api/merchant/menu-items/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteItem"];
+        options?: never;
+        head?: never;
+        patch: operations["updateItem"];
+        trace?: never;
+    };
+    "/api/merchant/menu-items/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["setStatus_1"];
         trace?: never;
     };
     "/api/admin/categories/{id}": {
@@ -494,10 +686,10 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["delete"];
+        delete: operations["delete_1"];
         options?: never;
         head?: never;
-        patch: operations["update_1"];
+        patch: operations["update_2"];
         trace?: never;
     };
     "/api/account/me": {
@@ -513,7 +705,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["update_2"];
+        patch: operations["update_3"];
         trace?: never;
     };
     "/api/account/addresses/{id}": {
@@ -526,10 +718,10 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["delete_1"];
+        delete: operations["delete_2"];
         options?: never;
         head?: never;
-        patch: operations["update_3"];
+        patch: operations["update_4"];
         trace?: never;
     };
     "/api/account/addresses/{id}/default": {
@@ -546,6 +738,54 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["makeDefault"];
+        trace?: never;
+    };
+    "/api/vendors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["inArea"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/vendors/{id}/menu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["menu"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/legal/documents/{type}": {
@@ -800,8 +1040,105 @@ export interface components {
         AcceptingOrdersRequest: {
             accepting: boolean;
         };
+        OptionGroupRequest: {
+            name: string;
+            /** Format: int32 */
+            min: number;
+            /** Format: int32 */
+            max: number;
+            options: components["schemas"]["OptionRequest"][];
+        };
+        OptionRequest: {
+            /** Format: uuid */
+            id?: string;
+            name: string;
+            /** Format: int32 */
+            priceDelta: number;
+            defaultChoice?: boolean;
+            /** @enum {string} */
+            status?: "AVAILABLE" | "SOLD_OUT" | "ARCHIVED";
+        };
+        OptionGroupView: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            /** Format: int32 */
+            min?: number;
+            /** Format: int32 */
+            max?: number;
+            options?: components["schemas"]["OptionView"][];
+            menuItemIds?: string[];
+        };
+        OptionGroupsView: {
+            groups?: components["schemas"]["OptionGroupView"][];
+        };
+        OptionView: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            /** Format: int32 */
+            priceDelta?: number;
+            /** @enum {string} */
+            status?: "AVAILABLE" | "SOLD_OUT" | "ARCHIVED";
+            defaultChoice?: boolean;
+            /** Format: int32 */
+            displayOrder?: number;
+        };
+        MenuOrderRequest: {
+            ids: string[];
+        };
+        MenuItemView: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            sectionId?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            name?: string;
+            description?: string;
+            /** Format: int32 */
+            price?: number;
+            photoUrl?: string;
+            /** @enum {string} */
+            status?: "AVAILABLE" | "SOLD_OUT";
+            soldOut?: boolean;
+            /** Format: int32 */
+            stockQuantity?: number;
+            /** Format: int32 */
+            sortOrder?: number;
+            optionGroupIds?: string[];
+        };
+        MenuSectionView: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            /** Format: int32 */
+            sortOrder?: number;
+            items?: components["schemas"]["MenuItemView"][];
+        };
+        MenuView: {
+            sections?: components["schemas"]["MenuSectionView"][];
+        };
+        MenuItemOptionGroupsRequest: {
+            groupIds: string[];
+        };
         DeliveryRadiusCapSetting: {
             maxRadiusKm: number;
+        };
+        MenuSectionRequest: {
+            name: string;
+        };
+        MenuItemCreateRequest: {
+            /** Format: uuid */
+            sectionId: string;
+            /** Format: uuid */
+            categoryId: string;
+            name: string;
+            description?: string;
+            /** Format: int32 */
+            price: number;
+            /** Format: int32 */
+            stockQuantity?: number;
         };
         RoleRequest: {
             /** @enum {string} */
@@ -990,6 +1327,28 @@ export interface components {
             clearFreeDeliveryThreshold?: boolean;
             clearMinOrderValue?: boolean;
         };
+        OptionStatusRequest: {
+            /** @enum {string} */
+            status: "AVAILABLE" | "SOLD_OUT" | "ARCHIVED";
+        };
+        MenuItemUpdateRequest: {
+            /** Format: uuid */
+            sectionId?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            name?: string;
+            description?: string;
+            /** Format: int32 */
+            price?: number;
+            /** Format: int32 */
+            stockQuantity?: number;
+            clearDescription?: boolean;
+            clearStock?: boolean;
+        };
+        MenuItemStatusRequest: {
+            /** @enum {string} */
+            status: "AVAILABLE" | "SOLD_OUT";
+        };
         CategoryUpdateRequest: {
             name?: string;
             commissionRate?: number;
@@ -1020,6 +1379,71 @@ export interface components {
             detail?: string;
             recipientName?: string;
             recipientPhone?: string;
+        };
+        Shop: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            address?: string;
+            /** Format: double */
+            distanceKm?: number;
+            open?: boolean;
+            deliveryRadiusKm?: number;
+            /** Format: int32 */
+            deliveryFee?: number;
+            /** Format: int32 */
+            freeDeliveryThreshold?: number;
+            /** Format: int32 */
+            minOrderValue?: number;
+        };
+        VendorPage: {
+            items?: components["schemas"]["Shop"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int32 */
+            total?: number;
+        };
+        Item: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            description?: string;
+            /** Format: int32 */
+            price?: number;
+            photoUrl?: string;
+            soldOut?: boolean;
+            optionGroups?: components["schemas"]["MenuOptionGroup"][];
+        };
+        MenuOption: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            /** Format: int32 */
+            priceDelta?: number;
+            available?: boolean;
+            defaultChoice?: boolean;
+        };
+        MenuOptionGroup: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            /** Format: int32 */
+            min?: number;
+            /** Format: int32 */
+            max?: number;
+            options?: components["schemas"]["MenuOption"][];
+        };
+        Section: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            items?: components["schemas"]["Item"][];
+        };
+        ShopMenu: {
+            shop?: components["schemas"]["Shop"];
+            sections?: components["schemas"]["Section"][];
         };
         LegalDocumentView: {
             /** Format: uuid */
@@ -1285,6 +1709,181 @@ export interface operations {
             };
         };
     };
+    update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OptionGroupRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OptionGroupsView"];
+                };
+            };
+        };
+    };
+    delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OptionGroupsView"];
+                };
+            };
+        };
+    };
+    reorderItems: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    reorderSections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    setPhoto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    removePhoto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    setOptionGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuItemOptionGroupsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
     radiusCap: {
         parameters: {
             query?: never;
@@ -1374,6 +1973,98 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ShopApplicationView"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OptionGroupsView"];
+                };
+            };
+        };
+    };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OptionGroupRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OptionGroupsView"];
+                };
+            };
+        };
+    };
+    createSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuSectionRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    createItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuItemCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
                 };
             };
         };
@@ -1706,7 +2397,7 @@ export interface operations {
             };
         };
     };
-    create: {
+    create_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1752,7 +2443,7 @@ export interface operations {
             };
         };
     };
-    create_1: {
+    create_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1846,7 +2537,7 @@ export interface operations {
             };
         };
     };
-    list: {
+    list_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1866,7 +2557,7 @@ export interface operations {
             };
         };
     };
-    create_2: {
+    create_3: {
         parameters: {
             query?: never;
             header?: never;
@@ -1910,7 +2601,7 @@ export interface operations {
             };
         };
     };
-    update: {
+    update_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1934,7 +2625,155 @@ export interface operations {
             };
         };
     };
-    delete: {
+    setStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OptionStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OptionGroupsView"];
+                };
+            };
+        };
+    };
+    deleteSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    renameSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuSectionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    deleteItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    updateItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuItemUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    setStatus_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MenuItemStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
+                };
+            };
+        };
+    };
+    delete_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1954,7 +2793,7 @@ export interface operations {
             };
         };
     };
-    update_1: {
+    update_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -2000,7 +2839,7 @@ export interface operations {
             };
         };
     };
-    update_2: {
+    update_3: {
         parameters: {
             query?: never;
             header?: never;
@@ -2024,7 +2863,7 @@ export interface operations {
             };
         };
     };
-    delete_1: {
+    delete_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -2044,7 +2883,7 @@ export interface operations {
             };
         };
     };
-    update_3: {
+    update_4: {
         parameters: {
             query?: never;
             header?: never;
@@ -2088,6 +2927,79 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["DeliveryAddress"];
+                };
+            };
+        };
+    };
+    inArea: {
+        parameters: {
+            query: {
+                lat: number;
+                lng: number;
+                q?: string;
+                categoryId?: string;
+                sort?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VendorPage"];
+                };
+            };
+        };
+    };
+    menu: {
+        parameters: {
+            query?: {
+                lat?: number;
+                lng?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopMenu"];
+                };
+            };
+        };
+    };
+    get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MenuView"];
                 };
             };
         };

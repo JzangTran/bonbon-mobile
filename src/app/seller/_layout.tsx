@@ -22,7 +22,9 @@ export default function SellerTabsLayout() {
     >
       <Tabs.Screen name="index" options={{ title: 'Đơn hàng', tabBarIcon: ({ color }) => <ClipboardList color={color} size={22} /> }} />
       <Tabs.Screen name="menu" options={{ title: 'Thực đơn', tabBarIcon: ({ color }) => <UtensilsCrossed color={color} size={22} /> }} />
-      <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
+      {/* A form on top of the Menu tab, not a tab of its own. */}
+      <Tabs.Screen name="dish-form" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="messages"options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
       <Tabs.Screen name="shop" options={{ title: 'Cửa hàng', tabBarIcon: ({ color }) => <Store color={color} size={22} /> }} />
     </Tabs>
   )

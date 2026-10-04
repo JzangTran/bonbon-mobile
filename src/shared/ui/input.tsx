@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native'
 import { Text } from './text'
 import { useTheme } from './theme'
-import { radius, spacing, touchTarget, typography } from './tokens'
+import { fonts, radius, spacing, touchTarget, typography } from './tokens'
 
 type Props = TextInputProps & { label: string; error?: string }
 
@@ -46,6 +46,6 @@ export function Input({ label, error, style, onFocus, onBlur, ...props }: Props)
 
 const styles = StyleSheet.create({
   field: { gap: spacing.xs },
-  label: { fontFamily: 'BeVietnamPro_500Medium' },
+  label: { fontFamily: fonts.medium },
   input: { minHeight: touchTarget.min, borderRadius: radius.sm, paddingHorizontal: spacing.md },
 })

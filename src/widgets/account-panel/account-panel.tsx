@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useSession, type Role } from '@/entities/session'
+import { unregisterPush } from '@/features/push'
 import { api, problemMessage, type components } from '@/shared/api'
 import { Button, Card, Input, Notice, Sheet, Text, useToast } from '@/shared/ui'
 
@@ -178,6 +179,7 @@ function SessionCard({ hasPassword }: { hasPassword: boolean }) {
   const logoutAll = async () => {
     setError(null)
     setBusy(true)
+    await unregisterPush()
     const { error: problem, response } = await api.POST('/api/auth/logout-all', {
       body: { password: hasPassword ? password : undefined },
     })
@@ -192,7 +194,15 @@ function SessionCard({ hasPassword }: { hasPassword: boolean }) {
 
   return (
     <Card>
-      <Button title="Đăng xuất" variant="outline" onPress={() => signOut()} />
+      <Button
+        title="Đăng xuất"
+        variant="outline"
+        onPress={async () => {
+          // While the access token is still valid, so this phone stops receiving this account's pushes.
+          await unregisterPush()
+          await signOut()
+        }}
+      />
       <Button title="Đăng xuất khỏi mọi thiết bị" variant="ghost" onPress={() => setConfirming(true)} />
       <Sheet visible={confirming} onClose={() => setConfirming(false)} title="Đăng xuất khỏi mọi thiết bị?">
         <Text variant="bodySm" muted>

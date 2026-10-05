@@ -12,6 +12,7 @@ import { problemMessage } from '@/shared/api'
 import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatAgo, formatVnd } from '@/shared/lib/format'
 import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { NotificationBell } from '@/widgets/notification-bell'
 import { OrderActions } from './order-actions'
 
 type Tab = 'new' | 'progress' | 'history'
@@ -41,7 +42,12 @@ export default function SellerOrdersScreen() {
 
   return (
     <Screen>
-      <Text variant="headline">Đơn hàng</Text>
+      <View style={styles.top}>
+        <Text variant="headline" style={styles.flex}>
+          Đơn hàng
+        </Text>
+        <NotificationBell href="/seller/notifications" />
+      </View>
       {state === 'offline' ? <Notice tone="error" message="Mất kết nối trực tiếp, đang tự tải lại mỗi 10 giây." /> : null}
       {waiting > 0 && tab !== 'new' ? (
         <Pressable accessibilityRole="button" onPress={() => setTab('new')} style={[styles.banner, { backgroundColor: theme.infoSubtle }]}>
@@ -152,6 +158,7 @@ const styles = StyleSheet.create({
   cardMain: { gap: spacing.xs, marginBottom: spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   flex: { flex: 1 },
+  top: { flexDirection: 'row', alignItems: 'center' },
   number: { fontVariant: ['tabular-nums'] },
   paging: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 })

@@ -1,7 +1,9 @@
 import { Tabs } from 'expo-router'
+import { useEffect } from 'react'
 import { ClipboardList, MessageCircle, Store, UtensilsCrossed } from 'lucide-react-native'
 import { OrderLiveProvider, useOrderLive } from '@/entities/order'
 import { shopStatus, useShop } from '@/entities/shop'
+import { registerForPush } from '@/features/push'
 import ShopStatusScreen from '@/screens/seller/shop-status'
 import { fonts, useTheme } from '@/shared/ui'
 
@@ -20,6 +22,10 @@ export default function SellerTabsLayout() {
 function SellerTabs() {
   const theme = useTheme()
   const { waiting } = useOrderLive()
+  // The shop is approved: this is the moment with context to ask for notification permission.
+  useEffect(() => {
+    void registerForPush({ ask: true })
+  }, [])
   return (
     <Tabs
       screenOptions={{
@@ -36,6 +42,7 @@ function SellerTabs() {
       />
       <Tabs.Screen name="menu" options={{ title: 'Thực đơn', tabBarIcon: ({ color }) => <UtensilsCrossed color={color} size={22} /> }} />
       {/* Screens on top of their tabs, not tabs of their own. */}
+      <Tabs.Screen name="notifications" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="order-detail" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="dish-form" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />

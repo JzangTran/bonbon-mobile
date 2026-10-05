@@ -9,6 +9,7 @@ import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
 import { Button, Card, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
+import { NotificationBell } from '@/widgets/notification-bell'
 
 /** Shops that deliver to the default address: search, category filter, open shops first (browse-vendors-in-area.md). */
 export default function CustomerHomeScreen() {
@@ -31,7 +32,12 @@ export default function CustomerHomeScreen() {
   return (
     <View style={styles.flex}>
     <Screen>
-      <AddressBar loading={addresses.isPending} label={address?.label} text={address?.formattedAddress} onPress={() => router.push('/customer/addresses')} />
+      <View style={styles.top}>
+        <View style={styles.flex}>
+          <AddressBar loading={addresses.isPending} label={address?.label} text={address?.formattedAddress} onPress={() => router.push('/customer/addresses')} />
+        </View>
+        <NotificationBell href="/customer/notifications" />
+      </View>
       {addresses.data && !address ? (
         <Card>
           <Text variant="titleSm">Bạn muốn nhận món ở đâu?</Text>
@@ -145,6 +151,7 @@ function ShopCard({ shop, onPress }: { shop: Shop; onPress: () => void }) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  top: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   address: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: touchTarget.min },
   chips: { gap: spacing.sm },
   chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },

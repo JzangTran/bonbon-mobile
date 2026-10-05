@@ -1,6 +1,8 @@
 import { Stack } from 'expo-router'
+import { useEffect } from 'react'
 import { AppShell } from '@/app-shell'
 import { useSession } from '@/entities/session'
+import { registerForPush, useNotificationTaps } from '@/features/push'
 
 export default function RootLayout() {
   return (
@@ -15,6 +17,26 @@ function RootNavigator() {
   const { session, restoring } = useSession()
   // Keep the splash up until the stored session is read, so a signed-in user never flashes the login screen.
   if (restoring) return null
+  return (
+    <>
+      <PushBootstrap />
+      <RoleStack session={session} />
+    </>
+  )
+}
+
+/** Refreshes this phone's push token on every launch once permission was given, and opens the order a tapped push is about. */
+function PushBootstrap() {
+  const { session } = useSession()
+  const userId = session?.userId
+  useNotificationTaps()
+  useEffect(() => {
+    if (userId) void registerForPush({ ask: false })
+  }, [userId])
+  return null
+}
+
+function RoleStack({ session }: { session: ReturnType<typeof useSession>['session'] }) {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={!session}>

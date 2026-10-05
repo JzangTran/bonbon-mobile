@@ -3,10 +3,14 @@ import { useLocalSearchParams, useNavigation } from 'expo-router'
 import { useLayoutEffect, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
+import { useCart, type CartShop } from '@/entities/cart'
 import { deliveryText, formatDistance, useShopMenu, type ShopDish } from '@/entities/vendor'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
-import { Card, Notice, Screen, Sheet, Text, fonts, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { confirm } from '@/shared/lib/confirm'
+import { Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { CartBar } from '@/widgets/cart-bar'
+import { DishSheet } from './dish-sheet'
 
 /** A shop's menu (view-vendor-menu.md): sections and dishes, sold-out dishes greyed out, options shown read-only. */
 export default function VendorScreen() {
@@ -19,12 +23,36 @@ export default function VendorScreen() {
   const menu = useShopMenu(id, position)
   const [dish, setDish] = useState<ShopDish | null>(null)
   const shop = menu.data?.shop
+  const cart = useCart()
+  const toast = useToast()
+  const cartShop: CartShop | null = shop
+    ? {
+        id: shop.id!,
+        name: shop.name ?? '',
+        deliveryFee: shop.deliveryFee ?? 0,
+        freeDeliveryThreshold: shop.freeDeliveryThreshold,
+        minOrderValue: shop.minOrderValue,
+      }
+    : null
+
+  const addToCart = async (line: Parameters<typeof cart.add>[1]) => {
+    if (!cartShop) return
+    if (cart.add(cartShop, line) === 'other-shop') {
+      // One shop per cart: starting a new one throws the old one away, so the customer has to agree.
+      const ok = await confirm('Bắt đầu giỏ hàng mới?', `Giỏ hàng đang có món của “${cart.shop?.name}”. Thêm món từ quán này sẽ xoá giỏ cũ.`, 'Xoá và thêm')
+      if (!ok) return
+      cart.replaceWith(cartShop, line)
+    }
+    toast.show('Đã thêm vào giỏ.')
+    setDish(null)
+  }
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: shop?.name ?? 'Quán' })
   }, [navigation, shop?.name])
 
   return (
+    <View style={styles.flex}>
     <Screen>
       {menu.isError ? <Notice tone="error" message={problemMessage(menu.error, 'Không tìm thấy quán này.')} /> : null}
       {shop ? (
@@ -70,8 +98,10 @@ export default function VendorScreen() {
           ))}
         </Card>
       ))}
-      <DishSheet dish={dish} onClose={() => setDish(null)} />
+      <DishSheet dish={dish} shop={cartShop} canOrder={Boolean(shop?.open) && !dish?.soldOut} onAdd={addToCart} onClose={() => setDish(null)} />
     </Screen>
+    <CartBar />
+    </View>
   )
 }
 
@@ -110,43 +140,6 @@ function DishRow({ item, onPress }: { item: ShopDish; onPress: () => void }) {
   )
 }
 
-/** The dish and the choices it offers; ordering arrives in Sprint 4, so the options are only shown. */
-function DishSheet({ dish, onClose }: { dish: ShopDish | null; onClose: () => void }) {
-  const theme = useTheme()
-  return (
-    <Sheet visible={dish !== null} onClose={onClose} title={dish?.name ?? ''}>
-      {dish?.description ? <Text muted>{dish.description}</Text> : null}
-      <Text variant="titleSm" style={styles.money}>
-        {formatVnd(dish?.price)}
-      </Text>
-      {(dish?.optionGroups ?? []).map((group) => (
-        <View key={group.id} style={styles.group}>
-          <Text variant="bodySm" style={styles.groupName}>
-            {group.name}{' '}
-            <Text variant="caption" muted>
-              {group.min === 0 ? 'Tuỳ chọn' : 'Bắt buộc'}, chọn {group.min === group.max ? group.max : `${group.min}–${group.max}`}
-            </Text>
-          </Text>
-          {(group.options ?? []).map((option) => (
-            <View key={option.id} style={[styles.option, { borderTopColor: theme.divider }]}>
-              <Text variant="body" muted={!option.available} style={styles.flex}>
-                {option.name}
-                {option.available ? '' : ' · hết'}
-              </Text>
-              <Text variant="bodySm" muted style={styles.money}>
-                {option.priceDelta ? `+${formatVnd(option.priceDelta)}` : ''}
-              </Text>
-            </View>
-          ))}
-        </View>
-      ))}
-      <Text variant="caption" muted>
-        {dish?.soldOut ? 'Món này đang hết.' : 'Đặt món sẽ có trong bản cập nhật tới.'}
-      </Text>
-    </Sheet>
-  )
-}
-
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
@@ -155,7 +148,4 @@ const styles = StyleSheet.create({
   soldOut: { opacity: 0.5 },
   photo: { width: 72, height: 72 },
   money: { fontVariant: ['tabular-nums'] },
-  group: { gap: spacing.xs },
-  groupName: { fontFamily: fonts.semibold },
-  option: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderTopWidth: 1, minHeight: touchTarget.min },
 })

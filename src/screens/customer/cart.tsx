@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { lineTotal, unitPrice, useCart } from '@/entities/cart'
 import { newIdempotencyKey, usePlaceOrder } from '@/entities/order'
+import { registerForPush } from '@/features/push'
 import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
@@ -64,6 +65,8 @@ export default function CartScreen() {
       {
         onSuccess: (order) => {
           cart.clear()
+          // After the first order the customer has a reason to hear about it: the moment to ask for permission.
+          void registerForPush({ ask: true })
           toast.show('Đã đặt đơn. Quán sẽ xác nhận trong ít phút.')
           router.replace({ pathname: '/customer/order', params: { id: order.id } })
         },

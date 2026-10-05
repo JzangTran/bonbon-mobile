@@ -23,6 +23,7 @@ export default function CustomerLayout() {
       <Stack.Screen name="vendor" options={{ title: 'Quán' }} />
       <Stack.Screen name="cart" options={{ title: 'Giỏ hàng' }} />
       <Stack.Screen name="order" options={{ title: 'Đơn hàng' }} />
+      <Stack.Screen name="notifications" options={{ title: 'Thông báo' }} />
     </Stack>
     </CustomerLiveProvider>
     </CartProvider>

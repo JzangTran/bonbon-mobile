@@ -11,7 +11,10 @@ export function CustomerLiveProvider({ children }: { children: ReactNode }) {
   const { session } = useSession()
   const queryClient = useQueryClient()
   const state = useOrderSocket(session?.accessToken ?? null, (event: OrderEvent) => {
-    if (event.channel === 'customer') void queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY })
+    if (event.channel === 'customer') {
+      void queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY })
+      void queryClient.invalidateQueries({ queryKey: ['notifications'] })
+    }
   })
   return <CustomerLiveContext.Provider value={state}>{children}</CustomerLiveContext.Provider>
 }

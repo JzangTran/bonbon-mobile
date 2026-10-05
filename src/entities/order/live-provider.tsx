@@ -19,6 +19,7 @@ export function OrderLiveProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
   const state = useOrderSocket(session?.accessToken ?? null, (event: OrderEvent) => {
     void queryClient.invalidateQueries({ queryKey: SHOP_ORDERS_KEY })
+    void queryClient.invalidateQueries({ queryKey: ['notifications'] })
     if (event.channel === 'shop' && event.to === 'PLACED') Vibration.vibrate([0, 400, 200, 400])
   })
   const waiting = useShopOrders(['PLACED'], true, state === 'live').data?.total ?? 0

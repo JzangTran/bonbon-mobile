@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'expo-router'
 import { Linking, StyleSheet, Switch, View } from 'react-native'
 import { SHOP_QUERY_KEY, useShop } from '@/entities/shop'
 import { api, problemMessage } from '@/shared/api'
@@ -23,6 +24,7 @@ export default function SellerShopScreen() {
   const theme = useTheme()
   const toast = useToast()
   const queryClient = useQueryClient()
+  const router = useRouter()
   const shop = useShop()
   const data = shop.data
   const accepting = data?.acceptingOrders ?? false
@@ -85,6 +87,14 @@ export default function SellerShopScreen() {
           }`}
         />
         <Button title="Sửa thông tin trên web" variant="outline" onPress={() => Linking.openURL(`${env.webUrl}/seller/shop`)} />
+      </Card>
+
+      <Card>
+        <Text variant="titleSm">Đánh giá của khách</Text>
+        <Text variant="bodySm" muted>
+          Xem khách nói gì về quán và phản hồi công khai.
+        </Text>
+        <Button title="Xem đánh giá" variant="outline" onPress={() => router.push('/seller/reviews')} />
       </Card>
 
       <AccountPanel />

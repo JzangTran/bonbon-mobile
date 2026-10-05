@@ -12,7 +12,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["identity"];
+        /**
+         * Bước 4: định danh
+         * @description Loại và số giấy tờ, họ tên, đồng ý xử lý dữ liệu định danh. Ảnh giấy tờ tải riêng.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:create`.
+         */
+        put: operations["saveIdentity"];
         post?: never;
         delete?: never;
         options?: never;
@@ -28,7 +34,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["taxAndPayout"];
+        /**
+         * Bước 3: thuế và tài khoản nhận tiền
+         * @description Loại hình kinh doanh, mã số thuế, email hoá đơn và tài khoản ngân hàng (lưu mã hoá, trả về dạng che).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:create`.
+         */
+        put: operations["saveTaxAndPayout"];
         post?: never;
         delete?: never;
         options?: never;
@@ -44,7 +56,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["shipping"];
+        /**
+         * Bước 2: giờ mở cửa và giao hàng
+         * @description Lịch mở cửa theo tuần, bán kính giao (không vượt mức tối đa của nền tảng), phí giao, ngưỡng miễn phí, đơn tối thiểu.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:create`.
+         */
+        put: operations["saveShipping"];
         post?: never;
         delete?: never;
         options?: never;
@@ -60,7 +78,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["shopInfo"];
+        /**
+         * Bước 1: thông tin quán
+         * @description Tên, số điện thoại, email và địa chỉ (`placeId` từ gợi ý địa chỉ).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:create`.
+         */
+        put: operations["saveShopInfo"];
         post?: never;
         delete?: never;
         options?: never;
@@ -76,7 +100,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["openingHours"];
+        /**
+         * Đặt giờ mở cửa
+         * @description Thay toàn bộ lịch tuần; danh sách rỗng là đóng cả tuần. Khung qua nửa đêm thuộc ngày bắt đầu.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        put: operations["replaceOpeningHours"];
         post?: never;
         delete?: never;
         options?: never;
@@ -92,7 +122,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["acceptingOrders"];
+        /**
+         * Tạm ngưng / nhận đơn lại
+         * @description Ghi đè lịch ngay lập tức; đơn đã nhận không bị ảnh hưởng. Ai bấm và lúc nào được ghi lại.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        put: operations["setAcceptingOrders"];
         post?: never;
         delete?: never;
         options?: never;
@@ -108,9 +144,21 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["update"];
+        /**
+         * Sửa nhóm lựa chọn
+         * @description Ghi lại cả nhóm: lựa chọn có `id` được sửa, không có `id` được thêm, lựa chọn bị bỏ ra được lưu trữ.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        put: operations["replaceOptionGroup"];
         post?: never;
-        delete: operations["delete"];
+        /**
+         * Xoá nhóm lựa chọn
+         * @description Gỡ nhóm khỏi mọi món rồi lưu trữ; đơn cũ không bị ảnh hưởng.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        delete: operations["deleteOptionGroup"];
         options?: never;
         head?: never;
         patch?: never;
@@ -124,7 +172,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["reorderItems"];
+        /**
+         * Sắp xếp món trong mục
+         * @description Gửi đầy đủ id các món của mục theo thứ tự mới.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        put: operations["reorderMenuItems"];
         post?: never;
         delete?: never;
         options?: never;
@@ -140,7 +194,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["reorderSections"];
+        /**
+         * Sắp xếp mục
+         * @description Gửi đầy đủ id các mục theo thứ tự mới.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        put: operations["reorderMenuSections"];
         post?: never;
         delete?: never;
         options?: never;
@@ -156,9 +216,21 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["setPhoto"];
+        /**
+         * Tải ảnh món
+         * @description Ảnh JPG, PNG hoặc WebP, tối đa 5 MB, gửi dạng multipart trường `file`; thay ảnh cũ.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        put: operations["uploadMenuItemPhoto"];
         post?: never;
-        delete: operations["removePhoto"];
+        /**
+         * Gỡ ảnh món
+         * @description Món trở lại ô ảnh trống; tệp cũ được xoá sau khi lưu.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        delete: operations["removeMenuItemPhoto"];
         options?: never;
         head?: never;
         patch?: never;
@@ -172,7 +244,13 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["setOptionGroups"];
+        /**
+         * Gắn nhóm lựa chọn cho món
+         * @description Danh sách đầy đủ nhóm của món theo thứ tự (tối đa 10, không trùng).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        put: operations["setMenuItemOptionGroups"];
         post?: never;
         delete?: never;
         options?: never;
@@ -187,8 +265,20 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["radiusCap"];
-        put: operations["setRadiusCap"];
+        /**
+         * Xem bán kính giao tối đa
+         * @description Mức trần áp dụng cho bán kính giao riêng của mọi quán.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["getDeliveryRadiusCap"];
+        /**
+         * Đặt bán kính giao tối đa
+         * @description Áp dụng cho các lần lưu sau; quán đang vượt mức giữ nguyên đến khi tự sửa.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:write-settings`.
+         */
+        put: operations["setDeliveryRadiusCap"];
         post?: never;
         delete?: never;
         options?: never;
@@ -205,7 +295,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["register"];
+        /**
+         * Đăng ký thiết bị
+         * @description Gọi sau khi người dùng cho phép thông báo và mỗi khi mã đổi. Một mã chỉ thuộc một tài khoản: đăng ký lại bởi tài khoản khác thì mã chuyển sang tài khoản đó.
+         *
+         *     **Cần đăng nhập.**
+         */
+        post: operations["registerPushDevice"];
         delete?: never;
         options?: never;
         head?: never;
@@ -221,7 +317,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["revoke"];
+        /**
+         * Huỷ đăng ký thiết bị
+         * @description Gọi khi đăng xuất, trước khi xoá token, để máy này thôi nhận thông báo của tài khoản. Mã của tài khoản khác được giữ nguyên.
+         *
+         *     **Cần đăng nhập.**
+         */
+        post: operations["revokePushDevice"];
         delete?: never;
         options?: never;
         head?: never;
@@ -235,9 +337,21 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list"];
+        /**
+         * Danh sách đơn của tôi
+         * @description Mới nhất trước; `status` lặp lại được, bỏ trống là mọi trạng thái. Mỗi đơn có tóm tắt món.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        get: operations["listMyOrders"];
         put?: never;
-        post: operations["place"];
+        /**
+         * Đặt đơn
+         * @description Hiện chỉ có thanh toán khi nhận hàng (`COD`). Không gửi giá: máy chủ tính lại toàn bộ (giá món, lựa chọn, phí giao, ngưỡng miễn phí) và chụp lại vào đơn. Header `Idempotency-Key` (8–100 ký tự) bắt buộc: cùng khoá luôn trả về cùng một đơn (201 lần đầu, 200 khi lặp lại), nên thử lại hay bấm hai lần không tạo đơn thứ hai. Lỗi theo từng món có thêm `menuItemId`.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        post: operations["placeOrder"];
         delete?: never;
         options?: never;
         head?: never;
@@ -253,7 +367,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["received"];
+        /**
+         * Xác nhận đã nhận món
+         * @description Khi đơn đang giao. Quán cũng có thể đánh dấu đã giao; ai trước được tính.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        post: operations["confirmOrderReceived"];
         delete?: never;
         options?: never;
         head?: never;
@@ -269,7 +389,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["cancel"];
+        /**
+         * Huỷ đơn
+         * @description Miễn phí khi đơn còn `PLACED` hoặc `CONFIRMED`; quán đã bắt đầu chuẩn bị thì không huỷ được. Lý do không bắt buộc.
+         *
+         *     **Cần đăng nhập**, quyền `order:cancel`.
+         */
+        post: operations["cancelMyOrder"];
         delete?: never;
         options?: never;
         head?: never;
@@ -285,7 +411,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["acknowledge"];
+        /**
+         * Đánh dấu đã đọc
+         * @description Gọi lại nhiều lần vẫn an toàn.
+         *
+         *     **Cần đăng nhập.**
+         */
+        post: operations["acknowledgeNotification"];
         delete?: never;
         options?: never;
         head?: never;
@@ -301,7 +433,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["acknowledgeAll"];
+        /**
+         * Đánh dấu tất cả đã đọc
+         * @description Chỉ trong vai trò đang dùng.
+         *
+         *     **Cần đăng nhập.**
+         */
+        post: operations["acknowledgeAllNotifications"];
         delete?: never;
         options?: never;
         head?: never;
@@ -317,7 +455,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["submit"];
+        /**
+         * Gửi duyệt
+         * @description Kiểm tra đủ 4 bước rồi chuyển sang chờ duyệt; bị từ chối thì sửa và gửi lại.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:create`.
+         */
+        post: operations["submitShopApplication"];
         delete?: never;
         options?: never;
         head?: never;
@@ -333,7 +477,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["upload"];
+        /**
+         * Tải giấy tờ
+         * @description `kind`: `business-license` (ảnh hoặc PDF), `identity-front`, `identity-selfie` (ảnh). Lưu riêng tư, thay tệp cũ.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:create`.
+         */
+        post: operations["uploadShopFile"];
         delete?: never;
         options?: never;
         head?: never;
@@ -349,7 +499,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["status"];
+        /**
+         * Chuyển bước tiếp theo
+         * @description Từng bước một: `PREPARING` → `OUT_FOR_DELIVERY` → `DELIVERED`. Phải giao đi trong 90 phút kể từ lúc nhận đơn. Đơn COD thành đã thu tiền khi đã giao.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["advanceShopOrder"];
         delete?: never;
         options?: never;
         head?: never;
@@ -365,7 +521,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["reject"];
+        /**
+         * Từ chối đơn
+         * @description Cần lý do (khách thấy). Tồn kho được trả lại; tính là lỗi của quán.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["rejectShopOrder"];
         delete?: never;
         options?: never;
         head?: never;
@@ -381,7 +543,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["confirm"];
+        /**
+         * Nhận đơn
+         * @description Đơn mới phải được trả lời trong 10 phút, nếu không hệ thống tự từ chối.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["confirmShopOrder"];
         delete?: never;
         options?: never;
         head?: never;
@@ -397,7 +565,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["cancel_1"];
+        /**
+         * Huỷ đơn đã nhận
+         * @description Khi đơn đã nhận hoặc đang chuẩn bị, cần lý do; tồn kho được trả lại và tính là lỗi của quán.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["cancelShopOrder"];
         delete?: never;
         options?: never;
         head?: never;
@@ -411,9 +585,21 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_1"];
+        /**
+         * Danh sách nhóm lựa chọn
+         * @description Mỗi nhóm kèm các lựa chọn còn dùng và id các món đang gắn nhóm.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["listOptionGroups"];
         put?: never;
-        post: operations["create"];
+        /**
+         * Thêm nhóm lựa chọn
+         * @description `min` 0 là tuỳ chọn, từ 1 là bắt buộc; `max` 1 là chọn một. Cần min ≤ max ≤ số lựa chọn, tối đa 30 lựa chọn; giá cộng thêm không âm.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["createOptionGroup"];
         delete?: never;
         options?: never;
         head?: never;
@@ -429,7 +615,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["createSection"];
+        /**
+         * Thêm mục
+         * @description Tên mục là duy nhất trong quán (không phân biệt hoa thường).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["createMenuSection"];
         delete?: never;
         options?: never;
         head?: never;
@@ -445,7 +637,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["createItem"];
+        /**
+         * Thêm món
+         * @description Giá là số nguyên VND. Ngành hàng phải là ngành cấp 3 đang hoạt động (quyết định hoa hồng). `stockQuantity` bỏ trống là không giới hạn.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["createMenuItem"];
         delete?: never;
         options?: never;
         head?: never;
@@ -461,6 +659,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Đổi vai trò
+         * @description Đổi giữa khách và người bán trong cùng một tài khoản; nhận cặp token mới cho vai trò kia.
+         *
+         *     **Không cần đăng nhập.**
+         */
         post: operations["switchRole"];
         delete?: never;
         options?: never;
@@ -477,6 +681,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Đặt mật khẩu lần đầu
+         * @description Dành cho quản trị viên mới được tạo, dùng mã trong thư mời.
+         *
+         *     **Không cần đăng nhập.**
+         */
         post: operations["setInitialPassword"];
         delete?: never;
         options?: never;
@@ -493,6 +703,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Chọn vai trò sau đăng nhập
+         * @description Dùng `roleToken` từ bước đăng nhập (hiệu lực ngắn) để lấy token cho vai trò đã chọn.
+         *
+         *     **Không cần đăng nhập.**
+         */
         post: operations["selectRole"];
         delete?: never;
         options?: never;
@@ -509,6 +725,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Đặt lại mật khẩu
+         * @description Dùng mã trong thư đặt lại mật khẩu. Mọi phiên cũ bị đăng xuất.
+         *
+         *     **Không cần đăng nhập.**
+         */
         post: operations["resetPassword"];
         delete?: never;
         options?: never;
@@ -525,7 +747,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["resendVerification"];
+        /**
+         * Gửi lại thư xác thực
+         * @description Luôn trả 202 dù email có tồn tại hay không (không tiết lộ tài khoản). Gửi nhiều lần thì phải kèm reCAPTCHA.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["resendVerificationEmail"];
         delete?: never;
         options?: never;
         head?: never;
@@ -541,7 +769,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["register_1"];
+        /**
+         * Đăng ký
+         * @description Tạo tài khoản và gửi thư xác thực (201). Nếu gọi kèm access token của một tài khoản đã xác thực, vai trò mới được thêm vào chính tài khoản đó (200) thay vì tạo tài khoản thứ hai.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["register"];
         delete?: never;
         options?: never;
         head?: never;
@@ -557,7 +791,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["refresh"];
+        /**
+         * Làm mới token
+         * @description Đổi refresh token lấy cặp token mới; refresh token cũ bị thu hồi (xoay vòng). Dùng lại token cũ sẽ khoá cả chuỗi phiên.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["refreshTokens"];
         delete?: never;
         options?: never;
         head?: never;
@@ -573,6 +813,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Đăng xuất
+         * @description Thu hồi phiên hiện tại và `refreshToken` gửi kèm.
+         *
+         *     **Không cần đăng nhập.**
+         */
         post: operations["logout"];
         delete?: never;
         options?: never;
@@ -589,7 +835,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["logoutAll"];
+        /**
+         * Đăng xuất khỏi mọi thiết bị
+         * @description Thu hồi mọi phiên của tài khoản, kể cả thiết bị này. Tài khoản có mật khẩu phải nhập lại mật khẩu.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["logoutEverywhere"];
         delete?: never;
         options?: never;
         head?: never;
@@ -605,6 +857,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Đăng nhập bằng email
+         * @description Nếu tài khoản giữ cả vai trò khách và người bán, phản hồi có `needsRoleSelection` và `roleToken` thay vì token: gọi tiếp `select-role`. Sai mật khẩu nhiều lần thì phải kèm `captchaToken`.
+         *
+         *     **Không cần đăng nhập.**
+         */
         post: operations["login"];
         delete?: never;
         options?: never;
@@ -621,7 +879,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["loginWithProvider"];
+        /**
+         * Đăng nhập bằng Google
+         * @description Gửi ID token của Google. Email chưa có tài khoản thì cần thêm vai trò và văn bản đã đồng ý để tạo tài khoản. Email đã có tài khoản bằng mật khẩu thì cần mật khẩu đó để liên kết (không bao giờ liên kết ngầm).
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["loginWithGoogle"];
         delete?: never;
         options?: never;
         head?: never;
@@ -637,6 +901,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Quên mật khẩu
+         * @description Gửi thư đặt lại mật khẩu nếu email có tài khoản; luôn trả 202 để không tiết lộ tài khoản.
+         *
+         *     **Không cần đăng nhập.**
+         */
         post: operations["forgotPassword"];
         delete?: never;
         options?: never;
@@ -653,7 +923,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["reject_1"];
+        /**
+         * Từ chối hồ sơ
+         * @description Cần lý do; chủ quán nhận email, sửa và gửi lại được.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:decide`.
+         */
+        post: operations["rejectShop"];
         delete?: never;
         options?: never;
         head?: never;
@@ -669,7 +945,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["approve"];
+        /**
+         * Duyệt cửa hàng
+         * @description Quán được mở bán; chủ quán nhận email.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:decide`.
+         */
+        post: operations["approveShop"];
         delete?: never;
         options?: never;
         head?: never;
@@ -685,7 +967,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_1"];
+        /**
+         * Tạo quản trị viên
+         * @description Người mới nhận email có liên kết để tự đặt mật khẩu lần đầu. Trả về id của tài khoản mới.
+         *
+         *     **Cần đăng nhập**, quyền `admin:write`.
+         */
+        post: operations["createAdmin"];
         delete?: never;
         options?: never;
         head?: never;
@@ -699,9 +987,21 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["tree"];
+        /**
+         * Cây ngành hàng (gồm ngành ẩn)
+         * @description Toàn bộ cây, có cả ngành đã ẩn và tỷ lệ hoa hồng hiệu lực của từng ngành.
+         *
+         *     **Cần đăng nhập**, quyền `category:write`.
+         */
+        get: operations["listCategoriesForAdmin"];
         put?: never;
-        post: operations["create_2"];
+        /**
+         * Thêm ngành
+         * @description Thêm ngành con dưới một ngành cấp 1 hoặc 2.
+         *
+         *     **Cần đăng nhập**, quyền `category:write`.
+         */
+        post: operations["createCategory"];
         delete?: never;
         options?: never;
         head?: never;
@@ -717,7 +1017,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["logout_1"];
+        /**
+         * Đăng xuất quản trị
+         * @description Thu hồi phiên hiện tại; gửi kèm `refreshToken` để thu hồi luôn token đó.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["adminLogout"];
         delete?: never;
         options?: never;
         head?: never;
@@ -733,7 +1039,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["login_1"];
+        /**
+         * Đăng nhập quản trị
+         * @description Email và mật khẩu của quản trị viên. Sai nhiều lần thì phải kèm reCAPTCHA.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["adminLogin"];
         delete?: never;
         options?: never;
         head?: never;
@@ -749,7 +1061,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["changePassword"];
+        /**
+         * Đổi mật khẩu
+         * @description Cần mật khẩu hiện tại; mật khẩu mới 8–100 ký tự. Mọi thiết bị khác bị đăng xuất, thiết bị này nhận cặp token mới trong phản hồi.
+         *
+         *     **Cần đăng nhập.**
+         */
+        post: operations["changeMyPassword"];
         delete?: never;
         options?: never;
         head?: never;
@@ -763,9 +1081,21 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_2"];
+        /**
+         * Danh sách địa chỉ
+         * @description Địa chỉ mặc định đứng đầu, sau đó mới nhất trước.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        get: operations["listMyAddresses"];
         put?: never;
-        post: operations["create_3"];
+        /**
+         * Thêm địa chỉ
+         * @description `placeId` lấy từ API gợi ý địa chỉ; máy chủ tra toạ độ một lần khi lưu. `makeDefault` đặt làm mặc định; địa chỉ đầu tiên luôn là mặc định.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        post: operations["createAddress"];
         delete?: never;
         options?: never;
         head?: never;
@@ -779,13 +1109,25 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["current"];
+        /**
+         * Xem hồ sơ cửa hàng
+         * @description `status` là `NONE` trước lần lưu đầu; ngoài ra là hồ sơ kèm mức hoàn thành từng bước. Giấy tờ là liên kết ký tạm.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:create`.
+         */
+        get: operations["getMyShopApplication"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["update_1"];
+        /**
+         * Sửa thông tin quán
+         * @description Chỉ trường gửi lên mới đổi. Đổi địa chỉ đưa quán về chờ duyệt lại; các trường khác áp dụng ngay.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        patch: operations["updateMyShop"];
         trace?: never;
     };
     "/api/merchant/options/{id}/status": {
@@ -801,7 +1143,13 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["setStatus"];
+        /**
+         * Bật/tắt hết một lựa chọn
+         * @description Công tắc nhanh `AVAILABLE`/`SOLD_OUT` (ví dụ hết trân châu).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        patch: operations["setOptionAvailability"];
         trace?: never;
     };
     "/api/merchant/menu-sections/{id}": {
@@ -814,10 +1162,22 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["deleteSection"];
+        /**
+         * Xoá mục
+         * @description Chỉ xoá được mục không còn món.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        delete: operations["deleteMenuSection"];
         options?: never;
         head?: never;
-        patch: operations["renameSection"];
+        /**
+         * Đổi tên mục
+         * @description Tên mục là duy nhất trong quán (không phân biệt hoa thường).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        patch: operations["renameMenuSection"];
         trace?: never;
     };
     "/api/merchant/menu-items/{id}": {
@@ -830,10 +1190,22 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["deleteItem"];
+        /**
+         * Xoá món
+         * @description Món được lưu trữ chứ không xoá hẳn: biến mất khỏi thực đơn nhưng đơn cũ vẫn đọc được.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        delete: operations["deleteMenuItem"];
         options?: never;
         head?: never;
-        patch: operations["updateItem"];
+        /**
+         * Sửa món
+         * @description Chỉ trường gửi lên mới đổi; `clearDescription`/`clearStock` xoá mô tả/tồn kho. Đơn đã đặt giữ giá và tên cũ.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        patch: operations["updateMenuItem"];
         trace?: never;
     };
     "/api/merchant/menu-items/{id}/status": {
@@ -849,7 +1221,13 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["setStatus_1"];
+        /**
+         * Bật/tắt hết món
+         * @description Công tắc nhanh `AVAILABLE`/`SOLD_OUT`, tách khỏi sửa món. Bật lại không khôi phục tồn kho.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        patch: operations["setMenuItemAvailability"];
         trace?: never;
     };
     "/api/admin/categories/{id}": {
@@ -862,10 +1240,22 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["delete_1"];
+        /**
+         * Xoá ngành
+         * @description Chỉ xoá được ngành lá chưa có món; ngành đang dùng thì ẩn đi.
+         *
+         *     **Cần đăng nhập**, quyền `category:write`.
+         */
+        delete: operations["deleteCategory"];
         options?: never;
         head?: never;
-        patch: operations["update_2"];
+        /**
+         * Sửa ngành
+         * @description Đổi tên, tỷ lệ hoa hồng (`clearCommissionRate` để kế thừa), ẩn/hiện, thứ tự hoặc chuyển sang ngành cha khác cùng cấp.
+         *
+         *     **Cần đăng nhập**, quyền `category:write`.
+         */
+        patch: operations["updateCategory"];
         trace?: never;
     };
     "/api/account/me": {
@@ -875,13 +1265,25 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["me"];
+        /**
+         * Xem hồ sơ của tôi
+         * @description Tên, email, số điện thoại, các vai trò đang giữ và việc tài khoản có mật khẩu hay chỉ đăng nhập bằng Google.
+         *
+         *     **Cần đăng nhập.**
+         */
+        get: operations["getMyProfile"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["update_3"];
+        /**
+         * Sửa hồ sơ
+         * @description Chỉ trường nào gửi lên mới đổi. Số điện thoại là số di động Việt Nam (bắt đầu bằng 0 hoặc +84); gửi chuỗi rỗng để xoá. Số điện thoại chỉ để liên lạc, không được xác thực.
+         *
+         *     **Cần đăng nhập.**
+         */
+        patch: operations["updateMyProfile"];
         trace?: never;
     };
     "/api/account/addresses/{id}": {
@@ -894,10 +1296,22 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["delete_2"];
+        /**
+         * Xoá địa chỉ
+         * @description Xoá mặc định thì địa chỉ mới nhất còn lại thành mặc định. Đơn đã đặt không bị ảnh hưởng.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        delete: operations["deleteAddress"];
         options?: never;
         head?: never;
-        patch: operations["update_4"];
+        /**
+         * Sửa địa chỉ
+         * @description Chỉ trường gửi lên mới đổi. Đổi `placeId` thì tra lại toạ độ; chỉ đổi dòng chi tiết hay người nhận thì không. Đơn đã đặt giữ bản sao địa chỉ cũ.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        patch: operations["updateAddress"];
         trace?: never;
     };
     "/api/account/addresses/{id}/default": {
@@ -913,23 +1327,13 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["makeDefault"];
-        trace?: never;
-    };
-    "/scalar": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["page"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
+        /**
+         * Đặt làm mặc định
+         * @description Địa chỉ mặc định cũ tự bỏ mặc định trong cùng một thao tác.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        patch: operations["setDefaultAddress"];
         trace?: never;
     };
     "/api/vendors": {
@@ -939,7 +1343,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["inArea"];
+        /**
+         * Quán giao tới điểm này
+         * @description Quán có bán kính giao riêng phủ tới toạ độ, quán đang mở trước rồi gần trước (`sort=name` để xếp theo tên). `q` tìm theo tên quán hoặc món, không phân biệt dấu. `categoryId` lọc theo ngành và mọi ngành con. Chỉ quán có ít nhất một món đặt được.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["listShopsInArea"];
         put?: never;
         post?: never;
         delete?: never;
@@ -955,7 +1365,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["menu"];
+        /**
+         * Thực đơn của quán
+         * @description Các mục có món, món hết có `soldOut: true`, kèm nhóm lựa chọn. Không bao giờ lộ số tồn kho. Gửi toạ độ để có khoảng cách.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["getShopMenu"];
         put?: never;
         post?: never;
         delete?: never;
@@ -971,7 +1387,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get"];
+        /**
+         * Chi tiết đơn
+         * @description Bản chụp lúc đặt (tên, giá, lựa chọn, địa chỉ) và tiến trình; người thực hiện phía quán chỉ hiện là `SHOP`.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        get: operations["getMyOrder"];
         put?: never;
         post?: never;
         delete?: never;
@@ -987,7 +1409,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_3"];
+        /**
+         * Danh sách thông báo
+         * @description Mới nhất trước; `unread=true` là danh sách còn chờ, nên gọi sau khi kết nối lại. `unread` trong phản hồi là tổng số chưa đọc.
+         *
+         *     **Cần đăng nhập.**
+         */
+        get: operations["listNotifications"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1003,7 +1431,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_4"];
+        /**
+         * Danh sách đơn của quán
+         * @description `status` lặp lại được, bỏ trống là mọi trạng thái. `from`/`to` là ngày theo giờ Việt Nam (gồm cả hai đầu). `sort=oldest` cho hàng chờ đơn mới. Đơn mới có `responseDeadline`, đơn đã nhận có `handoverDeadline`.
+         *
+         *     **Cần đăng nhập**, quyền `order:read`.
+         */
+        get: operations["listShopOrders"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1019,7 +1453,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_1"];
+        /**
+         * Chi tiết đơn
+         * @description Món, lựa chọn, ghi chú, liên hệ của khách (điện thoại và địa chỉ bị che sau khi hết thời hạn khiếu nại, trừ khi còn khiếu nại mở), tiến trình.
+         *
+         *     **Cần đăng nhập**, quyền `order:read`.
+         */
+        get: operations["getShopOrder"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1035,7 +1475,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_2"];
+        /**
+         * Xem thực đơn
+         * @description Các mục theo thứ tự, mỗi mục kèm món; `soldOut` là trạng thái hết thật sự (tắt bán, hết tồn kho hoặc thiếu lựa chọn bắt buộc).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["getMyMenu"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1051,7 +1497,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["current_1"];
+        /**
+         * Văn bản đang hiệu lực
+         * @description Nội dung và id phiên bản; biểu mẫu đăng ký gửi các id này trong danh sách đã đồng ý.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["getLegalDocument"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1067,7 +1519,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["autocomplete"];
+        /**
+         * Gợi ý địa chỉ
+         * @description Gọi khi người dùng đã gõ từ 3 ký tự và dừng 300 ms. Trả về `placeId` để gửi kèm biểu mẫu; toạ độ chỉ được tra khi lưu. Có thể truyền toạ độ hiện tại để ưu tiên kết quả gần.
+         *
+         *     **Cần đăng nhập.**
+         */
+        get: operations["suggestAddresses"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1083,7 +1541,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["tree_1"];
+        /**
+         * Cây ngành hàng
+         * @description Chỉ các ngành đang hiện; ngành ẩn biến mất cùng cả nhánh con. Được phép cache ngắn.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["listCategories"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1099,6 +1563,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * Xác thực email
+         * @description Liên kết trong thư xác thực gọi API này (GET để bấm trực tiếp từ hộp thư); gọi lại nhiều lần vẫn an toàn.
+         *
+         *     **Không cần đăng nhập.**
+         */
         get: operations["verifyEmail"];
         put?: never;
         post?: never;
@@ -1115,7 +1585,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["queue"];
+        /**
+         * Hàng chờ duyệt
+         * @description Hồ sơ đã gửi, cũ nhất trước; bản nháp không bao giờ hiện. Lọc theo `status` (PENDING, APPROVED, REJECTED) và tìm theo tên, phường, tỉnh.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["listShopApplications"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1131,7 +1607,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["application"];
+        /**
+         * Xem hồ sơ
+         * @description Thông tin quán, giao hàng, thuế, tài khoản nhận tiền (dạng che) và các quyết định trước. Không gồm giấy tờ định danh.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["getShopApplication"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1147,7 +1629,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["identity_1"];
+        /**
+         * Xem giấy tờ định danh
+         * @description Quyền riêng, mỗi lần xem đều được ghi nhật ký. Liên kết ảnh hết hạn sau 5 phút.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read-identity`.
+         */
+        get: operations["getShopIdentityDocuments"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1160,18 +1648,65 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description Mọi lỗi đều theo RFC 9457 (`application/problem+json`). Hãy rẽ nhánh theo `code`, không theo câu chữ của `detail`. Một số lỗi có thêm trường riêng, ví dụ `menuItemId` (món gây lỗi) hay `status` (trạng thái hiện tại). */
+        Problem: {
+            /** @example about:blank */
+            type?: string;
+            /**
+             * @description Tên chuẩn của mã HTTP
+             * @example Conflict
+             */
+            title?: string;
+            /**
+             * Format: int32
+             * @description Mã HTTP
+             * @example 409
+             */
+            status: number;
+            /**
+             * @description Câu giải thích cho người dùng, tiếng Việt
+             * @example Quán đang đóng cửa hoặc tạm ngưng nhận đơn.
+             */
+            detail?: string;
+            /**
+             * @description Đường dẫn của yêu cầu
+             * @example /api/orders
+             */
+            instance?: string;
+            /**
+             * @description Mã lỗi ổn định để client xử lý
+             * @example SHOP_CLOSED
+             */
+            code: string;
+            /** @description Chỉ có khi `code` là `VALIDATION_FAILED` */
+            errors?: {
+                /** @description Tên trường, ví dụ `items[0].quantity` */
+                field?: string;
+                /** @description Lý do, bằng tiếng Việt */
+                message?: string;
+            }[];
+        } & {
+            [key: string]: unknown;
+        };
         ShopApplicationStep4Request: {
             /** @enum {string} */
             docType?: "CCCD" | "CMND";
             docNumber?: string;
             fullName?: string;
             accuracyConfirmed?: boolean;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             sellerTermsDocumentId?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             privacyPolicyDocumentId?: string;
         };
         ShopAddress: {
+            /** @description UUID. */
             placeId?: string;
             formattedAddress?: string;
             ward?: string;
@@ -1197,7 +1732,10 @@ export interface components {
         ShopApplicationView: {
             status?: string;
             rejectionReason?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             submittedAt?: string;
             /** Format: int32 */
             firstIncompleteStep?: number;
@@ -1223,9 +1761,15 @@ export interface components {
         ShopOpeningWindow: {
             /** Format: int32 */
             weekday?: number;
-            /** Format: time-local */
+            /**
+             * Format: time-local
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             opensAt?: string;
-            /** Format: time-local */
+            /**
+             * Format: time-local
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             closesAt?: string;
         };
         ShopPayoutAccount: {
@@ -1237,11 +1781,20 @@ export interface components {
         ShopShipping: {
             openingHours?: components["schemas"]["ShopOpeningWindow"][];
             deliveryRadiusKm?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             deliveryFee?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             freeDeliveryThreshold?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             minOrderValue?: number;
         };
         ShopTaxInfo: {
@@ -1267,19 +1820,34 @@ export interface components {
         OpeningWindowInput: {
             /** Format: int32 */
             weekday: number;
-            /** Format: time-local */
+            /**
+             * Format: time-local
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             opensAt: string;
-            /** Format: time-local */
+            /**
+             * Format: time-local
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             closesAt: string;
         };
         ShopApplicationStep2Request: {
             openingHours?: components["schemas"]["OpeningWindowInput"][];
             deliveryRadiusKm?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             deliveryFee?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             freeDeliveryThreshold?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             minOrderValue?: number;
         };
         ShopApplicationStep1Request: {
@@ -1287,6 +1855,7 @@ export interface components {
             phone?: string;
             /** Format: email */
             email?: string;
+            /** @description UUID. */
             placeId?: string;
             addressDetail?: string;
         };
@@ -1305,17 +1874,26 @@ export interface components {
             options: components["schemas"]["OptionRequest"][];
         };
         OptionRequest: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             priceDelta: number;
             defaultChoice?: boolean;
             /** @enum {string} */
             status?: "AVAILABLE" | "SOLD_OUT" | "ARCHIVED";
         };
         OptionGroupView: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
             /** Format: int32 */
@@ -1329,10 +1907,16 @@ export interface components {
             groups?: components["schemas"]["OptionGroupView"][];
         };
         OptionView: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             priceDelta?: number;
             /** @enum {string} */
             status?: "AVAILABLE" | "SOLD_OUT" | "ARCHIVED";
@@ -1344,15 +1928,27 @@ export interface components {
             ids: string[];
         };
         MenuItemView: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             sectionId?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             categoryId?: string;
             name?: string;
             description?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             price?: number;
             photoUrl?: string;
             /** @enum {string} */
@@ -1365,7 +1961,10 @@ export interface components {
             optionGroupIds?: string[];
         };
         MenuSectionView: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
             /** Format: int32 */
@@ -1390,7 +1989,10 @@ export interface components {
             token: string;
         };
         PlaceOrderLine: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             menuItemId: string;
             /** Format: int32 */
             quantity: number;
@@ -1398,9 +2000,15 @@ export interface components {
             note?: string;
         };
         PlaceOrderRequest: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             vendorId: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             addressId: string;
             paymentMethod: string;
             note?: string;
@@ -1413,7 +2021,10 @@ export interface components {
             note?: string;
         };
         OrderDetail: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             /** Format: int64 */
             number?: number;
@@ -1425,19 +2036,31 @@ export interface components {
             delivery?: components["schemas"]["OrderDelivery"];
             items?: components["schemas"]["OrderLine"][];
             totals?: components["schemas"]["OrderTotals"];
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             placedAt?: string;
             timeline?: components["schemas"]["OrderStep"][];
         };
         OrderLine: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             menuItemId?: string;
             name?: string;
             /** Format: int32 */
             quantity?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             unitPrice?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             lineTotal?: number;
             note?: string;
             options?: components["schemas"]["OrderLineOption"][];
@@ -1445,11 +2068,17 @@ export interface components {
         OrderLineOption: {
             group?: string;
             name?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             priceDelta?: number;
         };
         OrderShop: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
         };
@@ -1464,13 +2093,25 @@ export interface components {
             at?: string;
         };
         OrderTotals: {
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             itemsTotal?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             discount?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             deliveryFee?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             grandTotal?: number;
         };
         CancelOrderRequest: {
@@ -1484,9 +2125,15 @@ export interface components {
             name?: string;
             /** Format: int32 */
             quantity?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             unitPrice?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             lineTotal?: number;
             note?: string;
             options?: components["schemas"]["LineOption"][];
@@ -1494,11 +2141,17 @@ export interface components {
         LineOption: {
             group?: string;
             name?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             priceDelta?: number;
         };
         ShopOrderDetail: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             /** Format: int64 */
             number?: number;
@@ -1513,11 +2166,20 @@ export interface components {
             contactMasked?: boolean;
             items?: components["schemas"]["Line"][];
             totals?: components["schemas"]["Totals"];
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             placedAt?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             responseDeadline?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             handoverDeadline?: string;
             timeline?: components["schemas"]["Step"][];
         };
@@ -1532,13 +2194,25 @@ export interface components {
             at?: string;
         };
         Totals: {
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             itemsTotal?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             discount?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             deliveryFee?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             grandTotal?: number;
         };
         OrderReasonRequest: {
@@ -1548,13 +2222,22 @@ export interface components {
             name: string;
         };
         MenuItemCreateRequest: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             sectionId: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             categoryId: string;
             name: string;
             description?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             price: number;
             /** Format: int32 */
             stockQuantity?: number;
@@ -1581,7 +2264,10 @@ export interface components {
             role?: "CUSTOMER" | "SELLER" | "ADMIN";
         };
         UserSummary: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             email?: string;
             name?: string;
@@ -1646,9 +2332,15 @@ export interface components {
             reason: string;
         };
         ShopDecision: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             vendorId?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             ownerUserId?: string;
             shopName?: string;
             /** @enum {string} */
@@ -1660,15 +2352,24 @@ export interface components {
             name: string;
         };
         CategoryCreateRequest: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             parentId: string;
             name: string;
             commissionRate?: number;
         };
         CategoryNode: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             parentId?: string;
             /** Format: int32 */
             level?: number;
@@ -1693,7 +2394,10 @@ export interface components {
             refreshToken?: string;
             /** Format: int64 */
             expiresIn?: number;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             userId?: string;
             email?: string;
             name?: string;
@@ -1706,6 +2410,7 @@ export interface components {
         };
         AddressCreateRequest: {
             label: string;
+            /** @description UUID. */
             placeId: string;
             detail?: string;
             recipientName: string;
@@ -1713,9 +2418,13 @@ export interface components {
             makeDefault?: boolean;
         };
         DeliveryAddress: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             label?: string;
+            /** @description UUID. */
             placeId?: string;
             formattedAddress?: string;
             ward?: string;
@@ -1734,14 +2443,24 @@ export interface components {
             phone?: string;
             /** Format: email */
             email?: string;
+            /** @description UUID. */
             placeId?: string;
             addressDetail?: string;
             deliveryRadiusKm?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             deliveryFee?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             freeDeliveryThreshold?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             minOrderValue?: number;
             clearFreeDeliveryThreshold?: boolean;
             clearMinOrderValue?: boolean;
@@ -1751,13 +2470,22 @@ export interface components {
             status: "AVAILABLE" | "SOLD_OUT" | "ARCHIVED";
         };
         MenuItemUpdateRequest: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             sectionId?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             categoryId?: string;
             name?: string;
             description?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             price?: number;
             /** Format: int32 */
             stockQuantity?: number;
@@ -1775,7 +2503,10 @@ export interface components {
             active?: boolean;
             /** Format: int32 */
             sortOrder?: number;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             parentId?: string;
         };
         UpdateProfileRequest: {
@@ -1783,7 +2514,10 @@ export interface components {
             phone?: string;
         };
         Profile: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             email?: string;
             name?: string;
@@ -1794,13 +2528,17 @@ export interface components {
         };
         AddressUpdateRequest: {
             label?: string;
+            /** @description UUID. */
             placeId?: string;
             detail?: string;
             recipientName?: string;
             recipientPhone?: string;
         };
         Shop: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
             address?: string;
@@ -1808,11 +2546,20 @@ export interface components {
             distanceKm?: number;
             open?: boolean;
             deliveryRadiusKm?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             deliveryFee?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             freeDeliveryThreshold?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             minOrderValue?: number;
         };
         VendorPage: {
@@ -1825,27 +2572,42 @@ export interface components {
             total?: number;
         };
         Item: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
             description?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             price?: number;
             photoUrl?: string;
             soldOut?: boolean;
             optionGroups?: components["schemas"]["MenuOptionGroup"][];
         };
         MenuOption: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             priceDelta?: number;
             available?: boolean;
             defaultChoice?: boolean;
         };
         MenuOptionGroup: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
             /** Format: int32 */
@@ -1855,7 +2617,10 @@ export interface components {
             options?: components["schemas"]["MenuOption"][];
         };
         Section: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             name?: string;
             items?: components["schemas"]["Item"][];
@@ -1874,34 +2639,55 @@ export interface components {
             total?: number;
         };
         OrderSummary: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             /** Format: int64 */
             number?: number;
             /** @enum {string} */
             status?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
             shopName?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             grandTotal?: number;
             /** Format: int32 */
             itemCount?: number;
             itemsPreview?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             placedAt?: string;
         };
         NotificationItem: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             type?: string;
             title?: string;
             body?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             orderId?: string;
             /** Format: int64 */
             orderNumber?: number;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             createdAt?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             acknowledgedAt?: string;
         };
         NotificationPage: {
@@ -1925,27 +2711,45 @@ export interface components {
             total?: number;
         };
         ShopOrderSummary: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             /** Format: int64 */
             number?: number;
             /** @enum {string} */
             status?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
             customerName?: string;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             grandTotal?: number;
             /** Format: int32 */
             itemCount?: number;
             itemsPreview?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             placedAt?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             responseDeadline?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             handoverDeadline?: string;
         };
         LegalDocumentView: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             id?: string;
             /** @enum {string} */
             type?: "CUSTOMER_TERMS" | "SELLER_TERMS" | "PRIVACY_POLICY";
@@ -1954,10 +2758,14 @@ export interface components {
             title?: string;
             summary?: string;
             content?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             effectiveAt?: string;
         };
         PlaceSuggestion: {
+            /** @description UUID. */
             placeId?: string;
             description?: string;
             mainText?: string;
@@ -1966,9 +2774,15 @@ export interface components {
             province?: string;
         };
         ShopApplicationSummary: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             vendorId?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             ownerUserId?: string;
             name?: string;
             ward?: string;
@@ -1976,7 +2790,10 @@ export interface components {
             businessType?: string;
             /** @enum {string} */
             status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             submittedAt?: string;
             payoutHolderMatchesIdentity?: boolean;
         };
@@ -1985,16 +2802,28 @@ export interface components {
             resubmitted?: boolean;
         };
         ShopApplicationDetail: {
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             vendorId?: string;
-            /** Format: uuid */
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
             ownerUserId?: string;
             /** @enum {string} */
             status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
             rejectionReason?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             submittedAt?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             decidedAt?: string;
             name?: string;
             phone?: string;
@@ -2009,11 +2838,20 @@ export interface components {
             lng?: number;
             openingHours?: components["schemas"]["ShopReviewOpeningWindow"][];
             deliveryRadiusKm?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             deliveryFee?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             freeDeliveryThreshold?: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
             minOrderValue?: number;
             businessType?: string;
             businessName?: string;
@@ -2037,15 +2875,24 @@ export interface components {
             reason?: string;
             /** Format: uuid */
             decidedBy?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             decidedAt?: string;
         };
         ShopReviewOpeningWindow: {
             /** Format: int32 */
             weekday?: number;
-            /** Format: time-local */
+            /**
+             * Format: time-local
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             opensAt?: string;
-            /** Format: time-local */
+            /**
+             * Format: time-local
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
             closesAt?: string;
         };
         ShopIdentityDocuments: {
@@ -2064,7 +2911,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    identity: {
+    saveIdentity: {
         parameters: {
             query?: never;
             header?: never;
@@ -2083,12 +2930,64 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `DOC_NUMBER_INVALID`: Số giấy tờ không đúng định dạng của loại giấy tờ.
+             *     - `CONSENT_REQUIRED`: Chưa đồng ý đủ các văn bản bắt buộc (điều khoản của vai trò và chính sách bảo mật).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_EDITABLE`: Hồ sơ không sửa được ở trạng thái này.
+             *     - `LEGAL_DOCUMENTS_CHANGED`: Văn bản vừa có phiên bản mới; tải lại và đồng ý lại.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    taxAndPayout: {
+    saveTaxAndPayout: {
         parameters: {
             query?: never;
             header?: never;
@@ -2107,12 +3006,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_EDITABLE`: Hồ sơ không sửa được ở trạng thái này. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    shipping: {
+    saveShipping: {
         parameters: {
             query?: never;
             header?: never;
@@ -2131,12 +3075,63 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `DELIVERY_RADIUS_TOO_LARGE`: Vượt bán kính giao tối đa; có `maxDeliveryRadiusKm`.
+             *     - `OPENING_HOURS_INVALID`: Khung giờ không hợp lệ.
+             *     - `OPENING_HOURS_OVERLAP`: Các khung giờ chồng nhau.
+             *     - `OPENING_HOURS_TOO_MANY`: Quá nhiều khung giờ trong một ngày.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_EDITABLE`: Hồ sơ không sửa được ở trạng thái này. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    shopInfo: {
+    saveShopInfo: {
         parameters: {
             query?: never;
             header?: never;
@@ -2155,12 +3150,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `ADDRESS_NOT_FOUND`: `placeId` không tra được ra địa chỉ.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_EDITABLE`: Hồ sơ đang chờ duyệt hoặc đã duyệt, không sửa ở đây được. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    openingHours: {
+    replaceOpeningHours: {
         parameters: {
             query?: never;
             header?: never;
@@ -2179,12 +3231,62 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `OPENING_HOURS_INVALID`: Khung giờ không hợp lệ.
+             *     - `OPENING_HOURS_OVERLAP`: Các khung giờ chồng nhau.
+             *     - `OPENING_HOURS_TOO_MANY`: Quá nhiều khung giờ trong một ngày.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    acceptingOrders: {
+    setAcceptingOrders: {
         parameters: {
             query?: never;
             header?: never;
@@ -2203,12 +3305,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    update: {
+    replaceOptionGroup: {
         parameters: {
             query?: never;
             header?: never;
@@ -2229,12 +3376,72 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OptionGroupsView"];
+                    "application/json": components["schemas"]["OptionGroupsView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `OPTION_GROUP_INVALID`: Vi phạm quy tắc min/max.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `OPTION_GROUP_NOT_FOUND`: Nhóm không tồn tại hoặc thuộc quán khác.
+             *     - `OPTION_NOT_FOUND`: Có `id` lựa chọn không thuộc nhóm này.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    delete: {
+    deleteOptionGroup: {
         parameters: {
             query?: never;
             header?: never;
@@ -2251,12 +3458,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OptionGroupsView"];
+                    "application/json": components["schemas"]["OptionGroupsView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `OPTION_GROUP_NOT_FOUND`: Nhóm không tồn tại hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    reorderItems: {
+    reorderMenuItems: {
         parameters: {
             query?: never;
             header?: never;
@@ -2277,12 +3538,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `MENU_ORDER_MISMATCH`: Danh sách thiếu, thừa hoặc trùng món.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_SECTION_NOT_FOUND`: Mục không tồn tại hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    reorderSections: {
+    reorderMenuSections: {
         parameters: {
             query?: never;
             header?: never;
@@ -2301,12 +3619,60 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `MENU_ORDER_MISMATCH`: Danh sách thiếu, thừa hoặc trùng mục.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    setPhoto: {
+    uploadMenuItemPhoto: {
         parameters: {
             query?: never;
             header?: never;
@@ -2330,12 +3696,88 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `FILE_REQUIRED`: Không có tệp trong trường `file`.
+             *     - `FILE_UNREADABLE`: Không đọc được tệp.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_ITEM_NOT_FOUND`: Món không tồn tại, đã xoá hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FILE_TOO_LARGE`: Tệp vượt giới hạn dung lượng. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNSUPPORTED_FILE_TYPE`: Định dạng không được nhận (kiểm tra theo nội dung tệp, không theo tên). */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    removePhoto: {
+    removeMenuItemPhoto: {
         parameters: {
             query?: never;
             header?: never;
@@ -2352,12 +3794,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_ITEM_NOT_FOUND`: Món không tồn tại, đã xoá hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    setOptionGroups: {
+    setMenuItemOptionGroups: {
         parameters: {
             query?: never;
             header?: never;
@@ -2378,12 +3874,72 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `OPTION_GROUP_INVALID`: Một nhóm bị gắn hai lần.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `MENU_ITEM_NOT_FOUND`: Món không tồn tại, đã xoá hoặc thuộc quán khác.
+             *     - `OPTION_GROUP_NOT_FOUND`: Có nhóm không tồn tại hoặc thuộc quán khác.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    radiusCap: {
+    getDeliveryRadiusCap: {
         parameters: {
             query?: never;
             header?: never;
@@ -2398,12 +3954,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["DeliveryRadiusCapSetting"];
+                    "application/json": components["schemas"]["DeliveryRadiusCapSetting"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    setRadiusCap: {
+    setDeliveryRadiusCap: {
         parameters: {
             query?: never;
             header?: never;
@@ -2422,12 +4005,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["DeliveryRadiusCapSetting"];
+                    "application/json": components["schemas"]["DeliveryRadiusCapSetting"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:write-settings`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    register: {
+    registerPushDevice: {
         parameters: {
             query?: never;
             header?: never;
@@ -2447,9 +4066,36 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    revoke: {
+    revokePushDevice: {
         parameters: {
             query?: never;
             header?: never;
@@ -2469,9 +4115,36 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    list: {
+    listMyOrders: {
         parameters: {
             query?: {
                 status?: ("PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED")[];
@@ -2490,12 +4163,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OrderPage"];
+                    "application/json": components["schemas"]["OrderPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    place: {
+    placeOrder: {
         parameters: {
             query?: never;
             header: {
@@ -2510,18 +4222,98 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description Khoá `Idempotency-Key` đã dùng: trả về đúng đơn đã tạo trước đó. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OrderDetail"];
+                    "application/json": components["schemas"]["OrderDetail"];
+                };
+            };
+            /** @description Đã tạo đơn mới. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderDetail"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `OPTION_COUNT_INVALID`: Số lựa chọn trong một nhóm ngoài min/max.
+             *     - `OPTION_DUPLICATED`: Một lựa chọn bị chọn hai lần.
+             *     - `OPTION_NOT_OFFERED`: Lựa chọn không thuộc món.
+             *     - `BELOW_MIN_ORDER`: Chưa đạt đơn tối thiểu của quán; có `minOrderValue`.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `VENDOR_NOT_FOUND`: Quán không tồn tại hoặc chưa được duyệt.
+             *     - `ADDRESS_NOT_FOUND`: Địa chỉ không phải của khách.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_CLOSED`: Quán đang đóng cửa hoặc tạm ngưng nhận đơn.
+             *     - `CANNOT_ORDER_OWN_SHOP`: Không đặt được từ quán của chính mình.
+             *     - `TOO_MANY_OPEN_ORDERS`: Đang có quá nhiều đơn chưa xong (mặc định 3).
+             *     - `OUT_OF_DELIVERY_RADIUS`: Địa chỉ ngoài vùng giao của quán.
+             *     - `ITEM_UNAVAILABLE`: Một món đã hết hoặc không còn bán.
+             *     - `OPTION_UNAVAILABLE`: Một lựa chọn đã hết.
+             *     - `INSUFFICIENT_STOCK`: Món không còn đủ số phần.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    received: {
+    confirmOrderReceived: {
         parameters: {
             query?: never;
             header?: never;
@@ -2538,12 +4330,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OrderDetail"];
+                    "application/json": components["schemas"]["OrderDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
+             *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    cancel: {
+    cancelMyOrder: {
         parameters: {
             query?: never;
             header?: never;
@@ -2564,12 +4413,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OrderDetail"];
+                    "application/json": components["schemas"]["OrderDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:cancel`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
+             *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    acknowledge: {
+    acknowledgeNotification: {
         parameters: {
             query?: never;
             header?: never;
@@ -2587,9 +4493,45 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NOTIFICATION_NOT_FOUND`: Không có thông báo với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    acknowledgeAll: {
+    acknowledgeAllNotifications: {
         parameters: {
             query?: never;
             header?: never;
@@ -2605,9 +4547,27 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    submit: {
+    submitShopApplication: {
         parameters: {
             query?: never;
             header?: never;
@@ -2622,12 +4582,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /** @description - `SHOP_APPLICATION_INCOMPLETE`: Còn bước chưa đủ; có `firstIncompleteStep`. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_EDITABLE`: Hồ sơ không gửi được ở trạng thái này. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    upload: {
+    uploadShopFile: {
         parameters: {
             query?: never;
             header?: never;
@@ -2651,12 +4656,88 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `FILE_REQUIRED`: Không có tệp trong trường `file`.
+             *     - `FILE_UNREADABLE`: Không đọc được tệp.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FILE_KIND_UNKNOWN`: `kind` không thuộc ba loại trên. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_EDITABLE`: Hồ sơ không sửa được ở trạng thái này. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FILE_TOO_LARGE`: Tệp vượt giới hạn dung lượng. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNSUPPORTED_FILE_TYPE`: Định dạng không được nhận (kiểm tra theo nội dung tệp, không theo tên). */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    status: {
+    advanceShopOrder: {
         parameters: {
             query?: never;
             header?: never;
@@ -2677,12 +4758,70 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopOrderDetail"];
+                    "application/json": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
+             *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    reject: {
+    rejectShopOrder: {
         parameters: {
             query?: never;
             header?: never;
@@ -2703,12 +4842,73 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopOrderDetail"];
+                    "application/json": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `REASON_REQUIRED`: Thiếu lý do.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
+             *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    confirm: {
+    confirmShopOrder: {
         parameters: {
             query?: never;
             header?: never;
@@ -2725,12 +4925,70 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopOrderDetail"];
+                    "application/json": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
+             *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    cancel_1: {
+    cancelShopOrder: {
         parameters: {
             query?: never;
             header?: never;
@@ -2751,12 +5009,73 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopOrderDetail"];
+                    "application/json": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `REASON_REQUIRED`: Thiếu lý do.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
+             *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    list_1: {
+    listOptionGroups: {
         parameters: {
             query?: never;
             header?: never;
@@ -2771,12 +5090,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OptionGroupsView"];
+                    "application/json": components["schemas"]["OptionGroupsView"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    create: {
+    createOptionGroup: {
         parameters: {
             query?: never;
             header?: never;
@@ -2795,12 +5150,60 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OptionGroupsView"];
+                    "application/json": components["schemas"]["OptionGroupsView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `OPTION_GROUP_INVALID`: Vi phạm quy tắc min/max, số lựa chọn mặc định hoặc trạng thái.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    createSection: {
+    createMenuSection: {
         parameters: {
             query?: never;
             header?: never;
@@ -2819,12 +5222,60 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `MENU_SECTION_NAME_TAKEN`: Đã có mục cùng tên.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    createItem: {
+    createMenuItem: {
         parameters: {
             query?: never;
             header?: never;
@@ -2843,7 +5294,64 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành hàng không phải ngành cấp 3 đang hoạt động.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_SECTION_NOT_FOUND`: Mục không tồn tại hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -2867,7 +5375,43 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LoginResponse"];
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Cần đăng nhập. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ROLE_NOT_HELD`: Tài khoản không giữ vai trò này. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -2892,6 +5436,27 @@ export interface operations {
                 };
                 content?: never;
             };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_OR_EXPIRED_TOKEN`: Mã sai, đã dùng hoặc đã hết hạn.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
     selectRole: {
@@ -2913,7 +5478,37 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LoginResponse"];
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_ROLE_TOKEN`: `roleToken` sai hoặc đã hết hạn; đăng nhập lại.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ROLE_NOT_HELD`: Tài khoản không giữ vai trò này. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -2938,9 +5533,30 @@ export interface operations {
                 };
                 content?: never;
             };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_OR_EXPIRED_TOKEN`: Mã sai, đã dùng hoặc đã hết hạn.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    resendVerification: {
+    resendVerificationEmail: {
         parameters: {
             query?: never;
             header?: never;
@@ -2959,12 +5575,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StatusResponse"];
+                    "application/json": components["schemas"]["StatusResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CAPTCHA_REQUIRED`: Sai nhiều lần liên tiếp: gửi lại kèm `captchaToken` (reCAPTCHA).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    register_1: {
+    register: {
         parameters: {
             query?: never;
             header?: never;
@@ -2977,18 +5623,85 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description Đã thêm vai trò vào tài khoản đang đăng nhập. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RegisterResponse"];
+                    "application/json": components["schemas"]["RegisterResponse"];
+                };
+            };
+            /** @description Tài khoản mới đã tạo, thư xác thực đã gửi. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RegisterResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `NAME_REQUIRED`: Thiếu họ tên khi tạo tài khoản mới.
+             *     - `PASSWORD_REQUIRED`: Thiếu mật khẩu khi tạo tài khoản mới.
+             *     - `ROLE_NOT_SELF_REGISTERABLE`: Vai trò này không tự đăng ký được.
+             *     - `CAPTCHA_INVALID`: reCAPTCHA không hợp lệ.
+             *     - `CONSENT_REQUIRED`: Chưa đồng ý đủ các văn bản bắt buộc (điều khoản của vai trò và chính sách bảo mật).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INVALID_CREDENTIALS`: Mật khẩu xác nhận không đúng. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `EMAIL_ALREADY_REGISTERED`: Email đã có tài khoản: đăng nhập rồi thêm vai trò.
+             *     - `IDENTITY_NOT_VERIFIED`: Tài khoản chưa xác thực email nên chưa thêm vai trò được.
+             *     - `ROLE_ALREADY_HELD`: Tài khoản đã có vai trò này.
+             *     - `SIGN_IN_TO_ADD_ROLE`: Đăng nhập trước để thêm vai trò.
+             *     - `LEGAL_DOCUMENTS_CHANGED`: Văn bản vừa có phiên bản mới; tải lại và đồng ý lại.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    refresh: {
+    refreshTokens: {
         parameters: {
             query?: never;
             header?: never;
@@ -3007,7 +5720,34 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["TokenResponse"];
+                    "application/json": components["schemas"]["TokenResponse"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INVALID_REFRESH_TOKEN`: Refresh token sai, hết hạn hoặc đã bị thu hồi; đăng nhập lại. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -3032,9 +5772,36 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Không có access token hợp lệ. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    logoutAll: {
+    logoutEverywhere: {
         parameters: {
             query?: never;
             header?: never;
@@ -3053,6 +5820,45 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `UNAUTHENTICATED`: Không có access token hợp lệ.
+             *     - `INVALID_CREDENTIALS`: Mật khẩu không đúng.
+             */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REAUTHENTICATION_REQUIRED`: Phiên đăng nhập đã lâu: đăng nhập lại rồi thử. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
             };
         };
     };
@@ -3075,12 +5881,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LoginResponse"];
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CAPTCHA_REQUIRED`: Sai nhiều lần liên tiếp: gửi lại kèm `captchaToken` (reCAPTCHA).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INVALID_CREDENTIALS`: Email hoặc mật khẩu không đúng. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `EMAIL_NOT_VERIFIED`: Email chưa được xác thực; có thể gửi lại thư xác thực. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    loginWithProvider: {
+    loginWithGoogle: {
         parameters: {
             query?: never;
             header?: never;
@@ -3099,7 +5944,58 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LoginResponse"];
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `OAUTH_EMAIL_UNVERIFIED`: Google chưa xác thực email này.
+             *     - `PROVIDER_NOT_SUPPORTED`: Nhà cung cấp chưa được hỗ trợ (hiện chỉ có Google).
+             *     - `ROLE_NOT_SELF_REGISTERABLE`: Vai trò này không tự đăng ký được.
+             *     - `CAPTCHA_REQUIRED`: Sai nhiều lần liên tiếp: gửi lại kèm `captchaToken` (reCAPTCHA).
+             *     - `CONSENT_REQUIRED`: Chưa đồng ý đủ các văn bản bắt buộc (điều khoản của vai trò và chính sách bảo mật).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `INVALID_OAUTH_TOKEN`: ID token không hợp lệ hoặc không dành cho bonbon.
+             *     - `INVALID_CREDENTIALS`: Mật khẩu để liên kết không đúng.
+             */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `OAUTH_SIGNUP_REQUIRED`: Chưa có tài khoản cho email này: chọn vai trò và đồng ý điều khoản rồi gửi lại; có `email`, `name`.
+             *     - `ACCOUNT_EXISTS_LINK_REQUIRED`: Email đã có tài khoản: `linkMethod` cho biết cần làm gì (`PASSWORD`, `SIGN_IN_FIRST`, `VERIFY_EMAIL_FIRST`).
+             *     - `EMAIL_ALREADY_REGISTERED`: Email vừa được đăng ký bởi yêu cầu khác; thử lại.
+             *     - `LEGAL_DOCUMENTS_CHANGED`: Văn bản vừa có phiên bản mới; tải lại và đồng ý lại.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -3123,12 +6019,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StatusResponse"];
+                    "application/json": components["schemas"]["StatusResponse"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    reject_1: {
+    rejectShop: {
         parameters: {
             query?: never;
             header?: never;
@@ -3149,12 +6072,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopDecision"];
+                    "application/json": components["schemas"]["ShopDecision"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:decide`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_PENDING`: Hồ sơ không ở trạng thái chờ duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    approve: {
+    approveShop: {
         parameters: {
             query?: never;
             header?: never;
@@ -3171,12 +6148,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopDecision"];
+                    "application/json": components["schemas"]["ShopDecision"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:decide`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_PENDING`: Hồ sơ không ở trạng thái chờ duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    create_1: {
+    createAdmin: {
         parameters: {
             query?: never;
             header?: never;
@@ -3195,14 +6226,59 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": {
+                    "application/json": {
                         [key: string]: string;
                     };
                 };
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `admin:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `EMAIL_ALREADY_REGISTERED`: Email này đã là quản trị viên. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    tree: {
+    listCategoriesForAdmin: {
         parameters: {
             query?: never;
             header?: never;
@@ -3217,12 +6293,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["CategoryNode"][];
+                    "application/json": components["schemas"]["CategoryNode"][];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `category:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    create_2: {
+    createCategory: {
         parameters: {
             query?: never;
             header?: never;
@@ -3241,12 +6344,72 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["CategoryNode"];
+                    "application/json": components["schemas"]["CategoryNode"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_DEPTH_EXCEEDED`: Cây chỉ có 3 cấp.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `category:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CATEGORY_NOT_FOUND`: Ngành cha không tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `CATEGORY_NAME_TAKEN`: Đã có ngành cùng tên trong cùng ngành cha.
+             *     - `CATEGORY_HAS_DISHES`: Ngành cha đang có món nên không thêm ngành con được.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    logout_1: {
+    adminLogout: {
         parameters: {
             query?: never;
             header?: never;
@@ -3266,9 +6429,36 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Không có access token hợp lệ. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    login_1: {
+    adminLogin: {
         parameters: {
             query?: never;
             header?: never;
@@ -3287,12 +6477,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["IssuedSession"];
+                    "application/json": components["schemas"]["IssuedSession"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CAPTCHA_REQUIRED`: Sai nhiều lần liên tiếp: gửi lại kèm `captchaToken` (reCAPTCHA).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INVALID_CREDENTIALS`: Email hoặc mật khẩu không đúng. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    changePassword: {
+    changeMyPassword: {
         parameters: {
             query?: never;
             header?: never;
@@ -3311,12 +6531,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["IssuedSession"];
+                    "application/json": components["schemas"]["IssuedSession"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn.
+             *     - `INVALID_CREDENTIALS`: Mật khẩu hiện tại không đúng.
+             */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NO_PASSWORD`: Tài khoản chỉ đăng nhập bằng Google, chưa có mật khẩu; dùng Quên mật khẩu để đặt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    list_2: {
+    listMyAddresses: {
         parameters: {
             query?: never;
             header?: never;
@@ -3331,12 +6590,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["DeliveryAddress"][];
+                    "application/json": components["schemas"]["DeliveryAddress"][];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    create_3: {
+    createAddress: {
         parameters: {
             query?: never;
             header?: never;
@@ -3355,12 +6641,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["DeliveryAddress"];
+                    "application/json": components["schemas"]["DeliveryAddress"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `ADDRESS_NOT_FOUND`: `placeId` không tra được ra địa chỉ.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ADDRESS_LIMIT_REACHED`: Đã có đủ 10 địa chỉ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    current: {
+    getMyShopApplication: {
         parameters: {
             query?: never;
             header?: never;
@@ -3375,12 +6718,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    update_1: {
+    updateMyShop: {
         parameters: {
             query?: never;
             header?: never;
@@ -3399,12 +6769,70 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopApplicationView"];
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `DELIVERY_RADIUS_TOO_LARGE`: Vượt bán kính giao tối đa.
+             *     - `ADDRESS_NOT_FOUND`: `placeId` không tra được.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    setStatus: {
+    setOptionAvailability: {
         parameters: {
             query?: never;
             header?: never;
@@ -3425,12 +6853,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OptionGroupsView"];
+                    "application/json": components["schemas"]["OptionGroupsView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `OPTION_GROUP_INVALID`: Chỉ nhận `AVAILABLE` hoặc `SOLD_OUT`.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `OPTION_NOT_FOUND`: Lựa chọn không tồn tại hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    deleteSection: {
+    deleteMenuSection: {
         parameters: {
             query?: never;
             header?: never;
@@ -3447,12 +6932,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_SECTION_NOT_FOUND`: Mục không tồn tại hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `SECTION_NOT_EMPTY`: Mục còn món: chuyển hoặc xoá món trước.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    renameSection: {
+    renameMenuSection: {
         parameters: {
             query?: never;
             header?: never;
@@ -3473,12 +7015,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_SECTION_NOT_FOUND`: Mục không tồn tại hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `MENU_SECTION_NAME_TAKEN`: Đã có mục cùng tên.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    deleteItem: {
+    deleteMenuItem: {
         parameters: {
             query?: never;
             header?: never;
@@ -3495,12 +7094,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_ITEM_NOT_FOUND`: Món không tồn tại, đã xoá hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    updateItem: {
+    updateMenuItem: {
         parameters: {
             query?: never;
             header?: never;
@@ -3521,12 +7174,72 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành hàng không phải ngành cấp 3 đang hoạt động.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `MENU_ITEM_NOT_FOUND`: Món không tồn tại, đã xoá hoặc thuộc quán khác.
+             *     - `MENU_SECTION_NOT_FOUND`: Mục không tồn tại hoặc thuộc quán khác.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    setStatus_1: {
+    setMenuItemAvailability: {
         parameters: {
             query?: never;
             header?: never;
@@ -3547,12 +7260,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `MENU_ITEM_NOT_FOUND`: Món không tồn tại, đã xoá hoặc thuộc quán khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    delete_1: {
+    deleteCategory: {
         parameters: {
             query?: never;
             header?: never;
@@ -3570,9 +7337,67 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `category:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CATEGORY_NOT_FOUND`: Ngành không tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `CATEGORY_ROOT_FIXED`: Không xoá được ngành gốc.
+             *     - `CATEGORY_HAS_CHILDREN`: Còn ngành con.
+             *     - `CATEGORY_IN_USE`: Ngành đang có món; hãy ẩn thay vì xoá.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    update_2: {
+    updateCategory: {
         parameters: {
             query?: never;
             header?: never;
@@ -3593,12 +7418,72 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["CategoryNode"];
+                    "application/json": components["schemas"]["CategoryNode"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_MOVE_INVALID`: Ngành cha mới không hợp lệ (sai cấp hoặc tạo vòng).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `category:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CATEGORY_NOT_FOUND`: Ngành không tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `CATEGORY_ROOT_FIXED`: Ngành gốc chỉ đổi được tỷ lệ hoa hồng.
+             *     - `CATEGORY_NAME_TAKEN`: Trùng tên trong cùng ngành cha.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    me: {
+    getMyProfile: {
         parameters: {
             query?: never;
             header?: never;
@@ -3613,12 +7498,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Profile"];
+                    "application/json": components["schemas"]["Profile"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `USER_NOT_FOUND`: Tài khoản không còn tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    update_3: {
+    updateMyProfile: {
         parameters: {
             query?: never;
             header?: never;
@@ -3637,12 +7549,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["Profile"];
+                    "application/json": components["schemas"]["Profile"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `USER_NOT_FOUND`: Tài khoản không còn tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    delete_2: {
+    deleteAddress: {
         parameters: {
             query?: never;
             header?: never;
@@ -3660,9 +7608,54 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ADDRESS_NOT_FOUND`: Địa chỉ không tồn tại hoặc của người khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
         };
     };
-    update_4: {
+    updateAddress: {
         parameters: {
             query?: never;
             header?: never;
@@ -3683,12 +7676,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["DeliveryAddress"];
+                    "application/json": components["schemas"]["DeliveryAddress"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ADDRESS_NOT_FOUND`: Địa chỉ không tồn tại hoặc của người khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    makeDefault: {
+    setDefaultAddress: {
         parameters: {
             query?: never;
             header?: never;
@@ -3705,32 +7752,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["DeliveryAddress"];
+                    "application/json": components["schemas"]["DeliveryAddress"];
                 };
             };
-        };
-    };
-    page: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/html": string;
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ADDRESS_NOT_FOUND`: Địa chỉ không tồn tại hoặc của người khác. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    inArea: {
+    listShopsInArea: {
         parameters: {
             query: {
                 lat: number;
@@ -3753,12 +7825,36 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["VendorPage"];
+                    "application/json": components["schemas"]["VendorPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_POSITION`: Toạ độ ngoài phạm vi.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             *     - `INVALID_QUERY`: Từ khoá quá dài (tối đa 100 ký tự).
+             *     - `INVALID_SORT`: `sort` chỉ nhận `distance` hoặc `name`.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    menu: {
+    getShopMenu: {
         parameters: {
             query?: {
                 lat?: number;
@@ -3778,12 +7874,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopMenu"];
+                    "application/json": components["schemas"]["ShopMenu"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_POSITION`: Chỉ gửi một trong hai toạ độ, hoặc toạ độ ngoài phạm vi.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Quán không tồn tại hoặc chưa được duyệt. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    get: {
+    getMyOrder: {
         parameters: {
             query?: never;
             header?: never;
@@ -3800,12 +7926,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["OrderDetail"];
+                    "application/json": components["schemas"]["OrderDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    list_3: {
+    listNotifications: {
         parameters: {
             query?: {
                 unread?: boolean;
@@ -3824,12 +7995,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["NotificationPage"];
+                    "application/json": components["schemas"]["NotificationPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    list_4: {
+    listShopOrders: {
         parameters: {
             query?: {
                 status?: ("PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED")[];
@@ -3851,12 +8052,60 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopOrderPage"];
+                    "application/json": components["schemas"]["ShopOrderPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    get_1: {
+    getShopOrder: {
         parameters: {
             query?: never;
             header?: never;
@@ -3873,12 +8122,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopOrderDetail"];
+                    "application/json": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    get_2: {
+    getMyMenu: {
         parameters: {
             query?: never;
             header?: never;
@@ -3893,12 +8196,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MenuView"];
+                    "application/json": components["schemas"]["MenuView"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    current_1: {
+    getLegalDocument: {
         parameters: {
             query?: never;
             header?: never;
@@ -3915,12 +8254,30 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LegalDocumentView"];
+                    "application/json": components["schemas"]["LegalDocumentView"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    autocomplete: {
+    suggestAddresses: {
         parameters: {
             query: {
                 input: string;
@@ -3939,12 +8296,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PlaceSuggestion"][];
+                    "application/json": components["schemas"]["PlaceSuggestion"][];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    tree_1: {
+    listCategories: {
         parameters: {
             query?: never;
             header?: never;
@@ -3959,7 +8361,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["CategoryNode"][];
+                    "application/json": components["schemas"]["CategoryNode"][];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -3981,12 +8392,33 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StatusResponse"];
+                    "application/json": components["schemas"]["StatusResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_OR_EXPIRED_TOKEN`: Liên kết sai hoặc đã hết hạn; gửi lại thư xác thực.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    queue: {
+    listShopApplications: {
         parameters: {
             query?: {
                 status?: string;
@@ -4004,12 +8436,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopReviewQueueRow"][];
+                    "application/json": components["schemas"]["ShopReviewQueueRow"][];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `STATUS_FILTER_INVALID`: `status` không thuộc các giá trị cho phép.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    application: {
+    getShopApplication: {
         parameters: {
             query?: never;
             header?: never;
@@ -4026,12 +8497,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopReviewApplication"];
+                    "application/json": components["schemas"]["ShopReviewApplication"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_APPLICATION_NOT_FOUND`: Không có hồ sơ đã gửi với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
     };
-    identity_1: {
+    getShopIdentityDocuments: {
         parameters: {
             query?: never;
             header?: never;
@@ -4048,7 +8564,52 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ShopIdentityDocuments"];
+                    "application/json": components["schemas"]["ShopIdentityDocuments"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read-identity`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_APPLICATION_NOT_FOUND`: Không có hồ sơ đã gửi với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };

@@ -8,6 +8,7 @@ import { deliveryText, formatDistance, useShopsInArea, type Shop } from '@/entit
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
 import { Button, Card, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { CartBar } from '@/widgets/cart-bar'
 
 /** Shops that deliver to the default address: search, category filter, open shops first (browse-vendors-in-area.md). */
 export default function CustomerHomeScreen() {
@@ -28,6 +29,7 @@ export default function CustomerHomeScreen() {
   const list = shops.data?.items ?? []
 
   return (
+    <View style={styles.flex}>
     <Screen>
       <AddressBar loading={addresses.isPending} label={address?.label} text={address?.formattedAddress} onPress={() => router.push('/customer/addresses')} />
       {addresses.data && !address ? (
@@ -64,6 +66,8 @@ export default function CustomerHomeScreen() {
         </>
       ) : null}
     </Screen>
+    <CartBar />
+    </View>
   )
 }
 

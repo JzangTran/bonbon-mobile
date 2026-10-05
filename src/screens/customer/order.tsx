@@ -7,6 +7,7 @@ import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
 import { Button, Card, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { OrderReviewCard } from './order-review'
 import { reorder } from './reorder'
 
 const ACTORS: Record<string, string> = { CUSTOMER: 'Bạn', SHOP: 'Quán', SYSTEM: 'Hệ thống', ADMIN: 'Quản trị' }
@@ -101,6 +102,8 @@ export default function CustomerOrderScreen() {
             <Button title="Đặt lại đơn này" size="lg" fullWidth loading={reordering} onPress={() => void startReorder()} />
           ) : null}
           <Notice tone="error" message={notice} />
+
+          {status === 'DELIVERED' ? <OrderReviewCard orderId={data.id!} reviewed={!!data.review} /> : null}
 
           <Card>
             <Text variant="titleSm">Tiến trình</Text>

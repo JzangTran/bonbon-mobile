@@ -44,6 +44,7 @@ function SellerTabs() {
       {/* Screens on top of their tabs, not tabs of their own. */}
       <Tabs.Screen name="notifications" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="order-detail" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="reviews" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="dish-form" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
       <Tabs.Screen name="shop" options={{ title: 'Cửa hàng', tabBarIcon: ({ color }) => <Store color={color} size={22} /> }} />

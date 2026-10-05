@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+    "/api/orders/{orderId}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem đánh giá của tôi
+         * @description Gồm hạn sửa (`editableUntil`), phản hồi của quán nếu có, và nhãn `hidden` kèm `hiddenReason` nếu quản trị đã ẩn đánh giá (khách vẫn thấy đánh giá của mình).
+         *
+         *     **Cần đăng nhập**, quyền `review:create`.
+         */
+        get: operations["getMyOrderReview"];
+        /**
+         * Sửa đánh giá
+         * @description Trong 24 giờ kể từ lúc đăng. Đánh giá đã bị ẩn thì không sửa được.
+         *
+         *     **Cần đăng nhập**, quyền `review:create`.
+         */
+        put: operations["editMyOrderReview"];
+        /**
+         * Đánh giá đơn
+         * @description Chỉ đơn của chính khách và đã giao (`DELIVERED`), mỗi đơn một đánh giá. Số sao 1–5, nhận xét tối đa 1000 ký tự (có thể bỏ trống). Điểm trung bình của quán được cập nhật ngay.
+         *
+         *     **Cần đăng nhập**, quyền `review:create`.
+         */
+        post: operations["reviewOrder"];
+        /**
+         * Xoá đánh giá
+         * @description Trong 24 giờ kể từ lúc đăng; phản hồi của quán cũng mất theo. Đánh giá đã bị ẩn thì không xoá được. Sau khi xoá có thể đánh giá lại đơn.
+         *
+         *     **Cần đăng nhập**, quyền `review:create`.
+         */
+        delete: operations["deleteMyOrderReview"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/shop/steps/4": {
         parameters: {
             query?: never;
@@ -131,6 +171,40 @@ export interface paths {
         put: operations["setAcceptingOrders"];
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/reviews/{id}/response": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Sửa phản hồi
+         * @description Trong 24 giờ kể từ lúc đăng phản hồi. Phản hồi đã bị ẩn thì không sửa được.
+         *
+         *     **Cần đăng nhập**, quyền `review:respond`.
+         */
+        put: operations["editReviewReply"];
+        /**
+         * Phản hồi đánh giá
+         * @description Mỗi đánh giá một phản hồi, công khai dưới đánh giá và khách cũng thấy.
+         *
+         *     **Cần đăng nhập**, quyền `review:respond`.
+         */
+        post: operations["replyToReview"];
+        /**
+         * Xoá phản hồi
+         * @description Trong 24 giờ kể từ lúc đăng phản hồi; sau đó có thể phản hồi lại.
+         *
+         *     **Cần đăng nhập**, quyền `review:respond`.
+         */
+        delete: operations["deleteReviewReply"];
         options?: never;
         head?: never;
         patch?: never;
@@ -881,7 +955,7 @@ export interface paths {
         put?: never;
         /**
          * Đăng nhập bằng Google
-         * @description Gửi ID token của Google. Email chưa có tài khoản thì cần thêm vai trò và văn bản đã đồng ý để tạo tài khoản. Email đã có tài khoản bằng mật khẩu thì cần mật khẩu đó để liên kết (không bao giờ liên kết ngầm).
+         * @description Gửi ID token của Google. Email chưa có tài khoản thì cần thêm vai trò và văn bản đã đồng ý để tạo tài khoản. Email đã có tài khoản bằng mật khẩu và đã xác thực thì cần mật khẩu đó để liên kết (không bao giờ liên kết ngầm). Email có tài khoản nhưng chưa từng xác thực thì Google được coi là bằng chứng sở hữu: email thành đã xác thực, mật khẩu cũ bị xóa (có thể do người khác đặt trước), Google được liên kết và người dùng đăng nhập luôn; đặt lại mật khẩu bằng "Quên mật khẩu" nếu muốn dùng.
          *
          *     **Không cần đăng nhập.**
          */
@@ -908,6 +982,94 @@ export interface paths {
          *     **Không cần đăng nhập.**
          */
         post: operations["forgotPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/reviews/{id}/unhide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Khôi phục đánh giá
+         * @description Đánh giá tính lại vào điểm trung bình của quán.
+         *
+         *     **Cần đăng nhập**, quyền `review:moderate`.
+         */
+        post: operations["unhideReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/reviews/{id}/hide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ẩn đánh giá
+         * @description Cần lý do. Đánh giá bị ẩn không còn tính vào điểm trung bình và số đánh giá của quán, và không hiện công khai; khách vẫn thấy đánh giá của mình kèm nhãn đã bị ẩn.
+         *
+         *     **Cần đăng nhập**, quyền `review:moderate`.
+         */
+        post: operations["hideReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/review-responses/{id}/unhide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Khôi phục phản hồi của quán
+         * @description `id` là id của phản hồi (`reply.id`).
+         *
+         *     **Cần đăng nhập**, quyền `review:moderate`.
+         */
+        post: operations["unhideReviewReply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/review-responses/{id}/hide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ẩn phản hồi của quán
+         * @description Cần lý do. Phản hồi bị ẩn không hiện công khai và khách không thấy; quán vẫn thấy phản hồi của mình kèm nhãn đã bị ẩn. `id` là id của phản hồi (`reply.id`), không phải của đánh giá.
+         *
+         *     **Cần đăng nhập**, quyền `review:moderate`.
+         */
+        post: operations["hideReviewReply"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1358,6 +1520,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/vendors/{id}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Đánh giá của quán
+         * @description Công khai, mới nhất trước. Chỉ gồm đánh giá đang hiển thị (đánh giá bị quản trị ẩn không có ở đây) kèm phản hồi của quán nếu có. Kèm điểm trung bình (một chữ số thập phân) và số đánh giá. Tên người đánh giá được rút gọn, không có thông tin đơn.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["listShopReviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/vendors/{id}/menu": {
         parameters: {
             query?: never;
@@ -1416,6 +1600,28 @@ export interface paths {
          *     **Cần đăng nhập.**
          */
         get: operations["listNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Đánh giá của quán
+         * @description Mới nhất trước. `unreplied=true` chỉ lấy đánh giá chưa phản hồi. Đánh giá bị quản trị ẩn không hiện. Phản hồi của quán có `editableUntil` và nhãn `hidden` nếu bị ẩn.
+         *
+         *     **Cần đăng nhập**, quyền `review:respond`.
+         */
+        get: operations["listReviewsOfMyShop"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1578,6 +1784,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách đánh giá
+         * @description Mới nhất trước, gồm cả đánh giá đã ẩn (`hidden`). Lọc theo quán (`vendorId`), trạng thái ẩn (`hidden`) và số sao tối đa (`maxRating`, để tìm đánh giá thấp). Mỗi đánh giá kèm phản hồi của quán, kể cả khi phản hồi đang bị ẩn.
+         *
+         *     **Cần đăng nhập**, quyền `review:moderate`.
+         */
+        get: operations["listReviewsForModeration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/merchant-approval/requests": {
         parameters: {
             query?: never;
@@ -1687,6 +1915,96 @@ export interface components {
             }[];
         } & {
             [key: string]: unknown;
+        };
+        ReviewRequest: {
+            /**
+             * Format: int32
+             * @description Số sao, 1–5.
+             * @example 5
+             */
+            rating?: number;
+            /** @description Nhận xét, tối đa 1000 ký tự; có thể bỏ trống. */
+            comment?: string;
+        };
+        /** @description Một đánh giá. Các trường không thuộc người xem sẽ vắng mặt. */
+        Review: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /**
+             * Format: uuid
+             * @description Đơn được đánh giá (khách, quán, quản trị; không có ở danh sách công khai).
+             */
+            orderId?: string;
+            /**
+             * Format: int64
+             * @description Mã đơn hiển thị (không có ở danh sách công khai).
+             */
+            orderNumber?: number;
+            /**
+             * Format: uuid
+             * @description Quán được đánh giá (khách và quản trị).
+             */
+            vendorId?: string;
+            /**
+             * Format: int32
+             * @description Số sao, 1–5.
+             */
+            rating?: number;
+            comment?: string;
+            /** @description Tên rút gọn của người đánh giá, ví dụ `An T.`. */
+            reviewerName?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            createdAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            updatedAt?: string;
+            /**
+             * Format: date-time
+             * @description Hạn cuối để khách sửa hoặc xoá (chỉ khách xem đánh giá của mình).
+             */
+            editableUntil?: string;
+            /** @description Đánh giá đang bị quản trị ẩn (khách và quản trị). */
+            hidden?: boolean;
+            /** @description Lý do ẩn (khách và quản trị). */
+            hiddenReason?: string;
+            /** @description Phản hồi của quán, nếu có và đang hiển thị với người xem. */
+            reply?: components["schemas"]["ReviewReply"];
+        };
+        /** @description Phản hồi của quán cho một đánh giá. */
+        ReviewReply: {
+            /**
+             * Format: uuid
+             * @description Không có ở danh sách công khai.
+             */
+            id?: string;
+            text?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            createdAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            updatedAt?: string;
+            /**
+             * Format: date-time
+             * @description Hạn cuối để quán sửa hoặc xoá (chỉ quán xem phản hồi của mình).
+             */
+            editableUntil?: string;
+            /** @description Phản hồi đang bị quản trị ẩn (quán và quản trị). */
+            hidden?: boolean;
+            /** @description Lý do ẩn (quán và quản trị). */
+            hiddenReason?: string;
         };
         ShopApplicationStep4Request: {
             /** @enum {string} */
@@ -1865,6 +2183,10 @@ export interface components {
         AcceptingOrdersRequest: {
             accepting: boolean;
         };
+        ReviewReplyRequest: {
+            /** @description Nội dung phản hồi, tối đa 1000 ký tự. */
+            text: string;
+        };
         OptionGroupRequest: {
             name: string;
             /** Format: int32 */
@@ -2042,6 +2364,8 @@ export interface components {
              */
             placedAt?: string;
             timeline?: components["schemas"]["OrderStep"][];
+            /** @description Đánh giá của khách cho đơn này; vắng mặt khi chưa đánh giá. */
+            review?: components["schemas"]["OrderReviewed"];
         };
         OrderLine: {
             /**
@@ -2073,6 +2397,16 @@ export interface components {
              * @description Số tiền, số nguyên VND (không có phần thập phân).
              */
             priceDelta?: number;
+        };
+        OrderReviewed: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** Format: int32 */
+            rating?: number;
+            hidden?: boolean;
         };
         OrderShop: {
             /**
@@ -2328,6 +2662,10 @@ export interface components {
             password?: string;
             captchaToken?: string;
         };
+        ReviewModerationRequest: {
+            /** @description Lý do ẩn, bắt buộc (ghi vào nhật ký kiểm toán). */
+            reason: string;
+        };
         ShopRejectRequest: {
             reason: string;
         };
@@ -2561,6 +2899,10 @@ export interface components {
              * @description Số tiền, số nguyên VND (không có phần thập phân).
              */
             minOrderValue?: number;
+            /** Format: double */
+            ratingAverage?: number;
+            /** Format: int32 */
+            ratingCount?: number;
         };
         VendorPage: {
             items?: components["schemas"]["Shop"][];
@@ -2570,6 +2912,25 @@ export interface components {
             size?: number;
             /** Format: int32 */
             total?: number;
+        };
+        ReviewPage: {
+            items?: components["schemas"]["Review"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+            /**
+             * Format: double
+             * @description Điểm trung bình một chữ số thập phân (chỉ ở danh sách công khai của quán).
+             */
+            ratingAverage?: number;
+            /**
+             * Format: int32
+             * @description Số đánh giá đang hiển thị (chỉ ở danh sách công khai của quán).
+             */
+            ratingCount?: number;
         };
         Item: {
             /**
@@ -2911,6 +3272,325 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getMyOrderReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi.
+             *     - `REVIEW_NOT_FOUND`: Đơn chưa có đánh giá.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    editMyOrderReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi.
+             *     - `REVIEW_NOT_FOUND`: Đơn chưa có đánh giá.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `REVIEW_LOCKED`: Đã quá 24 giờ kể từ lúc đăng.
+             *     - `REVIEW_HIDDEN`: Đánh giá đã bị quản trị ẩn.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    reviewOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã tạo đánh giá. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `REVIEW_NOT_ALLOWED`: Đơn chưa giao xong nên chưa đánh giá được.
+             *     - `ALREADY_REVIEWED`: Đơn này đã có đánh giá.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    deleteMyOrderReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Đã xoá. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi.
+             *     - `REVIEW_NOT_FOUND`: Đơn chưa có đánh giá.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `REVIEW_LOCKED`: Đã quá 24 giờ kể từ lúc đăng.
+             *     - `REVIEW_HIDDEN`: Đánh giá đã bị quản trị ẩn.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     saveIdentity: {
         parameters: {
             query?: never;
@@ -3336,6 +4016,257 @@ export interface operations {
                 };
             };
             /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    editReviewReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewReplyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:respond`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `REVIEW_NOT_FOUND`: Đánh giá không tồn tại, không phải của quán này hoặc đang bị ẩn.
+             *     - `RESPONSE_NOT_FOUND`: Đánh giá chưa có phản hồi.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `RESPONSE_LOCKED`: Đã quá 24 giờ kể từ lúc đăng phản hồi.
+             *     - `RESPONSE_HIDDEN`: Phản hồi đã bị quản trị ẩn.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    replyToReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewReplyRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã đăng phản hồi. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:respond`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REVIEW_NOT_FOUND`: Đánh giá không tồn tại, không phải của quán này hoặc đang bị ẩn. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `ALREADY_RESPONDED`: Đánh giá đã có phản hồi; dùng sửa phản hồi.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    deleteReviewReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Đã xoá. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:respond`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `REVIEW_NOT_FOUND`: Đánh giá không tồn tại, không phải của quán này hoặc đang bị ẩn.
+             *     - `RESPONSE_NOT_FOUND`: Đánh giá chưa có phản hồi.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `RESPONSE_LOCKED`: Đã quá 24 giờ kể từ lúc đăng phản hồi.
+             *     - `RESPONSE_HIDDEN`: Phản hồi đã bị quản trị ẩn.
+             */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -5977,7 +6908,7 @@ export interface operations {
             };
             /**
              * @description - `OAUTH_SIGNUP_REQUIRED`: Chưa có tài khoản cho email này: chọn vai trò và đồng ý điều khoản rồi gửi lại; có `email`, `name`.
-             *     - `ACCOUNT_EXISTS_LINK_REQUIRED`: Email đã có tài khoản: `linkMethod` cho biết cần làm gì (`PASSWORD`, `SIGN_IN_FIRST`, `VERIFY_EMAIL_FIRST`).
+             *     - `ACCOUNT_EXISTS_LINK_REQUIRED`: Email đã có tài khoản: `linkMethod` cho biết cần làm gì (`PASSWORD`: nhập mật khẩu rồi gửi lại; `SIGN_IN_FIRST`: đăng nhập bằng phương thức cũ rồi liên kết).
              *     - `EMAIL_ALREADY_REGISTERED`: Email vừa được đăng ký bởi yêu cầu khác; thử lại.
              *     - `LEGAL_DOCUMENTS_CHANGED`: Văn bản vừa có phiên bản mới; tải lại và đồng ý lại.
              */
@@ -6033,6 +6964,318 @@ export interface operations {
             };
             /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    unhideReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REVIEW_NOT_FOUND`: Không có đánh giá với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NOT_HIDDEN`: Đánh giá không bị ẩn. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    hideReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewModerationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REVIEW_NOT_FOUND`: Không có đánh giá với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ALREADY_HIDDEN`: Đánh giá đã bị ẩn. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    unhideReviewReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `RESPONSE_NOT_FOUND`: Không có phản hồi với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NOT_HIDDEN`: Phản hồi không bị ẩn. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    hideReviewReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewModerationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `RESPONSE_NOT_FOUND`: Không có phản hồi với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ALREADY_HIDDEN`: Phản hồi đã bị ẩn. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7854,6 +9097,61 @@ export interface operations {
             };
         };
     };
+    listShopReviews: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Quán không tồn tại hoặc chưa được duyệt. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getShopMenu: {
         parameters: {
             query?: {
@@ -8012,6 +9310,78 @@ export interface operations {
             };
             /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listReviewsOfMyShop: {
+        parameters: {
+            query?: {
+                unreplied?: boolean;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:respond`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8400,6 +9770,71 @@ export interface operations {
              *     - `INVALID_OR_EXPIRED_TOKEN`: Liên kết sai hoặc đã hết hạn; gửi lại thư xác thực.
              */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listReviewsForModeration: {
+        parameters: {
+            query?: {
+                vendorId?: string;
+                hidden?: boolean;
+                maxRating?: number;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:moderate`. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

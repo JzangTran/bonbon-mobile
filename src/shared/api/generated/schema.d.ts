@@ -196,6 +196,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/push-devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/push-devices/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list"];
+        put?: never;
+        post: operations["place"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/received": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["received"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/ack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["acknowledge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/ack-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["acknowledgeAll"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/shop/submit": {
         parameters: {
             query?: never;
@@ -228,6 +340,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/orders/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["status"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/orders/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/orders/{id}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/orders/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["cancel_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/option-groups": {
         parameters: {
             query?: never;
@@ -235,7 +411,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list"];
+        get: operations["list_1"];
         put?: never;
         post: operations["create"];
         delete?: never;
@@ -365,7 +541,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["register"];
+        post: operations["register_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -477,7 +653,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["reject"];
+        post: operations["reject_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -587,7 +763,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_1"];
+        get: operations["list_2"];
         put?: never;
         post: operations["create_3"];
         delete?: never;
@@ -740,6 +916,22 @@ export interface paths {
         patch: operations["makeDefault"];
         trace?: never;
     };
+    "/scalar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["page"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/vendors": {
         parameters: {
             query?: never;
@@ -772,7 +964,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/merchant/menu": {
+    "/api/orders/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -780,6 +972,70 @@ export interface paths {
             cookie?: never;
         };
         get: operations["get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_3"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_4"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/menu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1125,6 +1381,169 @@ export interface components {
         DeliveryRadiusCapSetting: {
             maxRadiusKm: number;
         };
+        PushDeviceRequest: {
+            token: string;
+            platform: string;
+            appVersion?: string;
+        };
+        PushDeviceRevokeRequest: {
+            token: string;
+        };
+        PlaceOrderLine: {
+            /** Format: uuid */
+            menuItemId: string;
+            /** Format: int32 */
+            quantity: number;
+            optionIds?: string[];
+            note?: string;
+        };
+        PlaceOrderRequest: {
+            /** Format: uuid */
+            vendorId: string;
+            /** Format: uuid */
+            addressId: string;
+            paymentMethod: string;
+            note?: string;
+            items: components["schemas"]["PlaceOrderLine"][];
+        };
+        OrderDelivery: {
+            name?: string;
+            phone?: string;
+            address?: string;
+            note?: string;
+        };
+        OrderDetail: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int64 */
+            number?: number;
+            /** @enum {string} */
+            status?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            paymentMethod?: string;
+            paymentStatus?: string;
+            shop?: components["schemas"]["OrderShop"];
+            delivery?: components["schemas"]["OrderDelivery"];
+            items?: components["schemas"]["OrderLine"][];
+            totals?: components["schemas"]["OrderTotals"];
+            /** Format: date-time */
+            placedAt?: string;
+            timeline?: components["schemas"]["OrderStep"][];
+        };
+        OrderLine: {
+            /** Format: uuid */
+            menuItemId?: string;
+            name?: string;
+            /** Format: int32 */
+            quantity?: number;
+            /** Format: int32 */
+            unitPrice?: number;
+            /** Format: int32 */
+            lineTotal?: number;
+            note?: string;
+            options?: components["schemas"]["OrderLineOption"][];
+        };
+        OrderLineOption: {
+            group?: string;
+            name?: string;
+            /** Format: int32 */
+            priceDelta?: number;
+        };
+        OrderShop: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+        };
+        OrderStep: {
+            /** @enum {string} */
+            from?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            /** @enum {string} */
+            to?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            by?: string;
+            reason?: string;
+            /** Format: date-time */
+            at?: string;
+        };
+        OrderTotals: {
+            /** Format: int32 */
+            itemsTotal?: number;
+            /** Format: int32 */
+            discount?: number;
+            /** Format: int32 */
+            deliveryFee?: number;
+            /** Format: int32 */
+            grandTotal?: number;
+        };
+        CancelOrderRequest: {
+            reason?: string;
+        };
+        OrderStepRequest: {
+            /** @enum {string} */
+            to: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+        };
+        Line: {
+            name?: string;
+            /** Format: int32 */
+            quantity?: number;
+            /** Format: int32 */
+            unitPrice?: number;
+            /** Format: int32 */
+            lineTotal?: number;
+            note?: string;
+            options?: components["schemas"]["LineOption"][];
+        };
+        LineOption: {
+            group?: string;
+            name?: string;
+            /** Format: int32 */
+            priceDelta?: number;
+        };
+        ShopOrderDetail: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int64 */
+            number?: number;
+            /** @enum {string} */
+            status?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            paymentMethod?: string;
+            paymentStatus?: string;
+            customerName?: string;
+            customerPhone?: string;
+            deliveryAddress?: string;
+            note?: string;
+            contactMasked?: boolean;
+            items?: components["schemas"]["Line"][];
+            totals?: components["schemas"]["Totals"];
+            /** Format: date-time */
+            placedAt?: string;
+            /** Format: date-time */
+            responseDeadline?: string;
+            /** Format: date-time */
+            handoverDeadline?: string;
+            timeline?: components["schemas"]["Step"][];
+        };
+        Step: {
+            /** @enum {string} */
+            from?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            /** @enum {string} */
+            to?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            by?: string;
+            reason?: string;
+            /** Format: date-time */
+            at?: string;
+        };
+        Totals: {
+            /** Format: int32 */
+            itemsTotal?: number;
+            /** Format: int32 */
+            discount?: number;
+            /** Format: int32 */
+            deliveryFee?: number;
+            /** Format: int32 */
+            grandTotal?: number;
+        };
+        OrderReasonRequest: {
+            reason?: string;
+        };
         MenuSectionRequest: {
             name: string;
         };
@@ -1444,6 +1863,86 @@ export interface components {
         ShopMenu: {
             shop?: components["schemas"]["Shop"];
             sections?: components["schemas"]["Section"][];
+        };
+        OrderPage: {
+            items?: components["schemas"]["OrderSummary"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        OrderSummary: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int64 */
+            number?: number;
+            /** @enum {string} */
+            status?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            shopName?: string;
+            /** Format: int32 */
+            grandTotal?: number;
+            /** Format: int32 */
+            itemCount?: number;
+            itemsPreview?: string;
+            /** Format: date-time */
+            placedAt?: string;
+        };
+        NotificationItem: {
+            /** Format: uuid */
+            id?: string;
+            type?: string;
+            title?: string;
+            body?: string;
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: int64 */
+            orderNumber?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            acknowledgedAt?: string;
+        };
+        NotificationPage: {
+            items?: components["schemas"]["NotificationItem"][];
+            /** Format: int64 */
+            unread?: number;
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        ShopOrderPage: {
+            items?: components["schemas"]["ShopOrderSummary"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        ShopOrderSummary: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int64 */
+            number?: number;
+            /** @enum {string} */
+            status?: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
+            customerName?: string;
+            /** Format: int32 */
+            grandTotal?: number;
+            /** Format: int32 */
+            itemCount?: number;
+            itemsPreview?: string;
+            /** Format: date-time */
+            placedAt?: string;
+            /** Format: date-time */
+            responseDeadline?: string;
+            /** Format: date-time */
+            handoverDeadline?: string;
         };
         LegalDocumentView: {
             /** Format: uuid */
@@ -1928,6 +2427,186 @@ export interface operations {
             };
         };
     };
+    register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushDeviceRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushDeviceRevokeRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: {
+                status?: ("PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED")[];
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OrderPage"];
+                };
+            };
+        };
+    };
+    place: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaceOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OrderDetail"];
+                };
+            };
+        };
+    };
+    received: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OrderDetail"];
+                };
+            };
+        };
+    };
+    cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CancelOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OrderDetail"];
+                };
+            };
+        };
+    };
+    acknowledge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acknowledgeAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     submit: {
         parameters: {
             query?: never;
@@ -1977,7 +2656,107 @@ export interface operations {
             };
         };
     };
-    list: {
+    status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderStepRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+        };
+    };
+    reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+        };
+    };
+    confirm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+        };
+    };
+    cancel_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+        };
+    };
+    list_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -2185,7 +2964,7 @@ export interface operations {
             };
         };
     };
-    register: {
+    register_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -2349,7 +3128,7 @@ export interface operations {
             };
         };
     };
-    reject: {
+    reject_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -2537,7 +3316,7 @@ export interface operations {
             };
         };
     };
-    list_1: {
+    list_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -2931,6 +3710,26 @@ export interface operations {
             };
         };
     };
+    page: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                };
+            };
+        };
+    };
     inArea: {
         parameters: {
             query: {
@@ -2985,6 +3784,101 @@ export interface operations {
         };
     };
     get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OrderDetail"];
+                };
+            };
+        };
+    };
+    list_3: {
+        parameters: {
+            query?: {
+                unread?: boolean;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NotificationPage"];
+                };
+            };
+        };
+    };
+    list_4: {
+        parameters: {
+            query?: {
+                status?: ("PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED")[];
+                from?: string;
+                to?: string;
+                sort?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopOrderPage"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+        };
+    };
+    get_2: {
         parameters: {
             query?: never;
             header?: never;

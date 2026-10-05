@@ -62,10 +62,10 @@ export default function CartScreen() {
         },
       },
       {
-        onSuccess: () => {
+        onSuccess: (order) => {
           cart.clear()
           toast.show('Đã đặt đơn. Quán sẽ xác nhận trong ít phút.')
-          router.replace('/customer/orders')
+          router.replace({ pathname: '/customer/order', params: { id: order.id } })
         },
         // The cart or the shop may change before the next try, and then it is a different order.
         onError: () => setKey(newIdempotencyKey()),

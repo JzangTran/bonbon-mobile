@@ -56,6 +56,8 @@ type CartApi = CartState & {
   add: (shop: CartShop, line: Omit<CartLine, 'key'>) => 'added' | 'other-shop'
   /** Empties the cart first, then adds: what "start a new cart" does after the customer agreed. */
   replaceWith: (shop: CartShop, line: Omit<CartLine, 'key'>) => void
+  /** Replaces the whole cart with these lines of one shop (reorder). */
+  replaceAll: (shop: CartShop, lines: Omit<CartLine, 'key'>[]) => void
   setQuantity: (key: string, quantity: number) => void
   clear: () => void
 }
@@ -105,6 +107,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [state.shop, state.lines.length],
   )
   const replaceWith = useCallback((shop: CartShop, line: Omit<CartLine, 'key'>) => setState(addTo(EMPTY, shop, line)), [])
+  const replaceAll = useCallback((shop: CartShop, lines: Omit<CartLine, 'key'>[]) => setState(lines.reduce((acc, l) => addTo(acc, shop, l), EMPTY)), [])
   const setQuantity = useCallback((key: string, quantity: number) => {
     setState((current) => {
       const lines = quantity <= 0 ? current.lines.filter((l) => l.key !== key) : current.lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(MAX_LINE_QUANTITY, quantity) } : l))
@@ -114,8 +117,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clear = useCallback(() => setState(EMPTY), [])
 
   const value = useMemo<CartApi>(
-    () => ({ ...state, ready, totals: cartTotals(state), add, replaceWith, setQuantity, clear }),
-    [state, ready, add, replaceWith, setQuantity, clear],
+    () => ({ ...state, ready, totals: cartTotals(state), add, replaceWith, replaceAll, setQuantity, clear }),
+    [state, ready, add, replaceWith, replaceAll, setQuantity, clear],
   )
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useCart } from '@/entities/cart'
 import { OrderStatusBadge, useCustomerLive, useCustomerOrderAction, useMyOrder, type OrderStatus } from '@/entities/order'
@@ -7,6 +7,7 @@ import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
 import { Button, Card, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { PaymentCard, RefundCard } from './order-payment'
 import { OrderReviewCard } from './order-review'
 import { reorder } from './reorder'
 
@@ -23,7 +24,7 @@ const STEP_LABELS: Record<string, string> = {
   CANCELLED: 'Đã huỷ',
   NOT_DELIVERED: 'Giao không thành công',
 }
-const CANCELLABLE: OrderStatus[] = ['PLACED', 'CONFIRMED']
+const CANCELLABLE: OrderStatus[] = ['PENDING_PAYMENT', 'PLACED', 'CONFIRMED']
 const REORDERABLE: OrderStatus[] = ['DELIVERED', 'REJECTED', 'CANCELLED']
 
 /** Follow one order (track-order.md): live status, timeline, cancel, confirm received, and reorder from a past one. */
@@ -40,6 +41,12 @@ export default function CustomerOrderScreen() {
   const [notice, setNotice] = useState<string | null>(null)
   const data = order.data
   const status = data?.status as OrderStatus | undefined
+  const previous = useRef<OrderStatus | undefined>(undefined)
+  // The server has the payment: that, and only that, is the proof (the return from MoMo is not).
+  useEffect(() => {
+    if (previous.current === 'PENDING_PAYMENT' && status === 'PLACED') toast.show('Đã thanh toán. Quán sẽ xác nhận đơn trong ít phút.')
+    previous.current = status
+  }, [status, toast])
 
   const askCancel = async () => {
     if (await confirm('Huỷ đơn này?', 'Bạn có thể huỷ miễn phí cho đến khi quán bắt đầu chuẩn bị.', 'Huỷ đơn')) {
@@ -93,7 +100,7 @@ export default function CustomerOrderScreen() {
           </View>
 
           {CANCELLABLE.includes(status) ? (
-            <Button title="Huỷ đơn" variant="outline" size="lg" fullWidth loading={action.isPending} onPress={() => void askCancel()} />
+            <Button title={status === 'PENDING_PAYMENT' ? 'Huỷ đơn chưa thanh toán' : 'Huỷ đơn'} variant="outline" size="lg" fullWidth loading={action.isPending} onPress={() => void askCancel()} />
           ) : null}
           {status === 'OUT_FOR_DELIVERY' ? (
             <Button title="Đã nhận được món" size="lg" fullWidth loading={action.isPending} onPress={() => action.mutate('received', { onSuccess: () => toast.show('Cảm ơn bạn! Chúc bạn ngon miệng.') })} />
@@ -102,6 +109,9 @@ export default function CustomerOrderScreen() {
             <Button title="Đặt lại đơn này" size="lg" fullWidth loading={reordering} onPress={() => void startReorder()} />
           ) : null}
           <Notice tone="error" message={notice} />
+
+          {status === 'PENDING_PAYMENT' ? <PaymentCard orderId={data.id!} payment={data.payment} /> : null}
+          {data.refund ? <RefundCard orderId={data.id!} refund={data.refund} /> : null}
 
           {status === 'DELIVERED' ? <OrderReviewCard orderId={data.id!} reviewed={!!data.review} /> : null}
 
@@ -156,7 +166,7 @@ export default function CustomerOrderScreen() {
                 Tổng cộng {formatVnd(data.totals?.grandTotal)}
               </Text>
               <Text variant="bodySm" muted>
-                {data.paymentMethod === 'COD' ? 'Tiền mặt khi nhận hàng' : 'Thanh toán online'}
+                {data.paymentMethod === 'COD' ? 'Tiền mặt khi nhận hàng' : 'Thanh toán MoMo'}
                 {data.paymentStatus === 'PAID' ? ' · đã thanh toán' : ''}
               </Text>
             </View>

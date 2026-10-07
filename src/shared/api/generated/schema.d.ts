@@ -44,6 +44,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders/{orderId}/refund-destination": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Nhập tài khoản nhận hoàn tiền
+         * @description Khi hoàn tiền qua MoMo không thực hiện được, bonbon hoàn bằng chuyển khoản và cần số tài khoản của khách (`refund.needsDestination` trên đơn). Tài khoản chỉ lưu cho khoản hoàn này, số đầy đủ chỉ quản trị viên xử lý hoàn tiền xem được. Sau lần chuyển khoản thất bại, nhập lại được tài khoản khác.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        put: operations["setRefundDestination"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/shop/steps/4": {
         parameters: {
             query?: never;
@@ -404,6 +426,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/payments/momo/ipn": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Nhận thông báo thanh toán MoMo (IPN)
+         * @description MoMo gọi sau khi khách thanh toán. Máy chủ kiểm tra chữ ký HMAC-SHA256, mã đối tác và số tiền so với đơn của mình rồi mới ghi nhận; thông báo trùng không làm gì thêm. Thanh toán thành công thì đơn từ `PENDING_PAYMENT` sang `PLACED`; nếu đơn đã bị huỷ (thanh toán đến muộn) thì tạo yêu cầu hoàn tiền. Trả 204 trong 15 giây.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["receiveMomoIpn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/orders": {
         parameters: {
             query?: never;
@@ -421,7 +465,7 @@ export interface paths {
         put?: never;
         /**
          * Đặt đơn
-         * @description Hiện chỉ có thanh toán khi nhận hàng (`COD`). Không gửi giá: máy chủ tính lại toàn bộ (giá món, lựa chọn, phí giao, ngưỡng miễn phí) và chụp lại vào đơn. Header `Idempotency-Key` (8–100 ký tự) bắt buộc: cùng khoá luôn trả về cùng một đơn (201 lần đầu, 200 khi lặp lại), nên thử lại hay bấm hai lần không tạo đơn thứ hai. Lỗi theo từng món có thêm `menuItemId`.
+         * @description Thanh toán khi nhận hàng (`COD`) hoặc trực tuyến bằng MoMo (`ONLINE`, đơn từ 1.000 ₫ đến 50.000.000 ₫). Đơn `ONLINE` được tạo ở trạng thái `PENDING_PAYMENT` kèm `payment` (`deeplink`, `payUrl`, `qrCodeUrl`, `expiresAt`): mở `deeplink` để vào ứng dụng MoMo, hoặc `payUrl` khi chưa cài MoMo; quán chỉ thấy đơn sau khi đã thanh toán. Không gửi giá: máy chủ tính lại toàn bộ (giá món, lựa chọn, phí giao, ngưỡng miễn phí) và chụp lại vào đơn. Header `Idempotency-Key` (8–100 ký tự) bắt buộc: cùng khoá luôn trả về cùng một đơn (201 lần đầu, 200 khi lặp lại), nên thử lại hay bấm hai lần không tạo đơn thứ hai. Lỗi theo từng món có thêm `menuItemId`.
          *
          *     **Cần đăng nhập**, quyền `order:create`.
          */
@@ -454,6 +498,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders/{id}/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Thanh toán lại
+         * @description Tạo lần thanh toán MoMo mới cho đơn `ONLINE` còn chờ thanh toán (lần trước thất bại, hết hạn hoặc khách bỏ dở). Trả về đơn kèm `payment` mới. Chỉ trạng thái đơn từ máy chủ mới cho biết đã thanh toán, không tin việc quay lại từ MoMo.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        post: operations["retryOrderPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/orders/{id}/cancel": {
         parameters: {
             query?: never;
@@ -465,7 +531,7 @@ export interface paths {
         put?: never;
         /**
          * Huỷ đơn
-         * @description Miễn phí khi đơn còn `PLACED` hoặc `CONFIRMED`; quán đã bắt đầu chuẩn bị thì không huỷ được. Lý do không bắt buộc.
+         * @description Miễn phí khi đơn còn `PENDING_PAYMENT` (bỏ thanh toán), `PLACED` hoặc `CONFIRMED`; quán đã bắt đầu chuẩn bị thì không huỷ được. Lý do không bắt buộc.
          *
          *     **Cần đăng nhập**, quyền `order:cancel`.
          */
@@ -1070,6 +1136,50 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `review:moderate`.
          */
         post: operations["hideReviewReply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/refunds/{id}/fail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Báo chuyển khoản không thành công
+         * @description Tài khoản đóng hoặc sai số. Lý do được ghi lại, tài khoản đã nhập bị xoá và khách được yêu cầu nhập tài khoản khác (khoản hoàn quay về `NEEDS_DESTINATION`).
+         *
+         *     **Cần đăng nhập**, quyền `refund:process`.
+         */
+        post: operations["failRefund"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/refunds/{id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Xác nhận đã chuyển khoản
+         * @description Sau khi chuyển `amount` tới tài khoản khách nhập. Ghi mã giao dịch ngân hàng (mỗi mã chỉ dùng một lần) và tuỳ chọn thời điểm chuyển. Khách được báo đã hoàn tiền. Hai quản trị viên không thể cùng xác nhận một khoản.
+         *
+         *     **Cần đăng nhập**, quyền `refund:process`.
+         */
+        post: operations["completeRefund"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1806,6 +1916,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/refunds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Hàng đợi hoàn tiền
+         * @description Mặc định là hàng đợi chuyển khoản đang mở (`REQUESTED` chờ quản trị chuyển, `NEEDS_DESTINATION` chờ khách nhập tài khoản), cũ nhất trước. `status=COMPLETED` xem khoản đã xong, `ALL` xem mọi khoản hoàn kể cả hoàn qua MoMo (để đối soát cuối tháng). Mỗi dòng có số tiền, mã đơn, lý do, mã kết quả MoMo và tài khoản khách nhập (số đầy đủ).
+         *
+         *     **Cần đăng nhập**, quyền `refund:process`.
+         */
+        get: operations["listRefunds"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/merchant-approval/requests": {
         parameters: {
             query?: never;
@@ -2005,6 +2137,36 @@ export interface components {
             hidden?: boolean;
             /** @description Lý do ẩn (quán và quản trị). */
             hiddenReason?: string;
+        };
+        /** @description Tài khoản ngân hàng nhận hoàn tiền. Chỉ lưu trên khoản hoàn này, không lưu vào hồ sơ. */
+        RefundDestinationRequest: {
+            /**
+             * @description Tên ngân hàng.
+             * @example Vietcombank
+             */
+            bankName: string;
+            /**
+             * @description Số tài khoản, 6–20 chữ số.
+             * @example 0123456789
+             */
+            accountNumber: string;
+            /**
+             * @description Tên chủ tài khoản.
+             * @example NGUYEN VAN A
+             */
+            accountName: string;
+        };
+        RefundStatus: {
+            status?: string;
+            mode?: string;
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            amount?: number;
+            needsDestination?: boolean;
+            failureReason?: string;
+            destinationLast4?: string;
         };
         ShopApplicationStep4Request: {
             /** @enum {string} */
@@ -2310,6 +2472,34 @@ export interface components {
         PushDeviceRevokeRequest: {
             token: string;
         };
+        /** @description Thông báo thanh toán (IPN) do MoMo gửi từ máy chủ tới máy chủ, ký bằng HMAC-SHA256. */
+        MomoIpn: {
+            partnerCode?: string;
+            /** @description UUID. */
+            orderId?: string;
+            /** @description UUID. */
+            requestId?: string;
+            /**
+             * Format: int64
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            amount?: number;
+            orderInfo?: string;
+            orderType?: string;
+            /**
+             * Format: int64
+             * @description UUID.
+             */
+            transId?: number;
+            /** Format: int32 */
+            resultCode?: number;
+            message?: string;
+            payType?: string;
+            /** Format: int64 */
+            responseTime?: number;
+            extraData?: string;
+            signature?: string;
+        };
         PlaceOrderLine: {
             /**
              * Format: uuid
@@ -2364,6 +2554,10 @@ export interface components {
              */
             placedAt?: string;
             timeline?: components["schemas"]["OrderStep"][];
+            /** @description Thanh toán MoMo đang chờ của đơn `PENDING_PAYMENT`; vắng mặt ở các đơn khác. */
+            payment?: components["schemas"]["OrderPayment"];
+            /** @description Hoàn tiền của đơn online đã thanh toán rồi bị huỷ hoặc từ chối; vắng mặt ở các đơn khác. */
+            refund?: components["schemas"]["OrderRefund"];
             /** @description Đánh giá của khách cho đơn này; vắng mặt khi chưa đánh giá. */
             review?: components["schemas"]["OrderReviewed"];
         };
@@ -2397,6 +2591,39 @@ export interface components {
              * @description Số tiền, số nguyên VND (không có phần thập phân).
              */
             priceDelta?: number;
+        };
+        OrderPayment: {
+            /**
+             * Format: int32
+             * @description Số lần thử thanh toán, bắt đầu từ 1.
+             */
+            attempt?: number;
+            attemptStatus?: string;
+            /** @description Trang thanh toán MoMo (mở trong trình duyệt). */
+            payUrl?: string;
+            /** @description Liên kết mở thẳng ứng dụng MoMo. */
+            deeplink?: string;
+            /** @description Ảnh mã QR để quét bằng MoMo. */
+            qrCodeUrl?: string;
+            /**
+             * Format: date-time
+             * @description Hạn thanh toán; quá hạn đơn tự huỷ.
+             */
+            expiresAt?: string;
+        };
+        OrderRefund: {
+            status?: string;
+            mode?: string;
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            amount?: number;
+            needsDestination?: boolean;
+            /** @description Lý do chuyển khoản trước đó không thành công; khách cần nhập tài khoản khác. */
+            failureReason?: string;
+            /** @description 4 số cuối tài khoản nhận hoàn tiền đã nhập. */
+            destinationLast4?: string;
         };
         OrderReviewed: {
             /**
@@ -2665,6 +2892,82 @@ export interface components {
         ReviewModerationRequest: {
             /** @description Lý do ẩn, bắt buộc (ghi vào nhật ký kiểm toán). */
             reason: string;
+        };
+        FailRefundRequest: {
+            /** @description Vì sao chuyển không được (tài khoản đóng, sai số...). Khách sẽ được yêu cầu nhập tài khoản khác. */
+            reason: string;
+        };
+        /** @description Tài khoản khách nhập để nhận hoàn tiền; số đầy đủ chỉ người có quyền `refund:process` thấy. */
+        RefundDestination: {
+            bankName?: string;
+            accountNumber?: string;
+            accountName?: string;
+        };
+        RefundRow: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            orderId?: string;
+            /**
+             * Format: int64
+             * @description Mã đơn hiển thị.
+             */
+            orderNumber?: number;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            customerId?: string;
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            amount?: number;
+            /** @description ORDER_CLOSED (đơn đã trả tiền bị huỷ/từ chối), LATE_PAYMENT (tiền đến sau khi đơn đã đóng), CASE_UPHELD. */
+            reason?: string;
+            /** @description REQUESTED (chờ quản trị chuyển khoản), NEEDS_DESTINATION (chờ khách nhập tài khoản), PROCESSING, COMPLETED, FAILED. */
+            status?: string;
+            /** @description GATEWAY (hoàn qua MoMo) hoặc MANUAL (chuyển khoản). */
+            mode?: string;
+            /**
+             * Format: int32
+             * @description Mã kết quả MoMo cuối cùng, vì sao hoàn qua MoMo không được.
+             */
+            gatewayResultCode?: number;
+            destination?: components["schemas"]["RefundDestination"];
+            /** @description Lý do lần chuyển khoản trước thất bại. */
+            failureReason?: string;
+            bankReference?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            transferredAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            createdAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            completedAt?: string;
+        };
+        CompleteRefundRequest: {
+            /** @description Mã giao dịch của ngân hàng; mỗi mã chỉ dùng cho một khoản hoàn. */
+            bankReference: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm chuyển khoản; bỏ trống là lúc bấm xác nhận.
+             */
+            transferredAt?: string;
         };
         ShopRejectRequest: {
             reason: string;
@@ -3134,6 +3437,15 @@ export interface components {
             ward?: string;
             province?: string;
         };
+        RefundPage: {
+            items?: components["schemas"]["RefundRow"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
         ShopApplicationSummary: {
             /**
              * Format: uuid
@@ -3572,6 +3884,86 @@ export interface operations {
              * @description - `REVIEW_LOCKED`: Đã quá 24 giờ kể từ lúc đăng.
              *     - `REVIEW_HIDDEN`: Đánh giá đã bị quản trị ẩn.
              */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    setRefundDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefundDestinationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundStatus"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REFUND_NOT_FOUND`: Đơn không phải của người gọi hoặc không có khoản hoàn nào chờ tài khoản. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REFUND_NOT_ACCEPTING_DESTINATION`: Khoản hoàn này không cần nhập tài khoản (đã nhập, đang hoàn qua MoMo hoặc đã xong). */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -5075,6 +5467,61 @@ export interface operations {
             };
         };
     };
+    receiveMomoIpn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MomoIpn"];
+            };
+        };
+        responses: {
+            /** @description Đã nhận. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_SIGNATURE`: Chữ ký không khớp.
+             *     - `INVALID_PARTNER`: Mã đối tác không phải của bonbon.
+             *     - `PAYMENT_NOT_FOUND`: Không có giao dịch với `orderId` này.
+             *     - `AMOUNT_MISMATCH`: Số tiền trong thông báo khác số tiền của đơn.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PAYMENTS_NOT_CONFIGURED`: Máy chủ chưa có khoá MoMo. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listMyOrders: {
         parameters: {
             query?: {
@@ -5177,6 +5624,7 @@ export interface operations {
              *     - `OPTION_DUPLICATED`: Một lựa chọn bị chọn hai lần.
              *     - `OPTION_NOT_OFFERED`: Lựa chọn không thuộc món.
              *     - `BELOW_MIN_ORDER`: Chưa đạt đơn tối thiểu của quán; có `minOrderValue`.
+             *     - `ONLINE_AMOUNT_OUT_OF_RANGE`: Đơn `ONLINE` có tổng ngoài khoảng 1.000 ₫ đến 50.000.000 ₫.
              */
             400: {
                 headers: {
@@ -5303,6 +5751,86 @@ export interface operations {
             /**
              * @description - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
              *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    retryOrderPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `PAYMENT_NOT_PENDING`: Đơn không phải đơn `ONLINE` đang chờ thanh toán.
+             *     - `PAYMENT_EXPIRED`: Đã quá thời hạn thanh toán (15 phút); đơn sắp tự huỷ.
+             *     - `ALREADY_PAID`: Đơn đã được thanh toán.
              */
             409: {
                 headers: {
@@ -7275,6 +7803,169 @@ export interface operations {
                 };
             };
             /** @description - `ALREADY_HIDDEN`: Phản hồi đã bị ẩn. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    failRefund: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FailRefundRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRow"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `refund:process`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REFUND_NOT_FOUND`: Không có khoản hoàn với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REFUND_NOT_PAYABLE`: Khoản hoàn không ở trạng thái chờ chuyển khoản. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    completeRefund: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompleteRefundRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRow"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `refund:process`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REFUND_NOT_FOUND`: Không có khoản hoàn với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `REFUND_NOT_PAYABLE`: Khoản hoàn không ở trạng thái chờ chuyển khoản (đã xử lý, chờ khách nhập tài khoản hoặc đang hoàn qua MoMo).
+             *     - `DUPLICATE_BANK_REFERENCE`: Mã giao dịch này đã dùng cho một khoản hoàn khác (nghi nhập trùng).
+             */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -9834,6 +10525,70 @@ export interface operations {
                 };
             };
             /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `review:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listRefunds: {
+        parameters: {
+            query?: {
+                status?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_STATUS`: `status` không thuộc REQUESTED, NEEDS_DESTINATION, COMPLETED, ALL.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `refund:process`. */
             403: {
                 headers: {
                     [name: string]: unknown;

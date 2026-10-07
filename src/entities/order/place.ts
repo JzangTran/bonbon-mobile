@@ -10,7 +10,7 @@ export function newIdempotencyKey(): string {
   return `${Date.now().toString(36)}-${random()}-${random()}`
 }
 
-/** Places a cash-on-delivery order (place-order.md); the answer is the order as the server priced it. */
+/** Places an order, paid at the door or online with MoMo (place-order.md); the answer is the order as the server priced it. */
 export function usePlaceOrder() {
   const queryClient = useQueryClient()
   return useMutation({

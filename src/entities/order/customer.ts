@@ -30,7 +30,14 @@ export function useMyOrders(statuses: OrderStatus[], live: boolean, page = 0) {
 export function useMyOrder(id: string, live: boolean) {
   return useQuery({
     queryKey: [...MY_ORDERS_KEY, 'detail', id],
-    refetchInterval: live ? 60_000 : 10_000,
+    // While the customer is paying in MoMo the order is checked every few seconds: nothing else tells us it arrived.
+    refetchInterval: (query) => {
+      const order = query.state.data
+      if (order?.status === 'PENDING_PAYMENT') return 3_000
+      // A refund going back through MoMo is done within seconds or minutes; one waiting for an admin is not polled fast.
+      if (order?.refund?.mode === 'GATEWAY' && order.refund.status !== 'COMPLETED') return 5_000
+      return live ? 60_000 : 10_000
+    },
     queryFn: async () => {
       const { data, error } = await api.GET('/api/orders/{id}', { params: { path: { id } } })
       if (error || !data) throw error
@@ -39,7 +46,7 @@ export function useMyOrder(id: string, live: boolean) {
   })
 }
 
-/** Cancel (free until the shop starts preparing) or confirm received; the answer is the updated order. */
+/** Cancel (free until the shop starts preparing; an unpaid order can be abandoned) or confirm received; the answer is the updated order. */
 export function useCustomerOrderAction(id: string) {
   const queryClient = useQueryClient()
   const toast = useToast()

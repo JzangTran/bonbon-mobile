@@ -4,6 +4,7 @@ import { useLayoutEffect, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { useCart, type CartShop } from '@/entities/cart'
+import { RatingSummary } from '@/entities/review'
 import { deliveryText, formatDistance, useShopMenu, type ShopDish } from '@/entities/vendor'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
@@ -11,6 +12,7 @@ import { confirm } from '@/shared/lib/confirm'
 import { Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
 import { DishSheet } from './dish-sheet'
+import { ShopReviewsCard } from './shop-reviews'
 
 /** A shop's menu (view-vendor-menu.md): sections and dishes, sold-out dishes greyed out, options shown read-only. */
 export default function VendorScreen() {
@@ -67,6 +69,7 @@ export default function VendorScreen() {
               </Text>
             </View>
           </View>
+          <RatingSummary average={shop.ratingAverage} count={shop.ratingCount} />
           <Text variant="bodySm" muted>
             {shop.address}
           </Text>
@@ -98,6 +101,7 @@ export default function VendorScreen() {
           ))}
         </Card>
       ))}
+      {shop?.id ? <ShopReviewsCard vendorId={shop.id} /> : null}
       <DishSheet dish={dish} shop={cartShop} canOrder={Boolean(shop?.open) && !dish?.soldOut} onAdd={addToCart} onClose={() => setDish(null)} />
     </Screen>
     <CartBar />

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { useCategoryLeaves } from '@/entities/category'
+import { RatingSummary } from '@/entities/review'
 import { deliveryText, formatDistance, useShopsInArea, type Shop } from '@/entities/vendor'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
@@ -135,6 +136,7 @@ function ShopCard({ shop, onPress }: { shop: Shop; onPress: () => void }) {
               </Text>
             </View>
           </View>
+          <RatingSummary average={shop.ratingAverage} count={shop.ratingCount} />
           <Text variant="bodySm" muted numberOfLines={1}>
             {[distance, deliveryText(shop)].filter(Boolean).join(' · ')}
           </Text>

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { lineTotal, unitPrice, useCart } from '@/entities/cart'
-import { newIdempotencyKey, usePlaceOrder } from '@/entities/order'
+import { canPayOnline, newIdempotencyKey, openMomo, usePlaceOrder } from '@/entities/order'
 import { registerForPush } from '@/features/push'
 import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
@@ -12,7 +12,7 @@ import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touc
 
 /**
  * The cart and checkout (place-order.md): the customer reviews the lines, picks one of their addresses, adds a
- * delivery note and places a cash-on-delivery order. Prices shown here are a preview; the server prices the order.
+ * delivery note, chooses cash on delivery or MoMo and places the order. Prices shown here are a preview; the server prices the order.
  */
 export default function CartScreen() {
   const router = useRouter()
@@ -23,12 +23,16 @@ export default function CartScreen() {
   const place = usePlaceOrder()
   const [note, setNote] = useState('')
   const [chosenAddress, setChosenAddress] = useState<string | null>(null)
+  const [method, setMethod] = useState<'COD' | 'ONLINE'>('COD')
   // One key per checkout attempt: a retry after a timeout returns the same order instead of a second one.
   const [key, setKey] = useState(newIdempotencyKey)
 
   const list = addresses.data ?? []
   const address = list.find((a) => a.id === chosenAddress) ?? list.find((a) => a.isDefault) ?? list[0]
   const { totals, shop } = cart
+  // MoMo only takes 1.000 to 50.000.000 ₫; a total outside that is paid at the door.
+  const onlineAllowed = canPayOnline(totals.grandTotal)
+  const payMethod = method === 'ONLINE' && onlineAllowed ? 'ONLINE' : 'COD'
   const canOrder = Boolean(address) && totals.count > 0 && !totals.belowMinimum
 
   if (!cart.ready) return <Screen>{null}</Screen>
@@ -52,7 +56,7 @@ export default function CartScreen() {
         body: {
           vendorId: shop.id,
           addressId: address.id,
-          paymentMethod: 'COD',
+          paymentMethod: payMethod,
           ...(note.trim() ? { note: note.trim() } : {}),
           items: cart.lines.map((l) => ({
             menuItemId: l.menuItemId,
@@ -67,8 +71,10 @@ export default function CartScreen() {
           cart.clear()
           // After the first order the customer has a reason to hear about it: the moment to ask for permission.
           void registerForPush({ ask: true })
-          toast.show('Đã đặt đơn. Quán sẽ xác nhận trong ít phút.')
+          toast.show(payMethod === 'ONLINE' ? 'Đã tạo đơn. Hãy hoàn tất thanh toán MoMo.' : 'Đã đặt đơn. Quán sẽ xác nhận trong ít phút.')
           router.replace({ pathname: '/customer/order', params: { id: order.id } })
+          // The order screen waits for the server to confirm the payment; this only takes the customer to MoMo.
+          if (payMethod === 'ONLINE') void openMomo(order.payment)
         },
         // The cart or the shop may change before the next try, and then it is a different order.
         onError: () => setKey(newIdempotencyKey()),
@@ -150,7 +156,37 @@ export default function CartScreen() {
 
       <Card>
         <Text variant="titleSm">Thanh toán</Text>
-        <Text>Tiền mặt khi nhận hàng</Text>
+        {[
+          { id: 'COD' as const, title: 'Tiền mặt khi nhận hàng', hint: 'Trả cho quán khi món được giao tới.', enabled: true },
+          {
+            id: 'ONLINE' as const,
+            title: 'Ví MoMo',
+            hint: onlineAllowed ? 'Thanh toán ngay trong ứng dụng MoMo, quán chỉ thấy đơn sau khi bạn trả.' : 'MoMo chỉ nhận đơn từ 1.000 ₫ đến 50.000.000 ₫.',
+            enabled: onlineAllowed,
+          },
+        ].map((option) => {
+          const selected = payMethod === option.id
+          return (
+            <Pressable
+              key={option.id}
+              accessibilityRole="radio"
+              accessibilityState={{ selected, disabled: !option.enabled }}
+              disabled={!option.enabled}
+              onPress={() => setMethod(option.id)}
+              style={[
+                styles.address,
+                { borderColor: selected ? theme.primary : theme.borderInput, backgroundColor: selected ? theme.primarySubtle : theme.surface, opacity: option.enabled ? 1 : 0.5 },
+              ]}
+            >
+              <Text variant="bodySm" style={styles.bold}>
+                {option.title}
+              </Text>
+              <Text variant="caption" muted>
+                {option.hint}
+              </Text>
+            </Pressable>
+          )
+        })}
         <View style={styles.sum}>
           <Text muted>Tiền món</Text>
           <Text style={styles.money}>{formatVnd(totals.itemsTotal)}</Text>
@@ -169,7 +205,7 @@ export default function CartScreen() {
           <Notice tone="error" message={`Đơn tối thiểu của quán là ${formatVnd(shop.minOrderValue)}. Hãy thêm món.`} />
         ) : null}
         {place.isError ? <Notice tone="error" message={problemMessage(place.error)} /> : null}
-        <Button title={`Đặt đơn · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
+        <Button title={`${payMethod === 'ONLINE' ? 'Thanh toán MoMo' : 'Đặt đơn'} · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
       </Card>
     </Screen>
   )

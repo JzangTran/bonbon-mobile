@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import { Linking, StyleSheet, Switch, View } from 'react-native'
+import { useShopCases } from '@/entities/order-case'
 import { SHOP_QUERY_KEY, useShop } from '@/entities/shop'
 import { api, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
@@ -26,6 +27,7 @@ export default function SellerShopScreen() {
   const queryClient = useQueryClient()
   const router = useRouter()
   const shop = useShop()
+  const waiting = useShopCases('AWAITING_SHOP').data?.total ?? 0
   const data = shop.data
   const accepting = data?.acceptingOrders ?? false
   const toggle = useMutation({
@@ -96,6 +98,14 @@ export default function SellerShopScreen() {
         </Text>
         <Button title="Xem thống kê" variant="outline" onPress={() => router.push('/seller/statistics')} />
         <Button title="Xem thu nhập" variant="outline" onPress={() => router.push('/seller/earnings')} />
+      </Card>
+
+      <Card>
+        <Text variant="titleSm">Khiếu nại của khách</Text>
+        <Text variant="bodySm" muted>
+          Khách báo chưa nhận được hàng, thiếu món, sai món hoặc chất lượng. Bạn có 12 giờ để trả lời.
+        </Text>
+        <Button title={waiting > 0 ? `Xem khiếu nại (${waiting} chờ trả lời)` : 'Xem khiếu nại'} variant="outline" onPress={() => router.push('/seller/order-cases')} />
       </Card>
 
       <Card>

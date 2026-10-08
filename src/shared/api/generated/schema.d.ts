@@ -382,6 +382,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/settings/commission-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Đặt tỷ lệ hoa hồng mặc định
+         * @description Áp dụng cho đơn đặt sau thời điểm này, cho mọi món có ngành (và ngành cha của nó) không có tỷ lệ riêng. Đơn đã đặt giữ tỷ lệ cũ. Từ 0 đến 30, tối đa hai chữ số thập phân. Đặt lại đúng tỷ lệ hiện tại không tạo dòng lịch sử.
+         *
+         *     **Cần đăng nhập**, quyền `commission:write`.
+         */
+        put: operations["setDefaultCommissionRate"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/categories/{id}/commission-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Đặt tỷ lệ hoa hồng cho một ngành
+         * @description Ngành con chưa có tỷ lệ riêng sẽ kế thừa tỷ lệ này. Từ 0 đến 30. Đổi bằng màn sửa ngành cũng ghi vào cùng lịch sử.
+         *
+         *     **Cần đăng nhập**, quyền `commission:write`.
+         */
+        put: operations["setCategoryCommissionRate"];
+        post?: never;
+        /**
+         * Bỏ tỷ lệ riêng của một ngành
+         * @description Ngành quay lại kế thừa từ ngành cha gần nhất có tỷ lệ, rồi đến tỷ lệ mặc định.
+         *
+         *     **Cần đăng nhập**, quyền `commission:write`.
+         */
+        delete: operations["clearCategoryCommissionRate"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/push-devices": {
         parameters: {
             query?: never;
@@ -1054,6 +1104,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/settlement/vendors/{id}/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ghi nhận chi trả, thu hoặc điều chỉnh
+         * @description Sau khi chuyển tiền ngoài hệ thống, ghi lại vào sổ. `PAYOUT`: tiền chuyển cho quán, không được vượt số có thể chi trả; cần mã giao dịch ngân hàng; quán được báo. `COLLECTION`: tiền nhận từ quán đang nợ hoa hồng, không vượt số nợ; cần mã giao dịch. `ADJUSTMENT`: điều chỉnh có dấu và bắt buộc có lý do (cách sửa một bút toán sai là điều chỉnh ngược). Header `Idempotency-Key` (8–100 ký tự) chống bấm hai lần: cùng khoá trả lại đúng bút toán đầu (200), lần đầu là 201. Bút toán không sửa hay xoá được.
+         *
+         *     **Cần đăng nhập**, quyền `settlement:write`.
+         */
+        post: operations["recordSettlementEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/reviews/{id}/unhide": {
         parameters: {
             query?: never;
@@ -1718,6 +1790,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/stats/revenue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Doanh thu theo thời gian
+         * @description Chỉ tính đơn đã giao (`DELIVERED`), theo lúc giao, giờ Việt Nam; gồm cả phí giao, chưa trừ hoa hồng. `from`/`to` là ngày, gồm cả hai đầu (mặc định 7 ngày gần nhất); `granularity` là `day` (mặc định), `week` (từ thứ Hai) hoặc `month`. Trả mọi kỳ trong khoảng, kỳ không có đơn là 0, kèm tổng số đơn, doanh thu và giá trị đơn trung bình.
+         *
+         *     **Cần đăng nhập**, quyền `stats:read`.
+         */
+        get: operations["getRevenueStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/stats/best-selling-dishes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Món bán chạy
+         * @description Món xếp theo số phần đã bán của các đơn đã giao trong khoảng `from`–`to` (mặc định 30 ngày gần nhất), kèm tiền món của các phần đó. Dùng tên món lúc khách đặt nên món đã đổi tên hay xoá vẫn hiện.
+         *
+         *     **Cần đăng nhập**, quyền `stats:read`.
+         */
+        get: operations["getBestSellingDishes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/reviews": {
         parameters: {
             query?: never;
@@ -1806,6 +1922,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/earnings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Số dư của quán
+         * @description Số dư dương nghĩa là nền tảng đang giữ tiền khách trả online và nợ quán; số dư âm nghĩa là quán nợ nền tảng hoa hồng của các đơn thu tiền mặt. Kèm số có thể chi trả ngay, phần giữ cho khiếu nại đang mở (hiện luôn 0), số quán đang nợ và lần chi trả gần nhất.
+         *
+         *     **Cần đăng nhập**, quyền `earnings:read`.
+         */
+        get: operations["getMyEarnings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/earnings/statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sao kê theo kỳ
+         * @description Theo ngày, tuần (từ thứ Hai) hoặc tháng theo giờ Việt Nam, mặc định 90 ngày gần nhất theo tuần: số đơn, tiền món, giảm giá, phí giao, hoa hồng (gồm VAT, tách phần ròng và VAT), tiền đã nhận từ nền tảng, tiền đã trả nền tảng, điều chỉnh và số dư cuối kỳ. Dùng `from`/`to` của kỳ để xem các đơn đằng sau qua sổ cái.
+         *
+         *     **Cần đăng nhập**, quyền `earnings:read`.
+         */
+        get: operations["getMyEarningsStatements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/earnings/ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sổ cái của quán
+         * @description Mới nhất trước. Khoản thuộc đơn có mã đơn, tiền món, giảm giá, phí giao và hoa hồng của đơn đó; khoản chi trả và thu có mã giao dịch ngân hàng. `type` và khoảng `from`–`to` (ngày, gồm cả hai đầu, giờ Việt Nam) giúp xem các đơn đằng sau một kỳ trong sao kê. Không hiện quản trị viên nào đã ghi khoản, chỉ hiện `source`.
+         *
+         *     **Cần đăng nhập**, quyền `earnings:read`.
+         */
+        get: operations["getMyLedger"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/legal/documents/{type}": {
         parameters: {
             query?: never;
@@ -1886,6 +2068,94 @@ export interface paths {
          *     **Không cần đăng nhập.**
          */
         get: operations["verifyEmail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settlement/vendors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Số dư một quán
+         * @description Số dư, số có thể chi trả ngay, phần giữ cho khiếu nại đang mở (hiện luôn 0) và số quán đang nợ.
+         *
+         *     **Cần đăng nhập**, quyền `settlement:read`.
+         */
+        get: operations["getSettlementVendor"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settlement/vendors/{id}/statement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sao kê theo kỳ của một quán
+         * @description Theo ngày, tuần (từ thứ Hai) hoặc tháng theo giờ Việt Nam, mặc định 90 ngày gần nhất theo tuần: số đơn, giá trị món, giảm giá, phí giao, hoa hồng (đã gồm VAT, tách phần ròng và VAT), tiền đã chi trả, đã thu, điều chỉnh và số dư cuối kỳ. Kỳ không có bút toán được bỏ qua.
+         *
+         *     **Cần đăng nhập**, quyền `settlement:read`.
+         */
+        get: operations["getSettlementStatement"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settlement/vendors/{id}/ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sổ cái của một quán
+         * @description Mới nhất trước, kèm mã đơn hiển thị của khoản thuộc đơn và số dư hiện tại. `type` lọc theo loại bút toán.
+         *
+         *     **Cần đăng nhập**, quyền `settlement:read`.
+         */
+        get: operations["getSettlementLedger"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settlement/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tổng quan đối soát
+         * @description Số liệu toàn nền tảng (hoa hồng đã tính gồm phần ròng và VAT, tiền đang nợ các quán, tiền các quán nợ) và bảng các quán với số dư, số có thể chi trả, lần chi trả gần nhất, tỷ lệ hoa hồng thực tế và cờ `lowRate` khi thấp hơn hẳn mức chung (dấu hiệu xếp món vào ngành rẻ hơn). `status` lọc quán nền tảng nợ (`OWED_TO_SHOP`) hoặc nợ nền tảng (`OWED_BY_SHOP`).
+         *
+         *     **Cần đăng nhập**, quyền `settlement:read`.
+         */
+        get: operations["getSettlementOverview"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1996,6 +2266,50 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `merchant-approval:read-identity`.
          */
         get: operations["getShopIdentityDocuments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/commission-rates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tỷ lệ hoa hồng đang áp dụng
+         * @description Tỷ lệ mặc định, mức VAT nằm trong hoa hồng và từng ngành (cha trước con) với tỷ lệ riêng, tỷ lệ thực tế và nguồn của nó: `OWN`, `ANCESTOR` (kế thừa từ ngành cha, kèm tên) hoặc `DEFAULT`.
+         *
+         *     **Cần đăng nhập**, quyền `commission:write`.
+         */
+        get: operations["getCommissionRates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/commission-rates/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lịch sử đổi tỷ lệ hoa hồng
+         * @description Mới nhất trước: ai đổi, từ bao nhiêu sang bao nhiêu, từ lúc nào. Lọc theo `scope` (`DEFAULT` hoặc `CATEGORY`) hoặc `categoryId`. Dòng cũ không bao giờ bị sửa hay xoá.
+         *
+         *     **Cần đăng nhập**, quyền `commission:write`.
+         */
+        get: operations["getCommissionHistory"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2464,6 +2778,47 @@ export interface components {
         DeliveryRadiusCapSetting: {
             maxRadiusKm: number;
         };
+        CommissionRateRequest: {
+            /**
+             * @description Tỷ lệ hoa hồng đã gồm VAT, từ 0 đến 30, tối đa hai chữ số thập phân.
+             * @example 10.5
+             */
+            ratePercent: number;
+        };
+        CategoryCommissionRate: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            parentId?: string;
+            /** Format: int32 */
+            level?: number;
+            name?: string;
+            active?: boolean;
+            /** @description Tỷ lệ riêng của ngành; vắng mặt khi ngành kế thừa. */
+            ownRate?: number;
+            /** @description Tỷ lệ thực tế áp dụng cho món của ngành này. */
+            effectiveRate?: number;
+            /** @description OWN (tỷ lệ riêng), ANCESTOR (kế thừa từ ngành cha) hoặc DEFAULT (tỷ lệ mặc định). */
+            source?: string;
+            /** @description Tên ngành mà tỷ lệ được kế thừa từ đó; vắng mặt khi là OWN hoặc DEFAULT. */
+            sourceName?: string;
+        };
+        /** @description Tỷ lệ hoa hồng đang áp dụng: mặc định toàn nền tảng và từng ngành. */
+        CommissionRates: {
+            /** @description Tỷ lệ mặc định, dùng cho ngành không có tỷ lệ riêng và không có ngành cha nào có. */
+            defaultRate?: number;
+            /** @description Mức tối đa cho phép khi đặt tỷ lệ. */
+            maxRate?: number;
+            /** @description VAT (phần trăm) nằm trong tỷ lệ hoa hồng; phần hoa hồng ròng là tỷ lệ chia cho 1 + VAT. */
+            vatPercent?: number;
+            categories?: components["schemas"]["CategoryCommissionRate"][];
+        };
         PushDeviceRequest: {
             token: string;
             platform: string;
@@ -2888,6 +3243,58 @@ export interface components {
             marketingConsent?: boolean;
             password?: string;
             captchaToken?: string;
+        };
+        /** @description Một khoản tiền đã chuyển ngoài hệ thống, ghi lại vào sổ. */
+        RecordLedgerEntryRequest: {
+            /** @description PAYOUT (chuyển cho quán), COLLECTION (nhận từ quán nợ hoa hồng) hoặc ADJUSTMENT (điều chỉnh có lý do). */
+            type: string;
+            /**
+             * Format: int64
+             * @description Số tiền VND. PAYOUT và COLLECTION: số dương, hệ thống tự gán dấu. ADJUSTMENT: có dấu (dương cộng cho quán, âm trừ của quán), khác 0.
+             */
+            amount: number;
+            /** @description Mã giao dịch ngân hàng để đối chiếu sao kê; bắt buộc với PAYOUT và COLLECTION. */
+            reference?: string;
+            /** @description Ghi chú; ADJUSTMENT bắt buộc có lý do. */
+            note?: string;
+        };
+        LedgerEntry: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** @description ONLINE_EARNING, COD_COMMISSION, PAYOUT, COLLECTION, ADJUSTMENT, CASE_REFUND, CASE_COMMISSION_REVERSAL hoặc TAX_WITHHOLDING. */
+            type?: string;
+            /**
+             * Format: int32
+             * @description Có dấu: dương là nền tảng nợ quán thêm, âm là quán nợ thêm.
+             */
+            amount?: number;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            orderId?: string;
+            /**
+             * Format: int64
+             * @description Mã đơn hiển thị.
+             */
+            orderNumber?: number;
+            /** @description Mã giao dịch ngân hàng của khoản chi trả hoặc thu. */
+            reference?: string;
+            note?: string;
+            actedByType?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            actedById?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            createdAt?: string;
         };
         ReviewModerationRequest: {
             /** @description Lý do ẩn, bắt buộc (ghi vào nhật ký kiểm toán). */
@@ -3365,6 +3772,75 @@ export interface components {
             /** Format: int64 */
             total?: number;
         };
+        RevenueBucket: {
+            /**
+             * Format: date
+             * @description Ngày đầu kỳ.
+             */
+            start?: string;
+            /** Format: int64 */
+            orders?: number;
+            /** Format: int64 */
+            revenue?: number;
+            /** Format: int64 */
+            averageOrderValue?: number;
+        };
+        /** @description Doanh thu gộp của các đơn đã giao trong khoảng thời gian, theo từng ngày, tuần hoặc tháng. */
+        RevenueReport: {
+            /** Format: date */
+            from?: string;
+            /** Format: date */
+            to?: string;
+            /** @description day, week (bắt đầu từ thứ Hai) hoặc month, theo giờ Việt Nam. */
+            granularity?: string;
+            totals?: components["schemas"]["RevenueTotals"];
+            /** @description Mọi kỳ trong khoảng, kể cả kỳ không có đơn nào (0), cũ nhất trước: sẵn để vẽ biểu đồ. */
+            buckets?: components["schemas"]["RevenueBucket"][];
+        };
+        RevenueTotals: {
+            /**
+             * Format: int64
+             * @description Số đơn đã giao.
+             */
+            orders?: number;
+            /**
+             * Format: int64
+             * @description Tổng khách đã trả, gồm phí giao hàng, chưa trừ hoa hồng.
+             */
+            revenue?: number;
+            /**
+             * Format: int64
+             * @description Giá trị đơn trung bình; 0 khi chưa có đơn.
+             */
+            averageOrderValue?: number;
+        };
+        BestSellingDish: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            menuItemId?: string;
+            /** @description Tên món lúc khách đặt (món đã đổi tên hoặc xoá vẫn hiện tên cũ). */
+            name?: string;
+            /**
+             * Format: int64
+             * @description Số phần đã bán.
+             */
+            quantity?: number;
+            /**
+             * Format: int64
+             * @description Tiền món của các phần đó (gồm lựa chọn thêm, không gồm phí giao).
+             */
+            revenue?: number;
+        };
+        /** @description Món bán chạy: xếp theo số lượng bán của các đơn đã giao. */
+        TopDishes: {
+            /** Format: date */
+            from?: string;
+            /** Format: date */
+            to?: string;
+            items?: components["schemas"]["BestSellingDish"][];
+        };
         ShopOrderPage: {
             items?: components["schemas"]["ShopOrderSummary"][];
             /** Format: int32 */
@@ -3409,6 +3885,169 @@ export interface components {
              */
             handoverDeadline?: string;
         };
+        /** @description Số dư hiện tại của quán với nền tảng. */
+        EarningsSummary: {
+            /**
+             * Format: int64
+             * @description Dương: nền tảng nợ quán (tiền khách trả online chưa chuyển cho quán). Âm: quán nợ nền tảng (hoa hồng đơn tiền mặt).
+             */
+            balance?: number;
+            /**
+             * Format: int64
+             * @description Số tiền nền tảng có thể chuyển cho quán ngay: số dư dương trừ phần giữ cho khiếu nại.
+             */
+            payable?: number;
+            /**
+             * Format: int64
+             * @description Tiền đang giữ lại vì khách khiếu nại đơn chưa có quyết định (hiện luôn 0).
+             */
+            heldForCases?: number;
+            /**
+             * Format: int64
+             * @description Số quán đang nợ nền tảng; 0 nếu không nợ.
+             */
+            owed?: number;
+            /**
+             * Format: int64
+             * @description Số tiền lần chi trả gần nhất.
+             */
+            lastPayoutAmount?: number;
+            /**
+             * Format: date-time
+             * @description Thời điểm lần chi trả gần nhất.
+             */
+            lastPayoutAt?: string;
+        };
+        SettlementPeriod: {
+            /**
+             * Format: date
+             * @description Ngày đầu kỳ, giờ Việt Nam (thứ Hai với kỳ tuần).
+             */
+            start?: string;
+            /**
+             * Format: int64
+             * @description Số đơn ghi sổ trong kỳ.
+             */
+            orders?: number;
+            /** Format: int64 */
+            onlineOrders?: number;
+            /** Format: int64 */
+            cashOrders?: number;
+            /**
+             * Format: int64
+             * @description Tiền món trước giảm giá.
+             */
+            foodValue?: number;
+            /** Format: int64 */
+            discounts?: number;
+            /** Format: int64 */
+            deliveryFees?: number;
+            /**
+             * Format: int64
+             * @description Hoa hồng đã gồm VAT.
+             */
+            commission?: number;
+            /** Format: int64 */
+            commissionNet?: number;
+            /** Format: int64 */
+            commissionVat?: number;
+            /**
+             * Format: int64
+             * @description Quán đã nhận (chi trả).
+             */
+            payouts?: number;
+            /**
+             * Format: int64
+             * @description Quán đã trả nền tảng (thu hoa hồng).
+             */
+            collections?: number;
+            /** Format: int64 */
+            adjustments?: number;
+            /**
+             * Format: int64
+             * @description Hoàn tiền, hoàn hoa hồng theo khiếu nại và khấu trừ thuế.
+             */
+            otherEntries?: number;
+            /**
+             * Format: int64
+             * @description Tổng thay đổi số dư trong kỳ.
+             */
+            change?: number;
+            /** Format: int64 */
+            closingBalance?: number;
+        };
+        /** @description Sao kê theo kỳ, tính từ sổ cái nên khớp với tổng quan. */
+        SettlementStatement: {
+            granularity?: string;
+            /** Format: int64 */
+            openingBalance?: number;
+            /** Format: int64 */
+            closingBalance?: number;
+            periods?: components["schemas"]["SettlementPeriod"][];
+        };
+        EarningsEntry: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** @description ONLINE_EARNING, COD_COMMISSION, PAYOUT, COLLECTION, ADJUSTMENT, CASE_REFUND, CASE_COMMISSION_REVERSAL hoặc TAX_WITHHOLDING. */
+            type?: string;
+            /**
+             * Format: int32
+             * @description Có dấu: dương là tăng số tiền nền tảng nợ quán, âm là giảm.
+             */
+            amount?: number;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            orderId?: string;
+            /**
+             * Format: int64
+             * @description Mã đơn hiển thị.
+             */
+            orderNumber?: number;
+            /**
+             * Format: int32
+             * @description Tiền món của đơn trước giảm giá (khoản thuộc đơn).
+             */
+            itemsTotal?: number;
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            discount?: number;
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            deliveryFee?: number;
+            /**
+             * Format: int32
+             * @description Hoa hồng của đơn, đã gồm VAT.
+             */
+            commission?: number;
+            /** @description Mã giao dịch ngân hàng của khoản chi trả hoặc thu. */
+            reference?: string;
+            note?: string;
+            /** @description SYSTEM (tự ghi khi đơn kết thúc) hoặc PLATFORM (quản trị viên ghi tay). */
+            source?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            createdAt?: string;
+        };
+        EarningsLedgerPage: {
+            items?: components["schemas"]["EarningsEntry"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
         LegalDocumentView: {
             /**
              * Format: uuid
@@ -3436,6 +4075,129 @@ export interface components {
             secondaryText?: string;
             ward?: string;
             province?: string;
+        };
+        SettlementVendor: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            /** Format: int64 */
+            balance?: number;
+            /** Format: int64 */
+            payable?: number;
+            /** Format: int64 */
+            heldForCases?: number;
+            /** Format: int64 */
+            owed?: number;
+        };
+        LedgerPage: {
+            items?: components["schemas"]["LedgerEntry"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+            /** Format: int64 */
+            balance?: number;
+        };
+        /** @description Tổng quan đối soát: số liệu toàn nền tảng và bảng các quán. */
+        SettlementOverview: {
+            totals?: components["schemas"]["SettlementTotals"];
+            shops?: components["schemas"]["SettlementShopPage"];
+        };
+        SettlementShopPage: {
+            items?: components["schemas"]["SettlementShopRow"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        SettlementShopRow: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            /**
+             * Format: int64
+             * @description Dương: nền tảng nợ quán. Âm: quán nợ nền tảng.
+             */
+            balance?: number;
+            /**
+             * Format: int64
+             * @description Số tiền chi trả được ngay: số dư dương trừ phần giữ cho khiếu nại (hiện bằng 0).
+             */
+            payable?: number;
+            /**
+             * Format: int64
+             * @description Số tiền quán đang nợ (số dư âm đổi dấu); 0 nếu không nợ.
+             */
+            owed?: number;
+            /** Format: int64 */
+            orders?: number;
+            /** Format: int64 */
+            foodValue?: number;
+            /** Format: int64 */
+            commission?: number;
+            /** @description Hoa hồng chia giá trị món, phần trăm; vắng mặt khi chưa có đơn. */
+            effectiveRate?: number;
+            /** @description Tỷ lệ thực tế thấp hơn hẳn mức chung: dấu hiệu món xếp sai ngành rẻ hơn. */
+            lowRate?: boolean;
+            /**
+             * Format: date-time
+             * @description Lần chi trả gần nhất.
+             */
+            lastPayoutAt?: string;
+        };
+        SettlementTotals: {
+            /**
+             * Format: int64
+             * @description Số quán đã có bút toán.
+             */
+            shops?: number;
+            /**
+             * Format: int64
+             * @description Số đơn đã ghi sổ (đã giao, hoặc online khách không nhận).
+             */
+            orders?: number;
+            /**
+             * Format: int64
+             * @description Giá trị món sau giảm giá của các đơn đó (không gồm phí giao).
+             */
+            foodValue?: number;
+            /**
+             * Format: int64
+             * @description Hoa hồng đã tính, đã gồm VAT.
+             */
+            commission?: number;
+            /**
+             * Format: int64
+             * @description Phần hoa hồng ròng (chưa VAT).
+             */
+            commissionNet?: number;
+            /**
+             * Format: int64
+             * @description Phần VAT trong hoa hồng.
+             */
+            commissionVat?: number;
+            /** @description Tỷ lệ hoa hồng thực tế bình quân: hoa hồng chia giá trị món, phần trăm. */
+            effectiveRate?: number;
+            /**
+             * Format: int64
+             * @description Tiền nền tảng đang giữ hộ và còn nợ các quán (tổng số dư dương, chủ yếu từ đơn online).
+             */
+            owedToShops?: number;
+            /**
+             * Format: int64
+             * @description Tiền các quán còn nợ nền tảng (tổng số dư âm, chủ yếu hoa hồng đơn COD).
+             */
+            owedByShops?: number;
         };
         RefundPage: {
             items?: components["schemas"]["RefundRow"][];
@@ -3574,6 +4336,47 @@ export interface components {
             fullName?: string;
             frontPhotoUrl?: string;
             selfiePhotoUrl?: string;
+        };
+        CommissionHistoryPage: {
+            items?: components["schemas"]["CommissionRateChange"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        /** @description Một lần đổi tỷ lệ. Không bao giờ ghi đè: luôn thêm dòng mới. */
+        CommissionRateChange: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** @description DEFAULT hoặc CATEGORY. */
+            scope?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            categoryId?: string;
+            /** @description Tên ngành lúc đổi. */
+            categoryName?: string;
+            /** @description Tỷ lệ mới; vắng mặt khi ngành quay lại kế thừa. */
+            rate?: number;
+            /** @description Tỷ lệ trước đó; vắng mặt khi ngành chưa có tỷ lệ riêng. */
+            previousRate?: number;
+            /**
+             * Format: date-time
+             * @description Từ lúc này đơn đặt mới dùng tỷ lệ mới.
+             */
+            effectiveFrom?: string;
+            actedByType?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            actedById?: string;
         };
     };
     responses: never;
@@ -5351,6 +6154,204 @@ export interface operations {
             };
             /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:write-settings`. */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    setDefaultCommissionRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommissionRateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionRates"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `commission:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    setCategoryCommissionRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommissionRateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionRates"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `commission:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CATEGORY_NOT_FOUND`: Ngành không tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    clearCategoryCommissionRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionRates"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `commission:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CATEGORY_NOT_FOUND`: Ngành không tồn tại. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7492,6 +8493,107 @@ export interface operations {
             };
             /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    recordSettlementEntry: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordLedgerEntryRequest"];
+            };
+        };
+        responses: {
+            /** @description Khoá đã dùng với đúng yêu cầu này: trả lại bút toán đầu. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LedgerEntry"];
+                };
+            };
+            /** @description Đã ghi bút toán mới. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LedgerEntry"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `AMOUNT_INVALID`: Số tiền không hợp lệ (PAYOUT và COLLECTION phải dương, ADJUSTMENT khác 0).
+             *     - `REFERENCE_REQUIRED`: PAYOUT hoặc COLLECTION thiếu mã giao dịch ngân hàng.
+             *     - `REASON_REQUIRED`: ADJUSTMENT thiếu lý do.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `settlement:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `PAYOUT_EXCEEDS_PAYABLE`: Vượt số có thể chi trả; kèm `balance`, `heldForCases`, `payable`.
+             *     - `NOTHING_OWED`: COLLECTION cho quán không nợ nền tảng.
+             *     - `COLLECTION_EXCEEDS_DEBT`: COLLECTION vượt số quán đang nợ; kèm `owed`.
+             *     - `IDEMPOTENCY_KEY_REUSED`: Khoá đã dùng cho một khoản khác.
+             */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10019,6 +11121,153 @@ export interface operations {
             };
         };
     };
+    getRevenueStats: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                granularity?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevenueReport"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
+             *     - `INVALID_RANGE`: `from` sau `to`.
+             *     - `RANGE_TOO_LONG`: Quá nhiều kỳ (hơn 400); chia theo tuần hoặc tháng.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `stats:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getBestSellingDishes: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopDishes"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_RANGE`: `from` sau `to`.
+             *     - `INVALID_LIMIT`: `limit` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `stats:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listReviewsOfMyShop: {
         parameters: {
             query?: {
@@ -10298,6 +11547,211 @@ export interface operations {
             };
         };
     };
+    getMyEarnings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EarningsSummary"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `earnings:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getMyEarningsStatements: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                granularity?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettlementStatement"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
+             *     - `INVALID_RANGE`: `from` sau `to`, hoặc khoảng quá 2 năm.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `earnings:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getMyLedger: {
+        parameters: {
+            query?: {
+                type?: string;
+                from?: string;
+                to?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EarningsLedgerPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_TYPE`: `type` không phải một loại bút toán.
+             *     - `INVALID_RANGE`: `from` sau `to`.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `earnings:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getLegalDocument: {
         parameters: {
             query?: never;
@@ -10461,6 +11915,289 @@ export interface operations {
              *     - `INVALID_OR_EXPIRED_TOKEN`: Liên kết sai hoặc đã hết hạn; gửi lại thư xác thực.
              */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getSettlementVendor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettlementVendor"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `settlement:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getSettlementStatement: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                granularity?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettlementStatement"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
+             *     - `INVALID_RANGE`: `from` sau `to`, hoặc khoảng quá 2 năm.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `settlement:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getSettlementLedger: {
+        parameters: {
+            query?: {
+                type?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LedgerPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_TYPE`: `type` không phải một loại bút toán.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `settlement:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getSettlementOverview: {
+        parameters: {
+            query?: {
+                status?: string;
+                sort?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettlementOverview"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_STATUS`: `status` không phải OWED_TO_SHOP hoặc OWED_BY_SHOP.
+             *     - `INVALID_SORT`: `sort` không phải balance_desc hoặc balance_asc.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `settlement:read`. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10786,6 +12523,118 @@ export interface operations {
             };
             /** @description - `SHOP_APPLICATION_NOT_FOUND`: Không có hồ sơ đã gửi với id này. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getCommissionRates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionRates"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `commission:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getCommissionHistory: {
+        parameters: {
+            query?: {
+                scope?: string;
+                categoryId?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionHistoryPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_SCOPE`: `scope` không phải DEFAULT hoặc CATEGORY.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `commission:write`. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

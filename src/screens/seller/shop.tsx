@@ -90,6 +90,15 @@ export default function SellerShopScreen() {
       </Card>
 
       <Card>
+        <Text variant="titleSm">Doanh thu và thu nhập</Text>
+        <Text variant="bodySm" muted>
+          Doanh thu theo ngày, món bán chạy và số tiền giữa quán với bonbon.
+        </Text>
+        <Button title="Xem thống kê" variant="outline" onPress={() => router.push('/seller/statistics')} />
+        <Button title="Xem thu nhập" variant="outline" onPress={() => router.push('/seller/earnings')} />
+      </Card>
+
+      <Card>
         <Text variant="titleSm">Đánh giá của khách</Text>
         <Text variant="bodySm" muted>
           Xem khách nói gì về quán và phản hồi công khai.

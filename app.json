@@ -36,7 +36,13 @@
         }
       ],
       "expo-secure-store",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "bonbon cần xem thư viện ảnh để bạn gửi ảnh kèm báo cáo về đơn hàng."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

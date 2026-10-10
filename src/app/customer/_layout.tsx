@@ -25,6 +25,11 @@ export default function CustomerLayout() {
       <Stack.Screen name="order" options={{ title: 'Đơn hàng' }} />
       <Stack.Screen name="report-problem" options={{ title: 'Báo vấn đề' }} />
       <Stack.Screen name="notifications" options={{ title: 'Thông báo' }} />
+      <Stack.Screen name="chat" options={{ title: 'Trò chuyện' }} />
+      <Stack.Screen name="help" options={{ title: 'Trợ giúp' }} />
+      <Stack.Screen name="support" options={{ title: 'Liên hệ hỗ trợ' }} />
+      <Stack.Screen name="ticket" options={{ title: 'Phiếu hỗ trợ' }} />
+      <Stack.Screen name="notification-settings" options={{ title: 'Cài đặt thông báo' }} />
     </Stack>
     </CustomerLiveProvider>
     </CartProvider>

@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router'
-import { ChevronRight, MapPin } from 'lucide-react-native'
+import { Bell, ChevronRight, LifeBuoy, MapPin } from 'lucide-react-native'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { Card, Screen, Text, spacing, touchTarget, useTheme } from '@/shared/ui'
@@ -21,6 +21,20 @@ export default function CustomerAccountScreen() {
             <Text variant="caption" muted numberOfLines={1}>
               {defaultAddress ? `${defaultAddress.label}: ${defaultAddress.formattedAddress}` : 'Chưa có địa chỉ'}
             </Text>
+          </View>
+          <ChevronRight size={20} color={theme.textMuted} />
+        </Pressable>
+        <Pressable accessibilityRole="button" style={styles.row} onPress={() => router.push('/customer/help')}>
+          <LifeBuoy size={20} color={theme.primary} />
+          <View style={styles.flex}>
+            <Text variant="body">Trợ giúp và liên hệ hỗ trợ</Text>
+          </View>
+          <ChevronRight size={20} color={theme.textMuted} />
+        </Pressable>
+        <Pressable accessibilityRole="button" style={styles.row} onPress={() => router.push('/customer/notification-settings')}>
+          <Bell size={20} color={theme.primary} />
+          <View style={styles.flex}>
+            <Text variant="body">Cài đặt thông báo</Text>
           </View>
           <ChevronRight size={20} color={theme.textMuted} />
         </Pressable>

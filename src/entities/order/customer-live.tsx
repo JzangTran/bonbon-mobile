@@ -15,7 +15,7 @@ export function CustomerLiveProvider({ children }: { children: ReactNode }) {
       void queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY })
       void queryClient.invalidateQueries({ queryKey: ['notifications'] })
     }
-  })
+  }, () => void queryClient.invalidateQueries({ queryKey: ['chat'] }))
   return <CustomerLiveContext.Provider value={state}>{children}</CustomerLiveContext.Provider>
 }
 

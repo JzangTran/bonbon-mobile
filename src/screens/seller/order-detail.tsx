@@ -5,6 +5,7 @@ import { problemMessage } from '@/shared/api'
 import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
 import { Button, Card, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
+import { NoShowCard } from './no-show'
 import { OrderActions } from './order-actions'
 
 const ACTORS: Record<string, string> = { CUSTOMER: 'Khách', SHOP: 'Quán', SYSTEM: 'Hệ thống', ADMIN: 'Quản trị' }
@@ -59,6 +60,7 @@ export default function SellerOrderDetailScreen() {
           </View>
 
           <OrderActions id={data.id!} status={status} />
+          {status === 'OUT_FOR_DELIVERY' ? <NoShowCard orderId={data.id!} /> : null}
 
           <Card>
             <Text variant="titleSm">Khách</Text>

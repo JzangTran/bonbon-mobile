@@ -7,6 +7,8 @@ import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
 import { Button, Card, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { NoShowAnswerCard } from './no-show-answer'
+import { OrderCaseCard } from './order-case'
 import { PaymentCard, RefundCard } from './order-payment'
 import { OrderReviewCard } from './order-review'
 import { reorder } from './reorder'
@@ -110,9 +112,11 @@ export default function CustomerOrderScreen() {
           ) : null}
           <Notice tone="error" message={notice} />
 
+          {status === 'OUT_FOR_DELIVERY' || status === 'DELIVERED' || status === 'NOT_DELIVERED' || status === 'CANCELLED' ? <NoShowAnswerCard orderId={data.id!} /> : null}
           {status === 'PENDING_PAYMENT' ? <PaymentCard orderId={data.id!} payment={data.payment} /> : null}
           {data.refund ? <RefundCard orderId={data.id!} refund={data.refund} /> : null}
 
+          {status === 'DELIVERED' ? <OrderCaseCard orderId={data.id!} /> : null}
           {status === 'DELIVERED' ? <OrderReviewCard orderId={data.id!} reviewed={!!data.review} /> : null}
 
           <Card>

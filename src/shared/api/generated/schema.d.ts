@@ -526,6 +526,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders/{id}/report-not-received": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Báo chưa nhận được đơn
+         * @description Cho đơn đã giao trong vòng 24 giờ kể từ khi giao và khách chưa tự xác nhận đã nhận. Hoàn lại toàn bộ số đã trả, gồm phí giao, nếu khiếu nại được chấp nhận. Quán được báo và có 12 giờ để trả lời.
+         *
+         *     **Cần đăng nhập**, quyền `order:report`.
+         */
+        post: operations["reportOrderNotReceived"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/orders/{id}/received": {
         parameters: {
             query?: never;
@@ -564,6 +586,94 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `order:create`.
          */
         post: operations["retryOrderPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/no-show-answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Trả lời báo cáo khách vắng mặt
+         * @description `UNABLE`: không nhận được hoặc không muốn nhận, đơn kết thúc ngay (đơn online vẫn tính cho quán như đã giao, đơn tiền mặt không phát sinh gì) và tính vào bộ đếm lạm dụng. `RECEIVED`: đã nhận, đơn thành đã giao như khi bấm đã nhận. `SHOP_NEVER_CAME`: quán không đến hoặc không gọi, bắt buộc ghi chú, quản trị viên quyết định. Không trả lời trong 2 giờ thì quản trị viên quyết, và im lặng không bị coi là thừa nhận.
+         *
+         *     **Cần đăng nhập**, quyền `order:report`.
+         */
+        post: operations["answerNoShow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/incident": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Báo thiếu món, sai món hoặc chất lượng
+         * @description Cho đơn đã giao trong vòng 24 giờ. Chọn các dòng món bị ảnh hưởng và số phần; tiền hoàn mỗi dòng là số khách thực trả cho dòng đó (đã trừ phần giảm giá, gồm lựa chọn thêm) theo tỷ lệ số phần, không gồm phí giao. Cần ít nhất một ảnh (đã tải lên qua `case-photos`) với `WRONG_ITEM` và `QUALITY`, tối đa 3 ảnh. Việc xác nhận đã nhận không chặn báo cáo này.
+         *
+         *     **Cần đăng nhập**, quyền `order:report`.
+         */
+        post: operations["reportOrderIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/incident/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Xem trước số tiền được hoàn
+         * @description Tính số tiền hoàn cho các dòng đã chọn trước khi gửi báo cáo; không tạo gì. Cùng điều kiện về đơn như khi báo.
+         *
+         *     **Cần đăng nhập**, quyền `order:report`.
+         */
+        post: operations["quoteOrderIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/case-photos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tải ảnh cho báo cáo
+         * @description Tải một ảnh (JPEG, PNG hoặc WEBP, tối đa 5 MB, kiểm tra theo nội dung tệp) trước khi gửi báo cáo; ảnh được lưu riêng tư và chỉ xem được qua liên kết ngắn hạn. Gửi `photoKey` trong `photoKeys`. Giới hạn 10 ảnh mỗi giờ cho mỗi đơn.
+         *
+         *     **Cần đăng nhập**, quyền `order:report`.
+         */
+        post: operations["uploadOrderCasePhoto"];
         delete?: never;
         options?: never;
         head?: never;
@@ -680,6 +790,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/penalties/{id}/appeal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Kháng nghị một điểm phạt
+         * @description Mỗi điểm chỉ kháng nghị một lần, trong 7 ngày kể từ khi cấp (`appeal_window_days`). Kháng nghị đang chờ không làm gỡ hạn chế; nếu được chấp nhận, điểm được miễn và hậu quả tính lại ngay. Quản trị viên quyết định và quán được báo kèm lý do.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["appealShopPenalty"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/orders/{id}/status": {
         parameters: {
             query?: never;
@@ -724,6 +856,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/orders/{id}/no-show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Báo khách vắng mặt
+         * @description Khi đơn đang giao và đã quá thời gian chờ tối thiểu (10 phút kể từ lúc giao đi), quán báo không liên lạc được với khách kèm ghi chú đã làm gì (gọi, gõ cửa, chờ bao lâu) và một ảnh nếu có. Đơn được giữ lại, không tự chuyển sang đã giao sau 3 giờ. Khách có 2 giờ để trả lời; không trả lời thì quản trị viên quyết, và im lặng không bị coi là thừa nhận. Không có khoản tiền nào bị đòi trong báo cáo này.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["reportCustomerNoShow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/orders/{id}/no-show-photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tải ảnh cho báo cáo khách vắng mặt
+         * @description Tải một ảnh (JPEG, PNG hoặc WEBP, tối đa 5 MB) trước khi gửi báo cáo; ảnh được lưu riêng tư. Gửi `photoKey` trong báo cáo. Giới hạn 5 ảnh mỗi giờ cho mỗi đơn.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["uploadNoShowPhoto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/orders/{id}/confirm": {
         parameters: {
             query?: never;
@@ -762,6 +938,50 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `order:write`.
          */
         post: operations["cancelShopOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/order-cases/{id}/dispute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Phản đối khiếu nại
+         * @description Chuyển cho quản trị viên quyết định, kèm lý do của quán. Trong lúc chờ, số tiền liên quan vẫn được giữ lại khỏi số có thể chi trả.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["disputeOrderCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/order-cases/{id}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Chấp nhận khiếu nại
+         * @description Khách được hoàn tiền ngay (qua MoMo cho đơn online, chuyển khoản cho đơn tiền mặt) và quán chịu khoản đó trong sổ cái: tiền hoàn ghi nợ, phần hoa hồng của số tiền này được hoàn lại cho quán. Phần tiền đang giữ được nhả. Không hoàn tác được.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["acceptOrderCase"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1104,6 +1324,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/shops/{id}/penalties": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lịch sử điểm phạt của một quán
+         * @description Mọi điểm đã cấp (đánh giá hằng tuần hoặc cộng thủ công) kèm trạng thái, hạn, lý do, kháng nghị và quyết định; cùng hậu quả hiện tại.
+         *
+         *     **Cần đăng nhập**, quyền `shop-penalty:read`.
+         */
+        get: operations["getShopPenaltyHistory"];
+        put?: never;
+        /**
+         * Cộng điểm phạt thủ công
+         * @description 1 đến 3 điểm với lý do quán đọc được; hết hạn sau 90 ngày như mọi điểm khác. Điểm của quán được tính lại ngay, nên có thể kích hoạt thông báo hạn chế.
+         *
+         *     **Cần đăng nhập**, quyền `shop-penalty:write`.
+         */
+        post: operations["addShopPenalty"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/shop-penalties/{id}/waive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Miễn một điểm phạt
+         * @description Cho điểm còn hiệu lực, kèm lý do (ví dụ nền tảng gặp sự cố làm đơn thất bại); quán được báo. Điểm của quán được tính lại ngay, nên có thể gỡ hạn chế hiển thị lập tức.
+         *
+         *     **Cần đăng nhập**, quyền `shop-penalty:write`.
+         */
+        post: operations["waiveShopPenalty"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/shop-penalties/{id}/appeal-decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Quyết kháng nghị điểm phạt
+         * @description `ACCEPT` miễn điểm (và tính lại hậu quả ngay), `REJECT` giữ nguyên. Cả hai đều cần lý do và quán được báo. Mỗi điểm chỉ kháng nghị một lần.
+         *
+         *     **Cần đăng nhập**, quyền `shop-penalty:write`.
+         */
+        post: operations["decideShopPenaltyAppeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/settlement/vendors/{id}/entries": {
         parameters: {
             query?: never;
@@ -1120,6 +1412,28 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `settlement:write`.
          */
         post: operations["recordSettlementEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settlement/statements/{id}/extend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Gia hạn sao kê hoa hồng
+         * @description Dời hạn trả của một sao kê chưa trả đủ, bắt buộc có lý do (được ghi lại cùng quản trị viên). Hạn mới phải sau hạn hiện tại và không quá 30 ngày kể từ bây giờ. Đồng hồ quá hạn tính lại từ hạn mới, nên các hạn chế do quá hạn được gỡ nếu sao kê không còn quá hạn.
+         *
+         *     **Cần đăng nhập**, quyền `settlement:write`.
+         */
+        post: operations["extendCommissionStatement"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1252,6 +1566,116 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `refund:process`.
          */
         post: operations["completeRefund"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/order-cases/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mở lại khiếu nại đã quyết
+         * @description Đưa khiếu nại đã quyết về hàng đợi để quyết lại, một lần duy nhất, với lý do được ghi lại. Bút toán đã ghi không bị sửa: nếu khiếu nại đã được chấp nhận rồi bị bác bỏ ở lần quyết lại, sổ cái ghi một điều chỉnh ngược để trả lại cho quán (khoản đã hoàn cho khách thì không thu hồi được). Cả hai bên được báo.
+         *
+         *     **Cần đăng nhập**, quyền `order-case:decide`.
+         */
+        post: operations["reopenOrderCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/order-cases/{id}/decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Quyết một khiếu nại
+         * @description `UPHELD`: khách được hoàn tiền (MoMo cho đơn online, chuyển khoản cho đơn tiền mặt), sổ cái của quán ghi tiền hoàn và hoàn lại hoa hồng phần đó; có thể chỉ chấp nhận một số dòng hoặc số phần (`lines`), tiền tính lại theo tỷ lệ từ số đã lưu. `DISMISSED`: tiền không đổi. Cả hai trường hợp nhả phần tiền đang giữ và cả hai bên được báo kèm lý do. Hai quản trị viên không quyết được cùng một khiếu nại.
+         *
+         *     **Cần đăng nhập**, quyền `order-case:decide`.
+         */
+        post: operations["decideOrderCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/{id}/suspension/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Huỷ lịch đình chỉ
+         * @description Trong thời gian báo trước, với lý do được ghi lại (ví dụ quán đã trả nợ hoặc tranh chấp đã xong); quán được báo.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:suspend`.
+         */
+        post: operations["cancelShopSuspension"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/{id}/suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đình chỉ cửa hàng
+         * @description Cần lý do. Mặc định đình chỉ có lịch, hiệu lực sau đúng 5 ngày (`legal.seller_restriction_notice_days`, mức tối thiểu theo luật): quán được báo ngay kèm lý do và ngày, vẫn hoạt động trong thời gian báo trước, rồi hệ thống tự đình chỉ khi tới hạn. Chỉ theo yêu cầu của cơ quan có thẩm quyền mới đình chỉ ngay (`immediate` kèm `authorityReference`). Quán bị đình chỉ vẫn đăng nhập, hoàn tất đơn đang làm và xem thu nhập, nhưng khách không tìm thấy và không đặt thêm được; menu và hồ sơ không sửa được.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:suspend`.
+         */
+        post: operations["suspendShop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/{id}/reinstate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Khôi phục cửa hàng bị đình chỉ
+         * @description Đưa cửa hàng từ đình chỉ về hoạt động ngay, với lý do được ghi lại; quán được báo và hiện lại với khách.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:suspend`.
+         */
+        post: operations["reinstateShop"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1768,6 +2192,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders/{id}/no-show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem báo cáo khách vắng mặt của đơn
+         * @description Báo cáo quán gửi khi không liên lạc được với khách: ghi chú, ảnh (liên kết ngắn hạn), hạn trả lời và kết cục nếu đã có.
+         *
+         *     **Cần đăng nhập**, quyền `order:report`.
+         */
+        get: operations["getOrderNoShow"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/case": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem khiếu nại của đơn
+         * @description Khiếu nại khách đã gửi cho đơn này kèm trạng thái, các dòng món, ảnh, câu trả lời của quán và quyết định (nếu có).
+         *
+         *     **Cần đăng nhập**, quyền `order:report`.
+         */
+        get: operations["getOrderCase"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications": {
         parameters: {
             query?: never;
@@ -1782,6 +2250,28 @@ export interface paths {
          *     **Cần đăng nhập.**
          */
         get: operations["listNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/suspension": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tình trạng đình chỉ của quán
+         * @description `NONE`, `SCHEDULED` (đã được báo, quán vẫn hoạt động đến `effectiveAt`) hoặc `SUSPENDED`, kèm lý do. Quán bị đình chỉ vẫn đăng nhập được để xem lý do, hoàn tất đơn đang làm và xem thu nhập.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["getMyShopSuspension"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1834,6 +2324,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/settlement/statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sao kê hoa hồng quán phải trả
+         * @description Hoa hồng của đơn thu tiền mặt là khoản quán nợ nền tảng. Mỗi tuần (thứ Hai, giờ Việt Nam) quán nợ từ 50.000 ₫ nhận một sao kê, hạn trả 7 ngày; nợ vượt hạn mức được lập sao kê ngay với hạn 3 ngày. Khoản có vào sổ trả sao kê cũ nhất trước. `standing` cho biết quán có đang quá hạn không và các mốc hạn chế (hiển thị, tạm ngưng nhận đơn), mỗi mốc sau thông báo ít nhất 5 ngày; trả hết phần quá hạn thì mọi hạn chế được gỡ ngay. Mới nhất trước.
+         *
+         *     **Cần đăng nhập**, quyền `earnings:read`.
+         */
+        get: operations["getMyCommissionStatements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/reviews": {
         parameters: {
             query?: never;
@@ -1848,6 +2360,50 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `review:respond`.
          */
         get: operations["listReviewsOfMyShop"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/performance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Hiệu suất của quán
+         * @description Tuần hiện tại (tạm tính) và 8 tuần đã đóng: số đơn kết thúc, số đơn thất bại do quán và tỷ lệ; điểm phạt còn hiệu lực với ngày hết hạn từng điểm; hậu quả hiện tại (cảnh báo, đã báo sẽ hạn chế, đang hạn chế) và ngày bắt đầu. Đơn khách huỷ, thanh toán quá hạn, hoàn một phần và khách vắng mặt do lỗi khách không bị tính.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["getMyPerformance"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/performance/faults": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Các đơn lỗi trong một tuần
+         * @description Các đơn thất bại do quán trong tuần bắt đầu từ thứ Hai `week`, kèm lý do: quán từ chối, không trả lời kịp, không giao đi kịp, huỷ sau khi nhận, khiếu nại hoàn cả đơn, hoặc quán không đến khi giao.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["listMyShopFaults"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1892,6 +2448,50 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `order:read`.
          */
         get: operations["getShopOrder"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/order-cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách khiếu nại của quán
+         * @description Khiếu nại đang chờ quán trả lời xếp đầu, rồi đang chờ quản trị viên, rồi đã xử lý; trong mỗi nhóm mới nhất trước. `status` lọc theo một trạng thái. `shopBears` là số tiền quán phải chịu nếu khiếu nại được chấp nhận.
+         *
+         *     **Cần đăng nhập**, quyền `order:read`.
+         */
+        get: operations["listMyOrderCases"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/order-cases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chi tiết khiếu nại
+         * @description Các dòng món bị báo, ảnh khách gửi (liên kết ngắn hạn), ghi chú của khách, số tiền hoàn và số quán phải chịu, hạn trả lời.
+         *
+         *     **Cần đăng nhập**, quyền `order:read`.
+         */
+        get: operations["getMyOrderCase"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2076,6 +2676,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/shop-penalties": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Các quán đang có điểm phạt
+         * @description Quán có ít nhất `minPoints` điểm còn hiệu lực (mặc định 1), nhiều điểm nhất trước; quán có kháng nghị đang chờ luôn hiện. Kèm hậu quả hiện tại, ngày hạn chế bắt đầu và cờ xem xét đình chỉ (từ 6 điểm).
+         *
+         *     **Cần đăng nhập**, quyền `shop-penalty:read`.
+         */
+        get: operations["listShopPenalties"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/shop-penalties/appeals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Kháng nghị đang chờ quyết
+         * @description Cũ nhất trước, kèm số đơn và số đơn lỗi của tuần bị phạt để cân nhắc. Kháng nghị đang chờ không làm gỡ hạn chế.
+         *
+         *     **Cần đăng nhập**, quyền `shop-penalty:read`.
+         */
+        get: operations["listPenaltyAppeals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/settlement/vendors/{id}": {
         parameters: {
             query?: never;
@@ -2142,6 +2786,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/settlement/vendors/{id}/commission-statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sao kê hoa hồng của một quán
+         * @description Các sao kê hoa hồng đã lập cho quán và tình trạng nợ hiện tại (giai đoạn `stage`, số quá hạn, các mốc hạn chế). Giai đoạn `REVIEW` nghĩa là nợ quá 30 ngày: nên xem xét khoá quán, nhưng hệ thống không bao giờ tự khoá.
+         *
+         *     **Cần đăng nhập**, quyền `settlement:read`.
+         */
+        get: operations["getVendorCommissionStatements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/settlement/overview": {
         parameters: {
             query?: never;
@@ -2200,6 +2866,72 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `refund:process`.
          */
         get: operations["listRefunds"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/order-cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Hàng đợi khiếu nại
+         * @description Mặc định là hàng đợi cần quyết (`OPEN`), cũ nhất trước; các trạng thái khác mới nhất trước. `type` lọc theo loại. `shopBears` là số quán phải chịu nếu được chấp nhận.
+         *
+         *     **Cần đăng nhập**, quyền `order-case:read`.
+         */
+        get: operations["listOrderCases"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/order-cases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chi tiết một khiếu nại
+         * @description Các dòng bị báo và số tiền hoàn, ảnh (liên kết ngắn hạn), ghi chú của khách, câu trả lời của quán hoặc dấu hiệu không trả lời, lịch sử khiếu nại của khách và của quán (số bị bác bỏ trong 90 ngày gần nhất), và nhật ký các bước đã xảy ra.
+         *
+         *     **Cần đăng nhập**, quyền `order-case:read`.
+         */
+        get: operations["getOrderCaseDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/{id}/suspensions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lịch sử đình chỉ của một cửa hàng
+         * @description Mọi lần đình chỉ, mới nhất trước: loại, trạng thái, lý do, ngày báo, ngày hiệu lực và lý do kết thúc.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["listShopSuspensions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2919,6 +3651,11 @@ export interface components {
         OrderLine: {
             /**
              * Format: uuid
+             * @description Id của dòng trong đơn; dùng khi báo vấn đề với món này (`orderItemId`).
+             */
+            id?: string;
+            /**
+             * Format: uuid
              * @description UUID.
              */
             menuItemId?: string;
@@ -3030,8 +3767,150 @@ export interface components {
              */
             grandTotal?: number;
         };
+        ReportNotReceivedRequest: {
+            /** @description Ghi chú thêm (không bắt buộc). */
+            note?: string;
+        };
+        /** @description Một khiếu nại về đơn đã giao. */
+        OrderCase: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            orderId?: string;
+            /**
+             * Format: int64
+             * @description Mã đơn hiển thị.
+             */
+            orderNumber?: number;
+            /** @description NOT_RECEIVED, MISSING_ITEM, WRONG_ITEM, QUALITY hoặc CUSTOMER_NO_SHOW. */
+            type?: string;
+            /** @description AWAITING_SHOP (chờ quán trả lời), AWAITING_CUSTOMER, OPEN (chờ quản trị quyết), UPHELD (được chấp nhận) hoặc DISMISSED (bị bác bỏ). */
+            status?: string;
+            /**
+             * Format: int32
+             * @description Số tiền khách sẽ được hoàn nếu khiếu nại được chấp nhận.
+             */
+            refundAmount?: number;
+            note?: string;
+            /**
+             * Format: date-time
+             * @description Hạn quán trả lời; quá hạn thì khiếu nại chuyển cho quản trị.
+             */
+            shopResponseDueAt?: string;
+            /** @description ACCEPTED hoặc DISPUTED, khi quán đã trả lời. */
+            shopResponse?: string;
+            shopResponseNote?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            openedAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            decidedAt?: string;
+            /** @description Ai quyết: SHOP (quán chấp nhận), ADMIN, SYSTEM hoặc CUSTOMER. */
+            decidedBy?: string;
+            /** @description Lý do của quyết định, cả hai bên đều thấy. */
+            reason?: string;
+            lines?: components["schemas"]["OrderCaseLine"][];
+            photos?: components["schemas"]["OrderCasePhoto"][];
+            /** @description Tên người nhận ghi trên đơn. Chỉ quán và quản trị viên thấy. */
+            customerName?: string;
+            /**
+             * Format: int32
+             * @description Số tiền quán phải chịu nếu khiếu nại được chấp nhận: tiền hoàn trừ hoa hồng nền tảng hoàn lại. Chỉ quán và quản trị viên thấy.
+             */
+            shopBears?: number;
+            /** @description Báo cáo khách vắng mặt: câu trả lời của khách (UNABLE, RECEIVED hoặc SHOP_NEVER_CAME). */
+            customerAnswer?: string;
+            customerAnswerNote?: string;
+            /**
+             * Format: date-time
+             * @description Hạn khách trả lời; quá hạn thì chuyển cho quản trị viên.
+             */
+            customerAnswerDueAt?: string;
+            /** @description Kết cục của báo cáo khách vắng mặt: CUSTOMER_AT_FAULT, CUSTOMER_RECEIVED hoặc SHOP_NEVER_CAME. */
+            noShowOutcome?: string;
+        };
+        OrderCaseLine: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            orderItemId?: string;
+            name?: string;
+            /**
+             * Format: int32
+             * @description Số phần bị ảnh hưởng.
+             */
+            quantity?: number;
+            /**
+             * Format: int32
+             * @description Tiền hoàn cho dòng này: số khách thực trả (đã trừ phần giảm giá, gồm lựa chọn thêm) theo tỷ lệ số phần.
+             */
+            refundAmount?: number;
+        };
+        OrderCasePhoto: {
+            key?: string;
+            /** @description Liên kết xem ảnh, hết hạn sau ít phút. */
+            url?: string;
+        };
+        AnswerNoShowRequest: {
+            /** @description UNABLE (tôi không nhận được hoặc không muốn nhận: đơn kết thúc, tính vào bộ đếm lạm dụng), RECEIVED (tôi đã nhận: đơn thành đã giao) hoặc SHOP_NEVER_CAME (quán không đến hoặc không gọi: quản trị viên quyết, cần ghi chú). */
+            answer: string;
+            note?: string;
+        };
+        /** @description Một dòng món bị ảnh hưởng và số phần bị ảnh hưởng. */
+        CaseLineRequest: {
+            /**
+             * Format: uuid
+             * @description Id dòng món của đơn (`lines[].id` trong chi tiết đơn).
+             */
+            orderItemId: string;
+            /**
+             * Format: int32
+             * @description Số phần bị ảnh hưởng, từ 1 đến số đã đặt.
+             */
+            quantity?: number;
+        };
+        ReportIncidentRequest: {
+            /** @description MISSING_ITEM (thiếu món), WRONG_ITEM (sai món) hoặc QUALITY (chất lượng). */
+            type: string;
+            lines: components["schemas"]["CaseLineRequest"][];
+            /** @description Khoá ảnh đã tải lên qua `POST /api/orders/{id}/case-photos`; tối đa 3. Bắt buộc ít nhất một với WRONG_ITEM và QUALITY. */
+            photoKeys?: string[];
+            /** @description Ghi chú thêm (không bắt buộc). */
+            note?: string;
+        };
+        QuoteIncidentRequest: {
+            lines: components["schemas"]["CaseLineRequest"][];
+        };
+        /** @description Số tiền hoàn tính trước khi gửi khiếu nại. */
+        OrderCaseQuote: {
+            /** Format: int32 */
+            refundAmount?: number;
+            lines?: components["schemas"]["OrderCaseLine"][];
+        };
+        OrderCasePhotoUpload: {
+            /** @description Gửi khoá này trong `photoKeys` khi báo vấn đề. */
+            photoKey?: string;
+            /** @description Liên kết xem ảnh vừa tải lên. */
+            url?: string;
+        };
         CancelOrderRequest: {
             reason?: string;
+        };
+        AppealPenaltyRequest: {
+            /** @description Vì sao quán cho rằng điểm này không đúng. */
+            reason: string;
         };
         OrderStepRequest: {
             /** @enum {string} */
@@ -3133,6 +4012,16 @@ export interface components {
         };
         OrderReasonRequest: {
             reason?: string;
+        };
+        ReportNoShowRequest: {
+            /** @description Đã làm gì để liên lạc: gọi, gõ cửa, chờ bao lâu. */
+            note: string;
+            /** @description Khoá ảnh đã tải lên qua `POST /api/merchant/orders/{id}/no-show-photo` (không bắt buộc). */
+            photoKey?: string;
+        };
+        DisputeOrderCaseRequest: {
+            /** @description Lý do quán không đồng ý; quản trị viên và khách đều thấy. */
+            note: string;
         };
         MenuSectionRequest: {
             name: string;
@@ -3244,6 +4133,84 @@ export interface components {
             password?: string;
             captchaToken?: string;
         };
+        AddPenaltyRequest: {
+            /**
+             * Format: int32
+             * @description Số điểm cộng, từ 1 đến 3.
+             */
+            points: number;
+            /** @description Lý do cộng điểm; quán thấy lý do này. */
+            reason: string;
+        };
+        PenaltyRecord: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** Format: int32 */
+            points?: number;
+            source?: string;
+            /** Format: date */
+            weekStart?: string;
+            /** Format: int32 */
+            finishedOrders?: number;
+            /** Format: int32 */
+            faultOrders?: number;
+            reason?: string;
+            /** @description ACTIVE hoặc WAIVED. */
+            status?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            issuedAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            expiresAt?: string;
+            /** @description Đã hết hạn 90 ngày (không còn tính điểm). */
+            expired?: boolean;
+            /** @description PENDING, ACCEPTED hoặc REJECTED; vắng mặt khi chưa kháng nghị. */
+            appealStatus?: string;
+            appealReason?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            appealedAt?: string;
+            appealDecisionReason?: string;
+            decisionReason?: string;
+        };
+        ShopPenaltyHistory: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            /** Format: int32 */
+            activePoints?: number;
+            consequence?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            restrictionStartsAt?: string;
+            reviewFlagged?: boolean;
+            penalties?: components["schemas"]["PenaltyRecord"][];
+        };
+        WaivePenaltyRequest: {
+            /** @description Lý do miễn điểm (ví dụ sự cố của nền tảng làm đơn thất bại); quán thấy lý do này. */
+            reason: string;
+        };
+        DecidePenaltyAppealRequest: {
+            /** @description ACCEPT (miễn điểm) hoặc REJECT (giữ nguyên). */
+            decision: string;
+            /** @description Lý do quyết định; quán thấy lý do này. */
+            reason: string;
+        };
         /** @description Một khoản tiền đã chuyển ngoài hệ thống, ghi lại vào sổ. */
         RecordLedgerEntryRequest: {
             /** @description PAYOUT (chuyển cho quán), COLLECTION (nhận từ quán nợ hoa hồng) hoặc ADJUSTMENT (điều chỉnh có lý do). */
@@ -3295,6 +4262,56 @@ export interface components {
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
             createdAt?: string;
+        };
+        ExtendStatementRequest: {
+            /**
+             * Format: date-time
+             * @description Hạn mới: sau hạn hiện tại và không quá 30 ngày kể từ bây giờ.
+             */
+            dueAt: string;
+            /** @description Lý do gia hạn, được ghi lại. */
+            reason: string;
+        };
+        /** @description Một sao kê hoa hồng quán phải trả. */
+        CommissionStatement: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** @description WEEKLY (chốt hằng tuần) hoặc LIMIT (lập ngay khi nợ vượt hạn mức). */
+            kind?: string;
+            /**
+             * Format: date
+             * @description Ngày bắt đầu kỳ, giờ Việt Nam.
+             */
+            periodStart?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm chốt: số dư tại đây là số tiền sao kê.
+             */
+            periodEnd?: string;
+            /**
+             * Format: int64
+             * @description Số tiền sao kê yêu cầu quán trả (đã gồm các khoản nợ trước đó).
+             */
+            amountDue?: number;
+            /**
+             * Format: int64
+             * @description Phần còn thiếu sau các khoản có vào sổ sau thời điểm chốt (trả nợ cũ nhất trước).
+             */
+            unpaid?: number;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            dueAt?: string;
+            /** @description OPEN, OVERDUE hoặc PAID. */
+            status?: string;
+            /** @description Quản trị viên đã gia hạn. */
+            extended?: boolean;
+            /** @description Lý do gia hạn. */
+            extensionReason?: string;
         };
         ReviewModerationRequest: {
             /** @description Lý do ẩn, bắt buộc (ghi vào nhật ký kiểm toán). */
@@ -3375,6 +4392,76 @@ export interface components {
              * @description Thời điểm chuyển khoản; bỏ trống là lúc bấm xác nhận.
              */
             transferredAt?: string;
+        };
+        ReopenOrderCaseRequest: {
+            /** @description Lý do mở lại, được ghi lại. */
+            reason: string;
+        };
+        DecideOrderCaseRequest: {
+            /** @description UPHELD (khách được hoàn tiền, quán chịu) hoặc DISMISSED (không có gì thay đổi về tiền). */
+            outcome: string;
+            /** @description Lý do; cả khách và quán đều thấy. */
+            reason: string;
+            /** @description Chấp nhận ít hơn đã báo: chỉ các dòng này, mỗi dòng số phần từ 1 đến số khách báo; tiền tính lại theo tỷ lệ từ số đã lưu. Chỉ với UPHELD và các loại thiếu món, sai món, chất lượng. */
+            lines?: components["schemas"]["CaseLineRequest"][];
+            /** @description Chỉ với báo cáo khách vắng mặt, bắt buộc: CUSTOMER_AT_FAULT (UPHELD, đơn kết thúc NOT_DELIVERED), CUSTOMER_RECEIVED (DISMISSED, đơn thành DELIVERED) hoặc SHOP_NEVER_CAME (DISMISSED, đơn bị huỷ, hoàn tiền đầy đủ nếu đã trả online, quán bị ghi lỗi). */
+            noShowOutcome?: string;
+        };
+        EndSuspensionRequest: {
+            /** @description Lý do huỷ đình chỉ hoặc khôi phục quán, được ghi lại; quán thấy lý do này. */
+            reason: string;
+        };
+        ShopSuspension: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** @description SCHEDULED (có báo trước) hoặc IMMEDIATE (theo yêu cầu của cơ quan có thẩm quyền). */
+            kind?: string;
+            /** @description SCHEDULED (đang trong thời gian báo trước, quán vẫn hoạt động), APPLIED (đang bị đình chỉ), CANCELLED hoặc LIFTED. */
+            status?: string;
+            reason?: string;
+            authorityReference?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            noticeSentAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            effectiveAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            createdAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            appliedAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            endedAt?: string;
+            endReason?: string;
+        };
+        SuspendShopRequest: {
+            /** @description Lý do đình chỉ; quán thấy lý do này ngay khi được báo. */
+            reason: string;
+            /**
+             * Format: date-time
+             * @description Ngày hiệu lực, cách bây giờ ít nhất 5 ngày (`legal.seller_restriction_notice_days`); bỏ trống là đúng 5 ngày.
+             */
+            effectiveAt?: string;
+            /** @description Chỉ đình chỉ ngay khi có yêu cầu của cơ quan có thẩm quyền: đặt true và ghi số hiệu, ngày của yêu cầu ở `authorityReference`. Khi đó không có `effectiveAt`. */
+            immediate?: boolean;
+            /** @description Số hiệu và ngày của yêu cầu từ cơ quan có thẩm quyền; bắt buộc khi `immediate`. */
+            authorityReference?: string;
         };
         ShopRejectRequest: {
             reason: string;
@@ -3772,6 +4859,22 @@ export interface components {
             /** Format: int64 */
             total?: number;
         };
+        /** @description Tình trạng đình chỉ của chính quán. */
+        MyShopSuspension: {
+            /** @description NONE, SCHEDULED (sắp bị đình chỉ, vẫn hoạt động đến `effectiveAt`) hoặc SUSPENDED (đang bị đình chỉ). */
+            status?: string;
+            reason?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            effectiveAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            noticeSentAt?: string;
+        };
         RevenueBucket: {
             /**
              * Format: date
@@ -3841,6 +4944,157 @@ export interface components {
             to?: string;
             items?: components["schemas"]["BestSellingDish"][];
         };
+        /** @description Tình trạng nợ hoa hồng của quán. Số tiền quá hạn luôn tính từ sổ cái. */
+        CommissionStanding: {
+            /** @description NONE, OVERDUE (đã báo trước), RESTRICTED (hạn chế hiển thị), PAUSED (tạm ngưng nhận đơn) hoặc REVIEW (chờ quản trị viên xem xét; quán vẫn tạm ngưng). */
+            stage?: string;
+            /**
+             * Format: int64
+             * @description Số quán đang nợ nền tảng (số dư âm đổi dấu), kể cả phần chưa đến hạn.
+             */
+            owed?: number;
+            /**
+             * Format: int64
+             * @description Phần đã quá hạn; 0 nghĩa là không có gì bị hạn chế.
+             */
+            overdue?: number;
+            /**
+             * Format: date-time
+             * @description Thời điểm bắt đầu quá hạn của đợt hiện tại.
+             */
+            overdueSince?: string;
+            /**
+             * Format: date-time
+             * @description Sớm nhất khi quán bị hạn chế hiển thị, luôn sau thông báo ít nhất 5 ngày.
+             */
+            restrictAt?: string;
+            /**
+             * Format: date-time
+             * @description Sớm nhất khi quán bị tạm ngưng nhận đơn.
+             */
+            pauseAt?: string;
+            /**
+             * Format: date-time
+             * @description Khi quán được chuyển cho quản trị viên xem xét (không bao giờ tự khoá).
+             */
+            reviewAt?: string;
+        };
+        CommissionStatementList: {
+            standing?: components["schemas"]["CommissionStanding"];
+            items?: components["schemas"]["CommissionStatement"][];
+        };
+        PerformanceStanding: {
+            /**
+             * Format: int32
+             * @description Điểm phạt còn hiệu lực (cấp trong 90 ngày gần nhất, chưa được miễn).
+             */
+            activePoints?: number;
+            /** @description NONE, WARNING (1–2 điểm: chỉ cảnh báo), RESTRICTION_SCHEDULED (từ 3 điểm: đã báo, chưa áp dụng) hoặc RESTRICTED (đang hạn chế hiển thị). */
+            consequence?: string;
+            /**
+             * Format: date-time
+             * @description Khi hạn chế hiển thị bắt đầu; luôn cách thông báo ít nhất 5 ngày.
+             */
+            restrictionStartsAt?: string;
+            /** @description Lý do hạn chế: PERFORMANCE (điểm phạt). Nợ hoa hồng quá hạn là một lý do khác, xem mục Thu nhập. */
+            reason?: string;
+        };
+        PerformanceWeek: {
+            /**
+             * Format: date
+             * @description Thứ Hai đầu tuần, giờ Việt Nam.
+             */
+            start?: string;
+            /**
+             * Format: date
+             * @description Chủ nhật cuối tuần.
+             */
+            end?: string;
+            /**
+             * Format: int64
+             * @description Số đơn đã đến bước quán nhận và kết thúc trong tuần.
+             */
+            finishedOrders?: number;
+            /**
+             * Format: int64
+             * @description Số đơn thất bại do quán.
+             */
+            faultOrders?: number;
+            /** @description Tỷ lệ phần trăm; luôn có, nhưng chỉ tính điểm phạt khi `counted` là true. */
+            ratePercent?: number;
+            /** @description Đủ số đơn tối thiểu (10) để tuần này được đánh giá. */
+            counted?: boolean;
+            /** @description Tuần này đã bị cộng điểm phạt. */
+            penalised?: boolean;
+            /** @description Tuần đang diễn ra: số liệu tạm tính, chưa đánh giá. */
+            current?: boolean;
+        };
+        ShopPenalty: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** Format: int32 */
+            points?: number;
+            /** @description WEEKLY (đánh giá hằng tuần) hoặc MANUAL (quản trị viên cộng). */
+            source?: string;
+            /** Format: date */
+            weekStart?: string;
+            reason?: string;
+            /** @description ACTIVE hoặc WAIVED (đã được miễn). */
+            status?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            issuedAt?: string;
+            /**
+             * Format: date-time
+             * @description Hết hiệu lực sau 90 ngày kể từ khi cấp.
+             */
+            expiresAt?: string;
+            /** @description Còn kháng nghị được: điểm đang hiệu lực, chưa kháng nghị, trong thời hạn 7 ngày. */
+            canAppeal?: boolean;
+            /**
+             * Format: date-time
+             * @description Hạn kháng nghị.
+             */
+            appealDeadline?: string;
+            /** @description PENDING, ACCEPTED hoặc REJECTED; vắng mặt khi chưa kháng nghị. */
+            appealStatus?: string;
+            /** @description Lý do quản trị viên quyết định kháng nghị hoặc miễn điểm. */
+            decisionReason?: string;
+        };
+        ShopPerformance: {
+            standing?: components["schemas"]["PerformanceStanding"];
+            /** @description Tuần hiện tại (tạm tính) rồi 8 tuần đã đóng gần nhất, mới nhất trước. */
+            weeks?: components["schemas"]["PerformanceWeek"][];
+            penalties?: components["schemas"]["ShopPenalty"][];
+            /**
+             * Format: int32
+             * @description Ngưỡng tỷ lệ lỗi (phần trăm); vượt ngưỡng một tuần đủ đơn thì bị cộng 1 điểm.
+             */
+            thresholdPercent?: number;
+            /**
+             * Format: int32
+             * @description Số đơn tối thiểu để một tuần được đánh giá.
+             */
+            minOrders?: number;
+        };
+        ShopFault: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            orderId?: string;
+            /** Format: int64 */
+            orderNumber?: number;
+            /** @description SHOP_REJECTED (quán từ chối), NO_RESPONSE (không trả lời kịp), HANDOVER_TIMEOUT (không giao đi kịp), SHOP_CANCELLED (huỷ sau khi nhận), INCIDENT_FULL_REFUND (khiếu nại hoàn cả đơn) hoặc NO_SHOW_SHOP_AT_FAULT (quán không đến). */
+            type?: string;
+            /** Format: date-time */
+            at?: string;
+        };
         ShopOrderPage: {
             items?: components["schemas"]["ShopOrderSummary"][];
             /** Format: int32 */
@@ -3884,6 +5138,48 @@ export interface components {
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
             handoverDeadline?: string;
+        };
+        OrderCasePage: {
+            items?: components["schemas"]["OrderCaseSummary"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        OrderCaseSummary: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            orderId?: string;
+            /** Format: int64 */
+            orderNumber?: number;
+            type?: string;
+            status?: string;
+            /** Format: int32 */
+            refundAmount?: number;
+            /**
+             * Format: int32
+             * @description Số tiền quán phải chịu nếu được chấp nhận.
+             */
+            shopBears?: number;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            shopResponseDueAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            openedAt?: string;
         };
         /** @description Số dư hiện tại của quán với nền tảng. */
         EarningsSummary: {
@@ -4076,6 +5372,80 @@ export interface components {
             ward?: string;
             province?: string;
         };
+        PenaltyShopPage: {
+            items?: components["schemas"]["PenaltyShopRow"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        PenaltyShopRow: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            /** Format: int32 */
+            activePoints?: number;
+            /** @description NONE, WARNING, RESTRICTION_SCHEDULED hoặc RESTRICTED. */
+            consequence?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            restrictionStartsAt?: string;
+            /** @description Từ 6 điểm: nên xem xét đình chỉ (không bao giờ tự động). */
+            reviewFlagged?: boolean;
+            /**
+             * Format: int64
+             * @description Số kháng nghị đang chờ quyết.
+             */
+            pendingAppeals?: number;
+        };
+        PenaltyAppealPage: {
+            items?: components["schemas"]["PenaltyAppealRow"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        PenaltyAppealRow: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            penaltyId?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            vendorName?: string;
+            /** Format: int32 */
+            points?: number;
+            /** Format: date */
+            weekStart?: string;
+            /** Format: int32 */
+            finishedOrders?: number;
+            /** Format: int32 */
+            faultOrders?: number;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            issuedAt?: string;
+            appealReason?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            appealedAt?: string;
+        };
         SettlementVendor: {
             /**
              * Format: uuid
@@ -4154,6 +5524,8 @@ export interface components {
              * @description Lần chi trả gần nhất.
              */
             lastPayoutAt?: string;
+            /** @description Giai đoạn nợ hoa hồng quá hạn: NONE, OVERDUE, RESTRICTED, PAUSED hoặc REVIEW (chờ quản trị viên xem xét khoá quán). */
+            commissionStage?: string;
         };
         SettlementTotals: {
             /**
@@ -4207,6 +5579,92 @@ export interface components {
             size?: number;
             /** Format: int64 */
             total?: number;
+        };
+        AdminOrderCasePage: {
+            items?: components["schemas"]["AdminOrderCaseSummary"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        AdminOrderCaseSummary: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** Format: int64 */
+            orderNumber?: number;
+            type?: string;
+            status?: string;
+            /** Format: int32 */
+            refundAmount?: number;
+            /** Format: int32 */
+            shopBears?: number;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            vendorName?: string;
+            customerName?: string;
+            /** @description ACCEPTED hoặc DISPUTED; vắng mặt khi quán không trả lời. */
+            shopResponse?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            openedAt?: string;
+        };
+        /** @description Một khiếu nại kèm bằng chứng để quyết định. */
+        AdminOrderCase: {
+            orderCase?: components["schemas"]["OrderCase"];
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            customerId?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            vendorName?: string;
+            customerHistory?: components["schemas"]["OrderCaseHistory"];
+            shopHistory?: components["schemas"]["OrderCaseHistory"];
+            /** @description Quán không trả lời kịp (khác với quán phản đối). */
+            noResponse?: boolean;
+            /** @description Đã được mở lại một lần; mỗi khiếu nại chỉ mở lại được một lần. */
+            reopened?: boolean;
+            log?: components["schemas"]["OrderCaseLogEntry"][];
+        };
+        /** @description Các khiếu nại khác của cùng người (không tính khiếu nại đang xem). */
+        OrderCaseHistory: {
+            /** Format: int64 */
+            total?: number;
+            /** Format: int64 */
+            upheld?: number;
+            /** Format: int64 */
+            dismissed?: number;
+            /**
+             * Format: int64
+             * @description Số khiếu nại bị bác bỏ trong 90 ngày gần nhất; chạm ngưỡng `abuse.incident_dismissed_threshold` (3) thì cảnh báo.
+             */
+            dismissedLast90Days?: number;
+        };
+        OrderCaseLogEntry: {
+            /** @description FILED, SHOP_ACCEPTED, SHOP_DISPUTED, NO_RESPONSE, UPHELD, DISMISSED hoặc REOPENED. */
+            action?: string;
+            /** @description CUSTOMER, SHOP, ADMIN hoặc SYSTEM. */
+            by?: string;
+            detail?: string;
+            /** Format: date-time */
+            at?: string;
+        };
+        ShopSuspensionHistory: {
+            items?: components["schemas"]["ShopSuspension"][];
         };
         ShopApplicationSummary: {
             /**
@@ -6693,6 +8151,91 @@ export interface operations {
             };
         };
     };
+    reportOrderNotReceived: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ReportNotReceivedRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã tạo khiếu nại. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:report`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_DELIVERED`: Đơn chưa ở trạng thái đã giao.
+             *     - `REPORT_WINDOW_CLOSED`: Đã quá 24 giờ kể từ khi đơn được giao.
+             *     - `ALREADY_CONFIRMED_RECEIVED`: Khách đã tự xác nhận nhận được đơn này.
+             *     - `CASE_ALREADY_FILED`: Đơn đã có khiếu nại; kèm `caseId` để xem.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     confirmOrderReceived: {
         parameters: {
             query?: never;
@@ -6834,6 +8377,387 @@ export interface operations {
              *     - `ALREADY_PAID`: Đơn đã được thanh toán.
              */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    answerNoShow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerNoShowRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `NOTE_REQUIRED`: `SHOP_NEVER_CAME` thiếu ghi chú.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:report`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Đơn này chưa có báo cáo khách vắng mặt (hoặc không phải của người gọi). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `CASE_ALREADY_ANSWERED`: Báo cáo không còn chờ khách trả lời.
+             *     - `ORDER_ALREADY_CHANGED`: Đơn vừa đổi trạng thái; tải lại để xem.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    reportOrderIncident: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportIncidentRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã tạo khiếu nại. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `LINE_NOT_IN_ORDER`: Có món không thuộc đơn này.
+             *     - `LINE_REPEATED`: Một món được chọn nhiều lần.
+             *     - `QUANTITY_INVALID`: Số phần ngoài khoảng từ 1 đến số đã đặt.
+             *     - `PHOTO_REQUIRED`: Thiếu ảnh cho `WRONG_ITEM` hoặc `QUALITY`.
+             *     - `TOO_MANY_PHOTOS`: Quá số ảnh cho phép (3).
+             *     - `PHOTO_INVALID`: Khoá ảnh không thuộc đơn này hoặc bị lặp.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:report`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_DELIVERED`: Đơn chưa ở trạng thái đã giao.
+             *     - `REPORT_WINDOW_CLOSED`: Đã quá 24 giờ kể từ khi đơn được giao.
+             *     - `CASE_ALREADY_FILED`: Đơn đã có khiếu nại; kèm `caseId` để xem.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    quoteOrderIncident: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuoteIncidentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCaseQuote"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `LINE_NOT_IN_ORDER`: Có món không thuộc đơn này.
+             *     - `LINE_REPEATED`: Một món được chọn nhiều lần.
+             *     - `QUANTITY_INVALID`: Số phần ngoài khoảng từ 1 đến số đã đặt.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:report`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_DELIVERED`: Đơn chưa ở trạng thái đã giao.
+             *     - `REPORT_WINDOW_CLOSED`: Đã quá 24 giờ kể từ khi đơn được giao.
+             *     - `CASE_ALREADY_FILED`: Đơn đã có khiếu nại; kèm `caseId` để xem.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    uploadOrderCasePhoto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCasePhotoUpload"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:report`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_DELIVERED`: Đơn chưa ở trạng thái đã giao.
+             *     - `REPORT_WINDOW_CLOSED`: Đã quá 24 giờ kể từ khi đơn được giao.
+             *     - `CASE_ALREADY_FILED`: Đơn đã có khiếu nại.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FILE_TOO_LARGE`: Ảnh vượt 5 MB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNSUPPORTED_FILE_TYPE`: Định dạng không được nhận (kiểm tra theo nội dung tệp). */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_UPLOADS`: Tải quá 10 ảnh trong một giờ cho đơn này. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7197,6 +9121,89 @@ export interface operations {
             };
         };
     };
+    appealShopPenalty: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppealPenaltyRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã gửi kháng nghị. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PENALTY_NOT_FOUND`: Không có điểm phạt này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt.
+             *     - `PENALTY_NOT_ACTIVE`: Điểm này đã được miễn.
+             *     - `APPEAL_ALREADY_FILED`: Điểm này đã được kháng nghị.
+             *     - `APPEAL_WINDOW_CLOSED`: Đã quá thời hạn kháng nghị; kèm `deadline`.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     advanceShopOrder: {
         parameters: {
             query?: never;
@@ -7368,6 +9375,208 @@ export interface operations {
             };
         };
     };
+    reportCustomerNoShow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportNoShowRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã tạo báo cáo. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `PHOTO_INVALID`: Khoá ảnh không thuộc đơn này.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của cửa hàng người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt.
+             *     - `ORDER_NOT_OUT_FOR_DELIVERY`: Đơn không còn ở trạng thái đang giao; kèm `status`.
+             *     - `NO_SHOW_TOO_EARLY`: Chưa đủ thời gian chờ tối thiểu; kèm `availableAt`.
+             *     - `CASE_ALREADY_FILED`: Đơn đã có báo cáo khách vắng mặt.
+             *     - `ORDER_ALREADY_CHANGED`: Đơn vừa đổi trạng thái (ví dụ khách vừa bấm đã nhận); tải lại để xem.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    uploadNoShowPhoto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCasePhotoUpload"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của cửa hàng người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt.
+             *     - `ORDER_NOT_OUT_FOR_DELIVERY`: Đơn không còn ở trạng thái đang giao; kèm `status`.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FILE_TOO_LARGE`: Ảnh vượt 5 MB. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNSUPPORTED_FILE_TYPE`: Định dạng không được nhận (kiểm tra theo nội dung tệp). */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_UPLOADS`: Tải quá 5 ảnh trong một giờ cho đơn này. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     confirmShopOrder: {
         parameters: {
             query?: never;
@@ -7515,6 +9724,168 @@ export interface operations {
              * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
              *     - `INVALID_TRANSITION`: Trạng thái hiện tại không cho phép bước này; `status` là trạng thái hiện tại.
              *     - `ORDER_ALREADY_CHANGED`: Người khác vừa đổi trạng thái đơn trước; tải lại đơn để xem trạng thái mới.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    disputeOrderCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisputeOrderCaseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có khiếu nại này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt.
+             *     - `CASE_ALREADY_ANSWERED`: Khiếu nại không còn chờ quán trả lời (đã trả lời, quá hạn hoặc đã được quyết).
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    acceptOrderCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có khiếu nại này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt.
+             *     - `CASE_ALREADY_ANSWERED`: Khiếu nại không còn chờ quán trả lời (đã trả lời, quá hạn hoặc đã được quyết).
              */
             409: {
                 headers: {
@@ -8511,6 +10882,304 @@ export interface operations {
             };
         };
     };
+    getShopPenaltyHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopPenaltyHistory"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `shop-penalty:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    addShopPenalty: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddPenaltyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopPenaltyHistory"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `shop-penalty:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    waiveShopPenalty: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WaivePenaltyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopPenaltyHistory"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `shop-penalty:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PENALTY_NOT_FOUND`: Không có điểm phạt với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PENALTY_NOT_ACTIVE`: Điểm này đã được miễn. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    decideShopPenaltyAppeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecidePenaltyAppealRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopPenaltyHistory"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `shop-penalty:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PENALTY_NOT_FOUND`: Không có điểm phạt với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `APPEAL_NOT_PENDING`: Điểm này không có kháng nghị đang chờ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     recordSettlementEntry: {
         parameters: {
             query?: never;
@@ -8593,6 +11262,90 @@ export interface operations {
              *     - `COLLECTION_EXCEEDS_DEBT`: COLLECTION vượt số quán đang nợ; kèm `owed`.
              *     - `IDEMPOTENCY_KEY_REUSED`: Khoá đã dùng cho một khoản khác.
              */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    extendCommissionStatement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExtendStatementRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionStatement"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `DUE_DATE_INVALID`: Hạn mới không sau hạn hiện tại.
+             *     - `DUE_DATE_TOO_FAR`: Hạn mới quá 30 ngày kể từ bây giờ.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `settlement:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `STATEMENT_NOT_FOUND`: Không có sao kê với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `STATEMENT_PAID`: Sao kê đã trả đủ. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -9068,6 +11821,405 @@ export interface operations {
              * @description - `REFUND_NOT_PAYABLE`: Khoản hoàn không ở trạng thái chờ chuyển khoản (đã xử lý, chờ khách nhập tài khoản hoặc đang hoàn qua MoMo).
              *     - `DUPLICATE_BANK_REFERENCE`: Mã giao dịch này đã dùng cho một khoản hoàn khác (nghi nhập trùng).
              */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    reopenOrderCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReopenOrderCaseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order-case:decide`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có khiếu nại với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `CASE_NOT_DECIDED`: Khiếu nại chưa có quyết định để xem lại; kèm `status`.
+             *     - `CASE_ALREADY_REOPENED`: Khiếu nại đã được mở lại một lần.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    decideOrderCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideOrderCaseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `LINES_NOT_ALLOWED`: `lines` chỉ dùng với UPHELD cho khiếu nại thiếu món, sai món hoặc chất lượng chưa từng mở lại.
+             *     - `LINE_NOT_IN_CASE`: Có món không thuộc khiếu nại này.
+             *     - `LINE_REPEATED`: Một món được chọn nhiều lần.
+             *     - `QUANTITY_INVALID`: Số phần ngoài khoảng từ 1 đến số khách đã báo.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order-case:decide`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có khiếu nại với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_OPEN`: Khiếu nại không ở hàng đợi quản trị (còn chờ quán, hoặc đã được quyết); kèm `status`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    cancelShopSuspension: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EndSuspensionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopSuspension"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:suspend`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NO_SCHEDULED_SUSPENSION`: Cửa hàng không có lịch đình chỉ nào đang chờ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    suspendShop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuspendShopRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã lập đình chỉ. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopSuspension"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `NOTICE_TOO_SHORT`: `effectiveAt` cách bây giờ chưa đủ 5 ngày; kèm `earliest`.
+             *     - `AUTHORITY_REFERENCE_REQUIRED`: Đình chỉ ngay thiếu số hiệu và ngày yêu cầu của cơ quan có thẩm quyền.
+             *     - `EFFECTIVE_AT_NOT_ALLOWED`: Đình chỉ ngay không có `effectiveAt`.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:suspend`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_FOUND`: Không có cửa hàng với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Cửa hàng không ở trạng thái đang hoạt động; kèm `status`.
+             *     - `SUSPENSION_ALREADY_OPEN`: Cửa hàng đã có lịch đình chỉ hoặc đang bị đình chỉ.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    reinstateShop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EndSuspensionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopSuspension"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:suspend`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_SUSPENDED`: Cửa hàng không bị đình chỉ. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -11067,6 +14219,143 @@ export interface operations {
             };
         };
     };
+    getOrderNoShow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:report`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Đơn này chưa có báo cáo khách vắng mặt (hoặc không phải của người gọi). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getOrderCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:report`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi.
+             *     - `CASE_NOT_FOUND`: Đơn này chưa có khiếu nại.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listNotifications: {
         parameters: {
             query?: {
@@ -11103,6 +14392,62 @@ export interface operations {
             };
             /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getMyShopSuspension: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyShopSuspension"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11268,6 +14613,62 @@ export interface operations {
             };
         };
     };
+    getMyCommissionStatements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionStatementList"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `earnings:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listReviewsOfMyShop: {
         parameters: {
             query?: {
@@ -11321,6 +14722,132 @@ export interface operations {
                 };
             };
             /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getMyPerformance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopPerformance"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listMyShopFaults: {
+        parameters: {
+            query: {
+                week: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopFault"][];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_WEEK`: `week` không phải một ngày thứ Hai.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -11472,6 +14999,155 @@ export interface operations {
                 };
             };
             /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listMyOrderCases: {
+        parameters: {
+            query?: {
+                status?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCasePage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_STATUS`: `status` không phải AWAITING_SHOP, AWAITING_CUSTOMER, OPEN, UPHELD hoặc DISMISSED.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getMyOrderCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có khiếu nại này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -11933,6 +15609,132 @@ export interface operations {
             };
         };
     };
+    listShopPenalties: {
+        parameters: {
+            query?: {
+                minPoints?: number;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PenaltyShopPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_MIN_POINTS`: `minPoints` âm.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `shop-penalty:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listPenaltyAppeals: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PenaltyAppealPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `shop-penalty:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getSettlementVendor: {
         parameters: {
             query?: never;
@@ -12104,6 +15906,73 @@ export interface operations {
              *     - `INVALID_TYPE`: `type` không phải một loại bút toán.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
              */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `settlement:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Không có quán với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getVendorCommissionStatements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionStatementList"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -12327,6 +16196,206 @@ export interface operations {
             };
             /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `refund:process`. */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listOrderCases: {
+        parameters: {
+            query?: {
+                status?: string;
+                type?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOrderCasePage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_STATUS`: `status` không phải AWAITING_SHOP, AWAITING_CUSTOMER, OPEN, UPHELD hoặc DISMISSED.
+             *     - `INVALID_TYPE`: `type` không phải một loại khiếu nại.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order-case:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getOrderCaseDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOrderCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order-case:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có khiếu nại với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listShopSuspensions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopSuspensionHistory"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_FOUND`: Không có cửa hàng với id này. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

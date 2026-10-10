@@ -51,6 +51,11 @@ function SellerTabs() {
       <Tabs.Screen name="earnings" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="statistics" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="dish-form" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="chat" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="help" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="support" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="ticket" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="notification-settings" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
       <Tabs.Screen name="shop" options={{ title: 'Cửa hàng', tabBarIcon: ({ color }) => <Store color={color} size={22} /> }} />
     </Tabs>

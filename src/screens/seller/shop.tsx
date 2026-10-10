@@ -101,6 +101,14 @@ export default function SellerShopScreen() {
       </Card>
 
       <Card>
+        <Text variant="titleSm">Hiệu suất cửa hàng</Text>
+        <Text variant="bodySm" muted>
+          Điểm phạt, tỷ lệ đơn lỗi theo tuần và kháng nghị. Cũng cho biết quán có đang bị hạn chế hoặc đình chỉ không.
+        </Text>
+        <Button title="Xem hiệu suất" variant="outline" onPress={() => router.push('/seller/performance')} />
+      </Card>
+
+      <Card>
         <Text variant="titleSm">Khiếu nại của khách</Text>
         <Text variant="bodySm" muted>
           Khách báo chưa nhận được hàng, thiếu món, sai món hoặc chất lượng. Bạn có 12 giờ để trả lời.

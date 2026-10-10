@@ -47,6 +47,7 @@ function SellerTabs() {
       <Tabs.Screen name="reviews" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="order-cases" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="order-case" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="performance" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="earnings" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="statistics" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="dish-form" options={{ href: null, tabBarStyle: { display: 'none' } }} />

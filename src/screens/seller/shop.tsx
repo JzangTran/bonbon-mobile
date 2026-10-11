@@ -124,6 +124,22 @@ export default function SellerShopScreen() {
         <Button title="Xem đánh giá" variant="outline" onPress={() => router.push('/seller/reviews')} />
       </Card>
 
+      <Card>
+        <Text variant="titleSm">Trợ giúp</Text>
+        <Text variant="bodySm" muted>
+          Hướng dẫn cho người bán và liên hệ đội hỗ trợ khi cần.
+        </Text>
+        <Button title="Mở trợ giúp" variant="outline" onPress={() => router.push('/seller/help')} />
+      </Card>
+
+      <Card>
+        <Text variant="titleSm">Cài đặt thông báo</Text>
+        <Text variant="bodySm" muted>
+          Chọn thông báo đẩy và email bạn muốn nhận, giờ yên lặng và các thiết bị.
+        </Text>
+        <Button title="Mở cài đặt" variant="outline" onPress={() => router.push('/seller/notification-settings')} />
+      </Card>
+
       <AccountPanel />
     </Screen>
   )

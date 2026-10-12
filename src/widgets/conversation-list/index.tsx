@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { useConversations, type Conversation } from '@/entities/chat'
 import { problemMessage } from '@/shared/api'
 import { formatAgo } from '@/shared/lib/format'
-import { Card, Notice, Text, spacing, useTheme } from '@/shared/ui'
+import { Card, Notice, Text, spacing, useTheme , EmptyState } from '@/shared/ui'
 
 /**
  * The conversations of the person or shop in use, newest first, with the last message and an unread dot
@@ -17,9 +17,7 @@ export function ConversationList({ side, live, onOpen }: { side: 'customer' | 's
     <View style={styles.list}>
       {conversations.isError ? <Notice tone="error" message={problemMessage(conversations.error, 'Không tải được tin nhắn lúc này.')} /> : null}
       {conversations.data && items.length === 0 ? (
-        <Card>
-          <Text muted>{side === 'customer' ? 'Bạn chưa nhắn tin với quán nào. Mở một quán và chọn Nhắn tin để hỏi trực tiếp.' : 'Chưa có khách nào nhắn tin.'}</Text>
-        </Card>
+        <EmptyState title={side === 'customer' ? 'Chưa có cuộc trò chuyện nào' : 'Chưa có khách nào nhắn tin'} hint={side === 'customer' ? 'Mở một quán và chọn Nhắn tin để hỏi trực tiếp.' : undefined} />
       ) : null}
       {items.map((c) => (
         <Pressable key={c.id} accessibilityRole="button" accessibilityLabel={`Mở trò chuyện với ${side === 'customer' ? c.shopName : c.customerName}`} onPress={() => onOpen(c)}>

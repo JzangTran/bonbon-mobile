@@ -5,7 +5,7 @@ import { CASE_STATUS_LABEL, CASE_TYPE_LABEL, useShopCases, type CaseStatus } fro
 import { problemMessage } from '@/shared/api'
 import { useNow } from '@/shared/lib/countdown'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
-import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme , EmptyState } from '@/shared/ui'
 
 const TABS: { id: CaseStatus; label: string }[] = [
   { id: 'AWAITING_SHOP', label: 'Chờ trả lời' },
@@ -51,9 +51,7 @@ export default function SellerOrderCasesScreen() {
 
       {cases.isError ? <Notice tone="error" message={problemMessage(cases.error, 'Không tải được khiếu nại lúc này.')} /> : null}
       {cases.data && items.length === 0 ? (
-        <Card>
-          <Text muted>Không có khiếu nại nào ở mục này.</Text>
-        </Card>
+        <EmptyState title="Không có khiếu nại nào ở mục này" />
       ) : null}
       {items.map((item) => {
         const hoursLeft = item.status === 'AWAITING_SHOP' && item.shopResponseDueAt ? Math.max(0, Math.ceil((new Date(item.shopResponseDueAt).getTime() - now) / 3_600_000)) : null

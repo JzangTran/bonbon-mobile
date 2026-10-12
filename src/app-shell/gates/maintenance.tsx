@@ -1,4 +1,4 @@
-import { Button, Text } from '@/shared/ui'
+import { Button, Illustration, Text } from '@/shared/ui'
 import { formatDateTime } from '@/shared/lib/format'
 import { BlockingScreen } from './blocking-screen'
 
@@ -6,6 +6,7 @@ import { BlockingScreen } from './blocking-screen'
 export function MaintenanceScreen({ message, endsAt, checking, onRetry }: { message?: string; endsAt?: string; checking: boolean; onRetry: () => void }) {
   return (
     <BlockingScreen>
+      <Illustration name="maintenance" width={180} />
       <Text variant="headline">Bonbon đang bảo trì</Text>
       <Text muted>{message || 'Hệ thống đang được bảo trì. Bạn vui lòng quay lại sau ít phút.'}</Text>
       {endsAt ? <Text>Dự kiến xong lúc {formatDateTime(endsAt)}.</Text> : null}

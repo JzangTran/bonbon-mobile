@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { ACTIVE_STATUSES, OrderStatusBadge, PAST_STATUSES, useCustomerLive, useMyOrders, type OrderStatus, type OrderSummary } from '@/entities/order'
 import { problemMessage } from '@/shared/api'
 import { formatAgo, formatVnd } from '@/shared/lib/format'
-import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme , EmptyState } from '@/shared/ui'
 
 type Tab = 'active' | 'past'
 
@@ -45,10 +45,7 @@ export default function CustomerOrdersScreen() {
       </View>
       {query.isError ? <Notice tone="error" message={problemMessage(query.error)} /> : null}
       {query.data && (query.data.items ?? []).length === 0 ? (
-        <Card>
-          <Text variant="titleSm">{tab === 'active' ? 'Chưa có đơn nào đang diễn ra' : 'Chưa có đơn nào đã xong'}</Text>
-          <Text muted>{tab === 'active' ? 'Chọn quán trong khu và đặt món đầu tiên của bạn.' : 'Các đơn đã giao, bị huỷ hoặc bị từ chối sẽ hiện ở đây.'}</Text>
-        </Card>
+        <EmptyState title={tab === 'active' ? 'Chưa có đơn nào đang diễn ra' : 'Chưa có đơn nào đã xong'} hint={tab === 'active' ? 'Chọn quán trong khu và đặt món đầu tiên của bạn.' : 'Các đơn đã giao, bị huỷ hoặc bị từ chối sẽ hiện ở đây.'} />
       ) : null}
       {(query.data?.items ?? []).map((order) => (
         <OrderCard key={order.id} order={order} />

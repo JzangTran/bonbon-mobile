@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { loadLastRole, useSession, type Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
-import { Button, Captcha, Card, Input, Notice, Screen, Text, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Captcha, Card, Illustration, Input, Notice, Screen, Text, spacing, useTheme, useToast } from '@/shared/ui'
 
 const schema = z.object({
   email: z.email('Email không hợp lệ'),
@@ -104,6 +104,7 @@ export default function LoginScreen() {
 
   return (
     <Screen>
+      <Illustration name="empty" width={120} />
       <Text variant="brand" color={theme.primary}>
         bonbon
       </Text>

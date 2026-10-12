@@ -11,7 +11,7 @@ import {
 import { problemMessage } from '@/shared/api'
 import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatAgo, formatVnd } from '@/shared/lib/format'
-import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme , EmptyState } from '@/shared/ui'
 import { NotificationBell } from '@/widgets/notification-bell'
 import { OrderActions } from './order-actions'
 
@@ -82,15 +82,11 @@ export default function SellerOrdersScreen() {
 
       {query.isError ? <Notice tone="error" message={problemMessage(query.error)} /> : null}
       {query.data && (query.data.items ?? []).length === 0 ? (
-        <Card>
-          <Text muted>
-            {tab === 'new'
+        <EmptyState title={tab === 'new'
               ? 'Chưa có đơn mới. Đơn mới sẽ hiện ở đây ngay khi khách đặt.'
               : tab === 'progress'
                 ? 'Không có đơn nào đang làm.'
-                : 'Chưa có đơn nào đã hoàn tất.'}
-          </Text>
-        </Card>
+                : 'Chưa có đơn nào đã hoàn tất.'} />
       ) : null}
       {(query.data?.items ?? []).map((order) => (
         <OrderCard key={order.id} order={order} />

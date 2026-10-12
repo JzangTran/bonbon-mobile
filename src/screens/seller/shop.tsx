@@ -2,11 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import { Linking, StyleSheet, Switch, View } from 'react-native'
 import { useShopCases } from '@/entities/order-case'
-import { SHOP_QUERY_KEY, useShop } from '@/entities/shop'
+import { SHOP_QUERY_KEY, shopStatus, useShop } from '@/entities/shop'
 import { api, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
 import { Button, Card, Text, Screen, radius, spacing, useTheme, useToast } from '@/shared/ui'
 import { AccountPanel } from '@/widgets/account-panel'
+import { CloseShopCard } from './close-shop-card'
+import { ClosingCard } from './closing-card'
 
 const WEEKDAYS = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
 const vnd = new Intl.NumberFormat('vi-VN')
@@ -30,6 +32,7 @@ export default function SellerShopScreen() {
   const waiting = useShopCases('AWAITING_SHOP').data?.total ?? 0
   const data = shop.data
   const accepting = data?.acceptingOrders ?? false
+  const closing = shopStatus(data) === 'CLOSING'
   const toggle = useMutation({
     mutationFn: async (next: boolean) => {
       const { data: view, error } = await api.PUT('/api/merchant/shop/accepting-orders', { body: { accepting: next } })
@@ -58,6 +61,9 @@ export default function SellerShopScreen() {
         </View>
       </View>
 
+      {closing ? (
+        <ClosingCard />
+      ) : (
       <Card style={{ borderWidth: 2, borderColor: data?.openNow ? theme.success : theme.divider }}>
         <View style={styles.switchRow}>
           <View style={styles.flex}>
@@ -78,6 +84,7 @@ export default function SellerShopScreen() {
           Tạm ngưng dừng đơn mới ngay; đơn đã nhận không bị huỷ.
         </Text>
       </Card>
+      )}
 
       <Card>
         <Row title="Địa chỉ" value={[data?.shop?.address?.detail, data?.shop?.address?.formattedAddress].filter(Boolean).join(' · ')} />
@@ -139,6 +146,8 @@ export default function SellerShopScreen() {
         </Text>
         <Button title="Mở cài đặt" variant="outline" onPress={() => router.push('/seller/notification-settings')} />
       </Card>
+
+      {closing ? null : <CloseShopCard />}
 
       <AccountPanel />
     </Screen>

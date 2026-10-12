@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { loadLastRole, useSession, type Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
-import { Button, Captcha, Card, Input, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
+import { Button, Captcha, Card, Input, Notice, Screen, Text, spacing, useTheme, useToast } from '@/shared/ui'
 
 const schema = z.object({
   email: z.email('Email không hợp lệ'),
@@ -21,6 +21,7 @@ const ROLE_LABEL: Record<Role, string> = { CUSTOMER: 'Khách hàng — đặt m�
 export default function LoginScreen() {
   const theme = useTheme()
   const { signIn } = useSession()
+  const toast = useToast()
   const [error, setError] = useState<string | null>(null)
   const [needsCaptcha, setNeedsCaptcha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
@@ -30,6 +31,7 @@ export default function LoginScreen() {
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: '', password: '' } })
 
   const finish = async (data: LoginResponse) => {
+    if (data.deletionCancelled) toast.show('Việc xoá tài khoản đã được huỷ vì bạn đăng nhập lại.')
     const { tokens, user } = data
     const role = (user?.activeRole ?? tokens?.role) as Role | undefined
     if (!tokens?.accessToken || !tokens.refreshToken || !user?.id || !role) return

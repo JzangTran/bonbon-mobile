@@ -7,6 +7,7 @@ import { useSession, type Role } from '@/entities/session'
 import { unregisterPush } from '@/features/push'
 import { api, problemMessage, type components } from '@/shared/api'
 import { Button, Card, Input, Notice, Sheet, Text, useToast } from '@/shared/ui'
+import { DeleteAccountCard } from './delete-account-card'
 
 type Profile = components['schemas']['Profile']
 
@@ -43,6 +44,7 @@ export function AccountPanel() {
       <RoleCard />
       {profile.data?.hasPassword !== false ? <PasswordCard /> : null}
       <SessionCard hasPassword={profile.data?.hasPassword !== false} />
+      <DeleteAccountCard />
     </>
   )
 }

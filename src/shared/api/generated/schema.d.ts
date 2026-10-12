@@ -482,6 +482,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/app-config/version-policy/{platform}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Đặt bản app tối thiểu
+         * @description `platform` là ANDROID hoặc IOS. Các bản thấp hơn bản tối thiểu nhận 426 ở mọi lệnh gọi (trừ đăng nhập và cấu hình) và thấy màn hình bắt cập nhật. Bản mới nhất chỉ làm app nhắc cập nhật.
+         *
+         *     **Cần đăng nhập**, quyền `app-config:write`.
+         */
+        put: operations["setAppVersionPolicy"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/app-config/maintenance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Đặt chế độ bảo trì
+         * @description `NONE` tắt; `READ_ONLY` chỉ cho xem, từ chối mọi thao tác ghi; `FULL` từ chối mọi thứ trừ cấu hình app, kiểm tra sức khoẻ, đăng nhập quản trị và webhook thanh toán. Có thể hẹn giờ bắt đầu và kết thúc. Quản trị viên vẫn dùng được API quản trị để tắt. Các tác vụ định kỳ (hết hạn đơn, tự giao) vẫn chạy và, trong lúc bảo trì, không bị tính là lỗi của quán.
+         *
+         *     **Cần đăng nhập**, quyền `app-config:write`.
+         */
+        put: operations["setMaintenance"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/support/tickets": {
         parameters: {
             query?: never;
@@ -962,6 +1006,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/shop/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đóng cửa hàng
+         * @description Đóng hẳn cửa hàng, không mở lại được. Cần đăng nhập trong 10 phút gần nhất. Quán chuyển sang `CLOSING`: biến mất khỏi danh sách, không nhận đơn mới, nhưng các đơn đang làm vẫn làm tiếp và xem được thu nhập. Quán thành `CLOSED` khi không còn đơn đang làm, khiếu nại hoặc kháng nghị chưa xong, không còn tiền bị giữ và sổ cái đã về 0 (số dương được chi trả, số âm được thu hoặc xoá bởi quản trị viên). Muốn bán lại phải mở cửa hàng mới.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["closeMyShop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/penalties/{id}/appeal": {
         parameters: {
             query?: never;
@@ -1226,6 +1292,116 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `vendor:write`.
          */
         post: operations["createMenuItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/category-cases/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sửa ngành của món
+         * @description Chọn ngành lá đúng (nên theo gợi ý). Vụ đóng (RESOLVED) và món hiện lại trong tìm kiếm, kể cả khi chọn ngành khác gợi ý; nếu quản trị viên vẫn thấy sai thì họ đánh dấu lại thành vụ mới. Áp dụng cho đơn đặt sau đó.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["resolveMyCategoryCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/category-cases/{id}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đồng ý với ngành hệ thống đã sửa
+         * @description Chỉ trong thời hạn sau khi hệ thống tự sửa. Vụ đóng (CONFIRMED).
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["confirmMyCategoryCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/category-cases/{id}/appeal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Kháng nghị ngành hệ thống đã sửa
+         * @description Chọn ngành quán cho là đúng và ghi giải thích. Mỗi vụ một lần, chỉ trong thời hạn. Trong lúc chờ, món giữ ngành do hệ thống đặt; quản trị viên quyết định, thường trong 3–5 ngày làm việc.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:write`.
+         */
+        post: operations["appealMyCategoryCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/account/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Xoá tài khoản
+         * @description Cần đăng nhập trong 10 phút gần nhất, gõ `DELETE` hoặc đúng email, và mật khẩu nếu tài khoản có mật khẩu. Mọi phiên đăng nhập và thiết bị nhận thông báo kết thúc ngay. Sau số ngày chờ (mặc định 7) tài khoản được ẩn danh tại chỗ: tên, email, số điện thoại, ảnh, mật khẩu, địa chỉ giao hàng, cách đăng nhập và tuỳ chọn thông báo bị xoá; đơn hàng, thanh toán, sổ cái, đánh giá và tin nhắn được giữ dưới tên "Người dùng đã xóa". Đăng nhập lại trong thời gian chờ sẽ huỷ việc xoá (phản hồi đăng nhập có `deletionCancelled`).
+         *
+         *     **Cần đăng nhập.**
+         */
+        post: operations["deleteMyAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/legal/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đồng ý văn bản đã cập nhật
+         * @description Gửi đúng id các văn bản đang chờ (`GET /api/legal/pending`). Lưu bằng chứng đồng ý kèm kênh, phiên bản app và IP như lúc đăng ký. Không có gì chờ thì không làm gì.
+         *
+         *     **Cần đăng nhập**, quyền `hasAnyAuthority('order:create', 'vendor:create')`.
+         */
+        post: operations["acceptLegalDocuments"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1904,6 +2080,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/merchants/{vendorId}/finish-closing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đóng cửa hàng ngay
+         * @description Chuyển cửa hàng từ `CLOSING` sang `CLOSED` khi không còn gì chặn. Còn gì chặn thì từ chối và trả danh sách ở `blockers`.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:decide`.
+         */
+        post: operations["finishClosingShop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/merchants/{id}/suspension/cancel": {
         parameters: {
             query?: never;
@@ -2036,6 +2234,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/legal-documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Các phiên bản văn bản
+         * @description Mọi phiên bản theo loại, mới nhất trước, kèm trạng thái hiển thị (DRAFT, SCHEDULED, EFFECTIVE, SUPERSEDED, CANCELLED), số tài khoản đã đồng ý và số còn chưa đồng ý.
+         *
+         *     **Cần đăng nhập**, quyền `legal-document:write`.
+         */
+        get: operations["listLegalDocumentVersions"];
+        put?: never;
+        /**
+         * Tạo bản nháp
+         * @description Phiên bản kế tiếp của một loại văn bản, chỉ quản trị viên thấy. Mỗi loại một bản nháp cùng lúc.
+         *
+         *     **Cần đăng nhập**, quyền `legal-document:write`.
+         */
+        post: operations["createLegalDraft"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/legal-documents/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đăng phiên bản
+         * @description Từ lúc này nội dung bất biến. Thay đổi quan trọng: ngày hiệu lực cách bây giờ ít nhất `legal.min_notice_days` (15) ngày, bỏ trống là đúng số ngày đó; thay đổi nhỏ: có hiệu lực ngay nếu bỏ trống. Phiên bản trước hết hiệu lực khi phiên bản này bắt đầu có hiệu lực. Mọi người thuộc đối tượng được báo trong ứng dụng và qua email.
+         *
+         *     **Cần đăng nhập**, quyền `legal-document:write`.
+         */
+        post: operations["publishLegalDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/legal-documents/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Huỷ phiên bản
+         * @description Bản nháp được bỏ. Bản đã đăng nhưng chưa đến ngày hiệu lực được rút lại với lý do bắt buộc và mọi người được báo là thay đổi sẽ không áp dụng. Bản đã có hiệu lực không huỷ được, chỉ thay bằng phiên bản mới hơn.
+         *
+         *     **Cần đăng nhập**, quyền `legal-document:write`.
+         */
+        post: operations["cancelLegalDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/help-articles": {
         parameters: {
             query?: never;
@@ -2064,6 +2334,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/dishes/{id}/reclassify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đổi ngành món ngay
+         * @description Khi sai rõ ràng, không có hạn. Vụ đang chờ quán sửa hoặc đã tự sửa của món được đóng cùng (RESOLVED); quán được báo. Từ chối nếu quán đang kháng nghị: hãy quyết định kháng nghị. Trả về vụ đã đóng, hoặc rỗng nếu món không có vụ nào.
+         *
+         *     **Cần đăng nhập**, quyền `dish:moderate`.
+         */
+        post: operations["reclassifyDish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/dishes/{id}/flag": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đánh dấu món sai ngành
+         * @description Bắt buộc có lý do và ngành gợi ý (ngành lá). Hạn sửa mặc định 24 giờ (`category.fix_deadline_hours`), tối đa 7 ngày. Món bị ẩn khỏi tìm kiếm và lọc ngành ngay; quán được báo ngay. Mỗi món một vụ chưa đóng.
+         *
+         *     **Cần đăng nhập**, quyền `dish:moderate`.
+         */
+        post: operations["flagDishCategory"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/customers/{id}/reveal": {
         parameters: {
             query?: never;
@@ -2080,6 +2394,28 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `admin-customer:read`.
          */
         post: operations["revealAdminCustomerContact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/category-cases/{id}/decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Quyết định kháng nghị
+         * @description `ACCEPT`: món chuyển sang ngành quán xin (hoặc ngành khác nếu gửi `categoryId`, giải thích trong lý do); `REJECT`: ngành do hệ thống đặt giữ nguyên. Cần lý do; quán được báo. Chỉ áp dụng cho đơn đặt sau đó.
+         *
+         *     **Cần đăng nhập**, quyền `dish:moderate`.
+         */
+        post: operations["decideCategoryAppeal"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2334,6 +2670,34 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `vendor:write`.
          */
         patch: operations["setMenuItemAvailability"];
+        trace?: never;
+    };
+    "/api/admin/legal-documents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem một phiên bản
+         * @description Kèm toàn bộ nội dung.
+         *
+         *     **Cần đăng nhập**, quyền `legal-document:write`.
+         */
+        get: operations["getLegalDocumentVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Sửa bản nháp
+         * @description Chỉ các trường được gửi mới đổi.
+         *
+         *     **Cần đăng nhập**, quyền `legal-document:write`.
+         */
+        patch: operations["updateLegalDraft"];
         trace?: never;
     };
     "/api/admin/help-articles/{id}": {
@@ -3004,6 +3368,116 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/closure": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tình trạng đóng cửa hàng
+         * @description Khi cửa hàng đang `CLOSING`: lý do đã chọn và những gì còn chặn việc đóng hẳn (đơn đang làm, khiếu nại, kháng nghị, tiền đang giữ, số dư sổ cái). Cửa hàng thành `CLOSED` khi tất cả đều xong.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["getMyShopClosure"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/category-cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Các vụ sai ngành của quán
+         * @description Mới nhất trước, lọc theo `status` (RESTRICTED và AUTO_CORRECTED là các vụ còn mở; còn lại là lịch sử). Mỗi vụ có lý do, ngành gợi ý, hạn sửa và hạn xác nhận hoặc kháng nghị.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["listMyCategoryCases"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/category-cases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chi tiết một vụ
+         * @description Vụ của cửa hàng người gọi.
+         *
+         *     **Cần đăng nhập**, quyền `vendor:read`.
+         */
+        get: operations["getMyCategoryCase"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/account/deletion-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Có xoá được tài khoản không
+         * @description Danh sách việc còn chặn: đơn đang làm, khiếu nại hoặc phiếu hỗ trợ chưa xong, cửa hàng chưa đóng. `link` cho biết nơi xử lý từng việc. Xoá áp dụng cho cả tài khoản (cả vai trò khách và người bán). Còn cho biết số ngày chờ và có cần mật khẩu không.
+         *
+         *     **Cần đăng nhập.**
+         */
+        get: operations["checkAccountDeletion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/legal/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Văn bản cần đồng ý lại
+         * @description Khi một thay đổi quan trọng của điều khoản hoặc chính sách bắt đầu có hiệu lực, người dùng đã đồng ý bản cũ phải đồng ý bản mới trước khi tiếp tục: mọi lệnh gọi khác trả 403 `LEGAL_ACCEPTANCE_REQUIRED` kèm danh sách này. Rỗng khi không có gì chờ. Nội dung đầy đủ lấy ở `GET /api/legal/documents/{type}`.
+         *
+         *     **Cần đăng nhập**, quyền `hasAnyAuthority('order:create', 'vendor:create')`.
+         */
+        get: operations["getPendingLegalDocuments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/legal/documents/{type}": {
         parameters: {
             query?: never;
@@ -3158,6 +3632,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/app/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cấu hình app
+         * @description Client gửi `X-App-Platform` (ANDROID hoặc IOS) và `X-App-Version` trên mọi lệnh gọi. Bản thấp hơn bản tối thiểu thì `updateRequired` là true (các lệnh gọi khác trả 426 `APP_UPDATE_REQUIRED` kèm `storeUrl`); thấp hơn bản mới nhất thì `updateAvailable` là true. Web không gửi hai header này nên không bị chặn theo phiên bản. `maintenance.active` cho biết hệ thống đang bảo trì: FULL từ chối mọi thứ (503 `MAINTENANCE`), READ_ONLY chỉ cho đọc (503 `MAINTENANCE_READ_ONLY` với thao tác ghi). Webhook thanh toán và đăng nhập quản trị luôn dùng được.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["getAppConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/support/tickets": {
         parameters: {
             query?: never;
@@ -3194,6 +3690,72 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `ticket:read`.
          */
         get: operations["getAdminSupportTicket"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/stats/user-growth": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Người dùng mới theo vai trò
+         * @description Số vai trò khách và người bán mới được thêm trong khoảng (theo ngày vai trò được thêm, không phải ngày tạo tài khoản), chia theo `granularity`. Mặc định 30 ngày gần nhất.
+         *
+         *     **Cần đăng nhập**, quyền `platform-stats:read`.
+         */
+        get: operations["getUserGrowth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/stats/revenue-by-merchant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Doanh thu theo cửa hàng
+         * @description Mỗi cửa hàng có đơn đã giao trong khoảng một dòng: số đơn, doanh thu gộp, hoa hồng. `sort` là `revenue` (mặc định), `orders`, `commission` hoặc `name`; `q` tìm theo tên, không phân biệt hoa thường và dấu. Khớp với báo cáo doanh thu của chính cửa hàng trong cùng khoảng.
+         *
+         *     **Cần đăng nhập**, quyền `platform-stats:read`.
+         */
+        get: operations["getRevenueByMerchant"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/stats/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tổng quan hệ thống
+         * @description Số đơn đã giao, doanh thu gộp, hoa hồng, số cửa hàng và khách hoạt động trong khoảng `from`–`to` (mặc định 30 ngày gần nhất, gồm cả hai đầu), chia theo `granularity`: `day` (mặc định), `week` (từ thứ Hai) hoặc `month`. "Hoạt động" là có ít nhất một đơn đã giao trong khoảng. Trả mọi kỳ, kỳ không có đơn là 0.
+         *
+         *     **Cần đăng nhập**, quyền `platform-stats:read`.
+         */
+        get: operations["getPlatformOverview"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3488,6 +4050,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/merchants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách cửa hàng
+         * @description Mặc định là cửa hàng đang hoạt động (`APPROVED`), mới nhất trước. `status` là PENDING, APPROVED, REJECTED, SUSPENDED, CLOSED hoặc ALL; `q` tìm theo tên, phường, tỉnh, không phân biệt hoa thường và dấu. Mỗi dòng có điểm đánh giá, số đơn đã giao, điểm phạt còn hiệu lực, hạn chế hiển thị, giai đoạn nợ hoa hồng và lịch đình chỉ.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["listMerchants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/{vendorId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chi tiết cửa hàng
+         * @description Hồ sơ của cửa hàng ở bất kỳ trạng thái nào đã gửi (không gồm bản nháp): thông tin quán, giao hàng, thuế, tài khoản nhận tiền dạng che, các quyết định duyệt, lịch sử đình chỉ và cảnh báo trùng (cùng mã số thuế, hoặc cùng họ tên và 4 số cuối giấy tờ). Cảnh báo chỉ để người duyệt xem, không tự từ chối. Giấy tờ định danh nằm ở endpoint riêng với quyền riêng và được ghi nhật ký mỗi lần xem.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["getMerchantDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/{vendorId}/dishes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Món của một cửa hàng và ngành của chúng
+         * @description Các món đang bán, theo tên: ngành lá và đường đi của ngành, tỷ lệ hoa hồng của ngành (rỗng nếu áp dụng mức mặc định chung), món có đang bị ẩn không và vụ sai ngành chưa đóng nếu có. Chỗ quản trị viên tìm món xếp vào ngành rẻ hơn để đánh dấu.
+         *
+         *     **Cần đăng nhập**, quyền `dish:moderate`.
+         */
+        get: operations["listShopDishesForModeration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/merchants/{id}/suspensions": {
         parameters: {
             query?: never;
@@ -3502,6 +4130,50 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `merchant-approval:read`.
          */
         get: operations["listShopSuspensions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/coverage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Vùng phủ
+         * @description Các cửa hàng đang hoạt động với vị trí, bán kính giao, số đơn đã giao; lọc theo `province` và `ward`. Quán có bán kính lớn hơn `outlierFactor` lần trung vị của tỉnh (cài đặt `coverage.outlier_factor`, mặc định 2) được đánh dấu để xem kỹ, không bị hạn chế. Không có vùng do quản trị vẽ: đây chỉ là quan sát.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["getAreaCoverage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/merchants/closing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cửa hàng đang đóng
+         * @description Cửa hàng chủ quán đã xin đóng, yêu cầu cũ nhất trước, kèm lý do và những gì còn chặn: đơn đang làm, khiếu nại và kháng nghị chưa xong, tiền bị giữ, số dư sổ cái. Hệ thống tự đóng khi mọi thứ về 0. Số dương được xử lý bằng chi trả ở mục Đối soát; số âm được thu hoặc xoá bằng bút toán điều chỉnh kèm lý do (quyết định của nền tảng, không phải của quán).
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["listClosingShops"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3700,6 +4372,72 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `commission:write`.
          */
         get: operations["getCommissionHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/category-cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách vụ sai ngành
+         * @description Lọc theo `status` và `vendorId` (lịch sử vi phạm của một quán). `status=APPEALED` là hàng chờ kháng nghị, cũ nhất trước (đích 3–5 ngày làm việc); còn lại mới nhất trước.
+         *
+         *     **Cần đăng nhập**, quyền `dish:moderate`.
+         */
+        get: operations["listDishCategoryCases"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/category-cases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chi tiết một vụ
+         * @description Ngành gốc, ngành gợi ý, ngành quán xin, ngành cuối và các mốc thời gian.
+         *
+         *     **Cần đăng nhập**, quyền `dish:moderate`.
+         */
+        get: operations["getDishCategoryCase"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/app-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem cấu hình app
+         * @description Bản tối thiểu và mới nhất của từng nền tảng, và trạng thái bảo trì.
+         *
+         *     **Cần đăng nhập**, quyền `app-config:write`.
+         */
+        get: operations["getAdminAppConfig"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4280,6 +5018,65 @@ export interface components {
             vatPercent?: number;
             categories?: components["schemas"]["CategoryCommissionRate"][];
         };
+        SetVersionPolicyRequest: {
+            /** @description Bản thấp nhất còn được hỗ trợ, dạng 1.10.0 (so từng phần số, không so chuỗi). Chỉ nâng sau khi bản mới đã lên cả hai cửa hàng ứng dụng. */
+            minSupportedVersion: string;
+            /** @description Bản mới nhất; không thấp hơn bản tối thiểu. */
+            latestVersion: string;
+            storeUrl?: string;
+            message?: string;
+            /** @description Lý do thay đổi, được ghi lại. */
+            reason: string;
+        };
+        AdminAppConfig: {
+            policies?: components["schemas"]["AppVersionPolicy"][];
+            maintenance?: components["schemas"]["MaintenanceStatus"];
+        };
+        AppVersionPolicy: {
+            platform?: string;
+            minSupportedVersion?: string;
+            latestVersion?: string;
+            storeUrl?: string;
+            message?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            updatedAt?: string;
+        };
+        MaintenanceStatus: {
+            /** @description NONE, READ_ONLY (xem được, mọi thao tác ghi bị từ chối) hoặc FULL (chỉ cấu hình, kiểm tra sức khoẻ, đăng nhập quản trị và webhook thanh toán còn dùng được). */
+            level?: string;
+            /** @description Đang có hiệu lực ngay bây giờ: mức khác NONE, đã đến giờ bắt đầu và chưa quá giờ kết thúc. */
+            active?: boolean;
+            message?: string;
+            /**
+             * Format: date-time
+             * @description Giờ bắt đầu; rỗng là ngay. Trước giờ này `active` là false nhưng app có thể báo trước.
+             */
+            startsAt?: string;
+            /**
+             * Format: date-time
+             * @description Giờ kết thúc dự kiến; rỗng là chưa biết.
+             */
+            endsAt?: string;
+        };
+        SetMaintenanceRequest: {
+            level: string;
+            message?: string;
+            /**
+             * Format: date-time
+             * @description Giờ bắt đầu; bỏ trống là ngay.
+             */
+            startsAt?: string;
+            /**
+             * Format: date-time
+             * @description Giờ kết thúc dự kiến; bỏ trống là chưa biết.
+             */
+            endsAt?: string;
+            /** @description Lý do thay đổi, được ghi lại. */
+            reason: string;
+        };
         OpenSupportTicketRequest: {
             /** @description Tiêu đề ngắn, tối đa 150 ký tự. */
             subject: string;
@@ -4763,6 +5560,12 @@ export interface components {
         CancelOrderRequest: {
             reason?: string;
         };
+        CloseShopRequest: {
+            /** @description STOP_SELLING (không bán nữa), RELOCATING (chuyển đi), TOO_FEW_ORDERS (ít đơn) hoặc OTHER (khác, cần ghi rõ). */
+            reason: string;
+            /** @description Ghi rõ lý do; bắt buộc khi lý do là OTHER. */
+            reasonText?: string;
+        };
         AppealPenaltyRequest: {
             /** @description Vì sao quán cho rằng điểm này không đúng. */
             reason: string;
@@ -4902,6 +5705,105 @@ export interface components {
             /** Format: int32 */
             stockQuantity?: number;
         };
+        ResolveDishCategoryRequest: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            categoryId: string;
+        };
+        CategoryRef: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            name?: string;
+        };
+        DishCategoryCase: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            dishId?: string;
+            dishName?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            shopName?: string;
+            /** @description RESTRICTED (món bị ẩn khỏi tìm kiếm, chờ sửa), AUTO_CORRECTED (hệ thống đã đổi ngành theo gợi ý, còn thời gian xác nhận hoặc kháng nghị), APPEALED, RESOLVED (quán tự sửa hoặc quản trị đổi), CONFIRMED, EXPIRED, APPEAL_ACCEPTED hoặc APPEAL_REJECTED. */
+            status?: string;
+            reason?: string;
+            originalCategory?: components["schemas"]["CategoryRef"];
+            suggestedCategory?: components["schemas"]["CategoryRef"];
+            /** @description Ngành quán muốn khi kháng nghị. */
+            requestedCategory?: components["schemas"]["CategoryRef"];
+            /** @description Ngành món đang ở / kết thúc ở. */
+            finalCategory?: components["schemas"]["CategoryRef"];
+            /**
+             * Format: date-time
+             * @description Hạn quán tự sửa; sau hạn hệ thống áp dụng gợi ý.
+             */
+            deadlineAt?: string;
+            /**
+             * Format: date-time
+             * @description Hạn xác nhận hoặc kháng nghị sau khi hệ thống tự sửa.
+             */
+            appealDeadlineAt?: string;
+            appealNote?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            openedAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            appealedAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            decidedAt?: string;
+            /** @description SYSTEM, ADMIN hoặc loại tài khoản của quán. */
+            decidedByType?: string;
+            decisionReason?: string;
+        };
+        AppealCategoryCorrectionRequest: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            categoryId: string;
+            note: string;
+        };
+        DeleteAccountRequest: {
+            /** @description Gõ `DELETE` hoặc đúng email của tài khoản. */
+            confirmation: string;
+            /** @description Mật khẩu hiện tại; bắt buộc với tài khoản có mật khẩu. */
+            password?: string;
+        };
+        AccountDeletionScheduled: {
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            executesAt?: string;
+            /** Format: int32 */
+            graceDays?: number;
+        };
+        AcceptLegalDocumentsRequest: {
+            /** @description Id của các văn bản đang chờ đồng ý, đúng như `GET /api/legal/pending`. */
+            documentIds: string[];
+        };
         ChatImageUpload: {
             /** @description Gửi trong `imageKey` của tin nhắn. */
             imageKey?: string;
@@ -4918,6 +5820,8 @@ export interface components {
             roleToken?: string;
             tokens?: components["schemas"]["TokenResponse"];
             user?: components["schemas"]["UserSummary"];
+            /** @description true khi tài khoản đang chờ xoá và lần đăng nhập này đã huỷ việc xoá; rỗng trong các trường hợp khác. */
+            deletionCancelled?: boolean;
         };
         TokenResponse: {
             accessToken?: string;
@@ -5345,6 +6249,36 @@ export interface components {
             /** @description Chỉ với báo cáo khách vắng mặt, bắt buộc: CUSTOMER_AT_FAULT (UPHELD, đơn kết thúc NOT_DELIVERED), CUSTOMER_RECEIVED (DISMISSED, đơn thành DELIVERED) hoặc SHOP_NEVER_CAME (DISMISSED, đơn bị huỷ, hoàn tiền đầy đủ nếu đã trả online, quán bị ghi lỗi). */
             noShowOutcome?: string;
         };
+        /** @description Những gì còn chặn việc đóng. Cửa hàng chỉ thành CLOSED khi tất cả đều bằng 0. */
+        ClosureBlockers: {
+            /**
+             * Format: int64
+             * @description Đơn đang làm: chờ quán nhận, đã nhận, đang chuẩn bị, đang giao.
+             */
+            ordersInProgress?: number;
+            /**
+             * Format: int64
+             * @description Khiếu nại còn chờ quán, khách hoặc quản trị viên.
+             */
+            openCases?: number;
+            /**
+             * Format: int64
+             * @description Kháng nghị điểm phạt còn chờ quản trị viên.
+             */
+            pendingAppeals?: number;
+            /**
+             * Format: int64
+             * @description Tiền đang bị giữ cho các khiếu nại chưa quyết.
+             */
+            heldForCases?: number;
+            /**
+             * Format: int64
+             * @description Số dư sổ cái: dương là nền tảng nợ quán (chi trả), âm là quán nợ nền tảng (thu hoặc xoá bằng bút toán điều chỉnh kèm lý do).
+             */
+            balance?: number;
+            /** @description Không còn gì chặn. */
+            ready?: boolean;
+        };
         EndSuspensionRequest: {
             /** @description Lý do huỷ đình chỉ hoặc khôi phục quán, được ghi lại; quán thấy lý do này. */
             reason: string;
@@ -5417,12 +6351,82 @@ export interface components {
             ownerUserId?: string;
             shopName?: string;
             /** @enum {string} */
-            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
+            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSING" | "CLOSED";
         };
         CreateAdminRequest: {
             /** Format: email */
             email: string;
             name: string;
+        };
+        /** @description Tạo bản nháp phiên bản mới của một loại văn bản. Mỗi loại chỉ có một bản nháp cùng lúc. */
+        CreateLegalDraftRequest: {
+            /** @enum {string} */
+            type: "CUSTOMER_TERMS" | "SELLER_TERMS" | "PRIVACY_POLICY";
+            title: string;
+            /** @description Tóm tắt thay đổi bằng lời dễ hiểu, hiện cho người dùng. */
+            summary?: string;
+            content: string;
+            /** @description Thay đổi quan trọng: người dùng phải đồng ý lại. Mặc định true. */
+            requiresReacceptance?: boolean;
+        };
+        LegalDocumentDetail: {
+            version?: components["schemas"]["LegalDocumentVersion"];
+            content?: string;
+        };
+        LegalDocumentVersion: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** @enum {string} */
+            type?: "CUSTOMER_TERMS" | "SELLER_TERMS" | "PRIVACY_POLICY";
+            /** Format: int32 */
+            version?: number;
+            title?: string;
+            summary?: string;
+            requiresReacceptance?: boolean;
+            /** @description DRAFT (chỉ quản trị viên thấy), SCHEDULED (đã đăng, chưa đến ngày hiệu lực), EFFECTIVE (đang hiệu lực), SUPERSEDED (đã có bản mới hơn hiệu lực) hoặc CANCELLED. */
+            status?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            publishedAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            effectiveAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            cancelledAt?: string;
+            cancelReason?: string;
+            /** @description SHA-256 của nội dung lúc đăng: bằng chứng văn bản không bị sửa. */
+            contentSha256?: string;
+            /**
+             * Format: int64
+             * @description Số tài khoản đã đồng ý đúng phiên bản này; rỗng với bản nháp.
+             */
+            accepted?: number;
+            /**
+             * Format: int64
+             * @description Số tài khoản thuộc đối tượng của văn bản này mà chưa đồng ý phiên bản này hoặc bản mới hơn; rỗng với bản nháp.
+             */
+            pending?: number;
+        };
+        PublishLegalDocumentRequest: {
+            /**
+             * Format: date-time
+             * @description Ngày có hiệu lực. Thay đổi quan trọng phải cách bây giờ ít nhất `legal.min_notice_days` (15) ngày; bỏ trống là đúng số ngày đó. Thay đổi nhỏ mặc định có hiệu lực ngay.
+             */
+            effectiveAt?: string;
+        };
+        CancelLegalDocumentRequest: {
+            /** @description Bắt buộc khi huỷ bản đã đăng; người dùng được báo lý do. */
+            reason?: string;
         };
         CreateHelpArticleRequest: {
             /** @description Tiêu đề hoặc câu hỏi, tối đa 200 ký tự. */
@@ -5458,9 +6462,42 @@ export interface components {
              */
             updatedAt?: string;
         };
+        /** @description Đổi ngành món ngay khi rõ ràng, không có hạn. */
+        ReclassifyDishRequest: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            categoryId: string;
+            reason: string;
+        };
+        FlagDishCategoryRequest: {
+            /** @description Vì sao ngành hiện tại sai; quán thấy lý do này. */
+            reason: string;
+            /**
+             * Format: uuid
+             * @description Ngành đúng theo quản trị viên (bắt buộc, là ngành lá): hệ thống áp dụng nó nếu quán không sửa kịp.
+             */
+            suggestedCategoryId: string;
+            /**
+             * Format: date-time
+             * @description Hạn quán tự sửa; bỏ trống là `category.fix_deadline_hours` (24) giờ kể từ bây giờ. Tối đa 7 ngày.
+             */
+            deadlineAt?: string;
+        };
         RevealedCustomerContact: {
             email?: string;
             phone?: string;
+        };
+        DecideCategoryAppealRequest: {
+            /** @description ACCEPT: món chuyển sang ngành quán xin (hoặc `categoryId` nếu khác). REJECT: ngành do hệ thống đặt giữ nguyên. */
+            decision: string;
+            /**
+             * Format: uuid
+             * @description Chỉ khi ACCEPT mà chấp nhận ngành khác với ngành quán xin.
+             */
+            categoryId?: string;
+            reason: string;
         };
         CategoryCreateRequest: {
             /**
@@ -5606,6 +6643,13 @@ export interface components {
         MenuItemStatusRequest: {
             /** @enum {string} */
             status: "AVAILABLE" | "SOLD_OUT";
+        };
+        /** @description Chỉ các trường được gửi mới đổi; chỉ sửa được bản nháp. */
+        UpdateLegalDraftRequest: {
+            title?: string;
+            summary?: string;
+            content?: string;
+            requiresReacceptance?: boolean;
         };
         /** @description Chỉ các trường được gửi mới đổi; `keywords` được gửi sẽ thay toàn bộ danh sách từ khoá. */
         UpdateHelpArticleRequest: {
@@ -6408,6 +7452,72 @@ export interface components {
             /** Format: int64 */
             total?: number;
         };
+        /** @description Cửa hàng của người gọi đang đóng: lý do đã chọn và những gì còn chặn. */
+        MyClosureStatus: {
+            name?: string;
+            reason?: string;
+            reasonText?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            requestedAt?: string;
+            blockers?: components["schemas"]["ClosureBlockers"];
+        };
+        DishCategoryCasePage: {
+            items?: components["schemas"]["DishCategoryCase"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        AccountDeletionBlocker: {
+            /** @description ORDERS_IN_PROGRESS, OPEN_CASES, OPEN_TICKETS hoặc SHOP_NOT_CLOSED. */
+            code?: string;
+            message?: string;
+            /** @description Nơi xử lý: ORDERS, ORDER_CASES, SUPPORT_TICKETS hoặc CLOSE_SHOP. */
+            link?: string;
+            /** Format: int64 */
+            count?: number;
+        };
+        AccountDeletionCheck: {
+            /** @description Có thể xoá ngay bây giờ: không còn gì chặn. */
+            allowed?: boolean;
+            blockers?: components["schemas"]["AccountDeletionBlocker"][];
+            /**
+             * Format: int32
+             * @description Số ngày chờ trước khi xoá thật; đăng nhập lại trong thời gian này sẽ huỷ việc xoá.
+             */
+            graceDays?: number;
+            /** @description Tài khoản dùng mật khẩu thì phải nhập lại mật khẩu để xoá; tài khoản chỉ đăng nhập bằng Google thì không. */
+            needsPassword?: boolean;
+            /** @description Từ cần gõ để xác nhận: `DELETE` hoặc đúng email đăng nhập. */
+            confirmationEmail?: string;
+        };
+        /** @description Một văn bản người dùng phải đồng ý lại. */
+        PendingLegalDocument: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            /** @enum {string} */
+            type?: "CUSTOMER_TERMS" | "SELLER_TERMS" | "PRIVACY_POLICY";
+            /** Format: int32 */
+            version?: number;
+            title?: string;
+            summary?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            effectiveAt?: string;
+        };
+        PendingLegalDocuments: {
+            items?: components["schemas"]["PendingLegalDocument"][];
+        };
         LegalDocumentView: {
             /**
              * Format: uuid
@@ -6481,6 +7591,24 @@ export interface components {
              */
             nextBefore?: string;
         };
+        /** @description Những gì app cần biết lúc khởi động và khi quay lại từ nền. */
+        AppConfig: {
+            /** Format: date-time */
+            serverTime?: string;
+            /** @description ANDROID, IOS, hoặc rỗng khi client không gửi `X-App-Platform` (web). */
+            platform?: string;
+            /** @description Bản thấp nhất còn được hỗ trợ cho nền tảng này; rỗng khi không có nền tảng. */
+            minSupportedVersion?: string;
+            latestVersion?: string;
+            storeUrl?: string;
+            /** @description Lời nhắn kèm yêu cầu cập nhật. */
+            updateMessage?: string;
+            /** @description Bản đang chạy thấp hơn bản tối thiểu: app phải chặn và dẫn tới cửa hàng ứng dụng. */
+            updateRequired?: boolean;
+            /** @description Có bản mới hơn nhưng bản đang chạy vẫn dùng được: app nhắc một lần mỗi ngày. */
+            updateAvailable?: boolean;
+            maintenance?: components["schemas"]["MaintenanceStatus"];
+        };
         AdminSupportTicketPage: {
             items?: components["schemas"]["AdminSupportTicketRow"][];
             /** Format: int32 */
@@ -6518,6 +7646,113 @@ export interface components {
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
             updatedAt?: string;
+        };
+        UserGrowthBucket: {
+            /** Format: date */
+            start?: string;
+            /** Format: int64 */
+            customers?: number;
+            /** Format: int64 */
+            sellers?: number;
+        };
+        /** @description Vai trò mới được thêm cho tài khoản theo thời gian. Một người đăng ký làm khách rồi mở quán sau đó được tính một lần ở mỗi chuỗi, vào đúng ngày của nó. */
+        UserGrowthReport: {
+            /** Format: date */
+            from?: string;
+            /** Format: date */
+            to?: string;
+            granularity?: string;
+            /** Format: int64 */
+            customers?: number;
+            /** Format: int64 */
+            sellers?: number;
+            /** @description Mọi kỳ trong khoảng, kể cả kỳ không có ai (0). */
+            buckets?: components["schemas"]["UserGrowthBucket"][];
+        };
+        /** @description Doanh thu theo cửa hàng. Khớp đúng với báo cáo doanh thu của chính cửa hàng đó trong cùng khoảng. */
+        MerchantRevenuePage: {
+            /** Format: date */
+            from?: string;
+            /** Format: date */
+            to?: string;
+            items?: components["schemas"]["MerchantRevenueRow"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
+        };
+        MerchantRevenueRow: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            /** Format: int64 */
+            orders?: number;
+            /** Format: int64 */
+            grossRevenue?: number;
+            /** Format: int64 */
+            commission?: number;
+        };
+        /** @description Số liệu toàn hệ thống của các đơn đã giao trong khoảng thời gian, theo ngày, tuần hoặc tháng. */
+        PlatformOverview: {
+            /** Format: date */
+            from?: string;
+            /** Format: date */
+            to?: string;
+            /** @description day, week (bắt đầu từ thứ Hai) hoặc month, theo giờ Việt Nam. */
+            granularity?: string;
+            totals?: components["schemas"]["PlatformOverviewTotals"];
+            /** @description Mọi kỳ trong khoảng, kể cả kỳ không có đơn nào (0), cũ nhất trước: sẵn để vẽ biểu đồ. */
+            buckets?: components["schemas"]["PlatformOverviewBucket"][];
+        };
+        PlatformOverviewBucket: {
+            /**
+             * Format: date
+             * @description Ngày đầu kỳ.
+             */
+            start?: string;
+            /** Format: int64 */
+            orders?: number;
+            /** Format: int64 */
+            grossRevenue?: number;
+            /** Format: int64 */
+            commission?: number;
+        };
+        PlatformOverviewTotals: {
+            /**
+             * Format: int64
+             * @description Số đơn đã giao.
+             */
+            orders?: number;
+            /**
+             * Format: int64
+             * @description Tổng khách đã trả, gồm phí giao, chưa trừ hoa hồng: đo tăng trưởng.
+             */
+            grossRevenue?: number;
+            /**
+             * Format: int64
+             * @description Tổng hoa hồng tính trên các đơn đó, chưa trừ phần hoàn lại do khiếu nại: đo thu nhập của nền tảng.
+             */
+            commission?: number;
+            /**
+             * Format: int64
+             * @description Số cửa hàng có ít nhất một đơn đã giao trong khoảng.
+             */
+            activeShops?: number;
+            /**
+             * Format: int64
+             * @description Số khách có ít nhất một đơn đã giao trong khoảng.
+             */
+            activeCustomers?: number;
+            /**
+             * Format: int64
+             * @description Số người bán có cửa hàng hoạt động (bằng số cửa hàng vì mỗi tài khoản bán hàng một cửa hàng).
+             */
+            activeSellers?: number;
         };
         PenaltyShopPage: {
             items?: components["schemas"]["PenaltyShopRow"][];
@@ -7010,36 +8245,61 @@ export interface components {
             /** Format: date-time */
             at?: string;
         };
-        ShopSuspensionHistory: {
-            items?: components["schemas"]["ShopSuspension"][];
+        MerchantDirectoryPage: {
+            items?: components["schemas"]["MerchantDirectoryRow"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            total?: number;
         };
-        ShopApplicationSummary: {
+        MerchantDirectoryRow: {
             /**
              * Format: uuid
              * @description UUID.
              */
             vendorId?: string;
-            /**
-             * Format: uuid
-             * @description UUID.
-             */
-            ownerUserId?: string;
             name?: string;
             ward?: string;
             province?: string;
-            businessType?: string;
-            /** @enum {string} */
-            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
+            /** @description PENDING, APPROVED, REJECTED, SUSPENDED hoặc CLOSED. */
+            status?: string;
+            deliveryRadiusKm?: number;
+            /**
+             * Format: double
+             * @description Điểm trung bình, rỗng khi chưa có đánh giá.
+             */
+            ratingAverage?: number;
+            /** Format: int32 */
+            ratingCount?: number;
+            /**
+             * Format: int64
+             * @description Số đơn đã giao từ trước đến nay.
+             */
+            deliveredOrders?: number;
+            /**
+             * Format: int32
+             * @description Tổng điểm phạt còn hiệu lực.
+             */
+            activePoints?: number;
+            /** @description Đang bị hạn chế hiển thị vì điểm phạt. */
+            performanceRestricted?: boolean;
+            /** @description Giai đoạn nợ hoa hồng: NONE, OVERDUE, RESTRICTED, PAUSED hoặc REVIEW. */
+            commissionStage?: string;
+            /** @description Có lịch đình chỉ chưa áp dụng hoặc đang bị đình chỉ: SCHEDULED, APPLIED; rỗng nếu không. */
+            suspension?: string;
             /**
              * Format: date-time
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
-            submittedAt?: string;
-            payoutHolderMatchesIdentity?: boolean;
+            createdAt?: string;
         };
-        ShopReviewQueueRow: {
-            shop?: components["schemas"]["ShopApplicationSummary"];
-            resubmitted?: boolean;
+        AdminMerchantDetail: {
+            shop?: components["schemas"]["ShopApplicationDetail"];
+            decisions?: components["schemas"]["ShopReviewDecision"][];
+            suspensions?: components["schemas"]["ShopSuspension"][];
+            duplicates?: components["schemas"]["ShopDuplicateWarning"][];
         };
         ShopApplicationDetail: {
             /**
@@ -7053,7 +8313,7 @@ export interface components {
              */
             ownerUserId?: string;
             /** @enum {string} */
-            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSED";
+            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSING" | "CLOSED";
             rejectionReason?: string;
             /**
              * Format: date-time
@@ -7106,9 +8366,17 @@ export interface components {
             identityDocType?: string;
             identityFullName?: string;
         };
-        ShopReviewApplication: {
-            shop?: components["schemas"]["ShopApplicationDetail"];
-            history?: components["schemas"]["ShopReviewDecision"][];
+        ShopDuplicateWarning: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSING" | "CLOSED";
+            /** @description TAX_CODE hoặc POSSIBLE_SAME_PERSON (cùng 4 số cuối giấy tờ và cùng họ tên). */
+            reason?: string;
         };
         ShopReviewDecision: {
             decision?: string;
@@ -7135,12 +8403,146 @@ export interface components {
              */
             closesAt?: string;
         };
+        ShopDishCategory: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            name?: string;
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            price?: number;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            categoryId?: string;
+            /** @description Đường đi từ ngành cấp 2 đến ngành lá, ví dụ `Đồ uống › Cà phê`. */
+            categoryPath?: string;
+            /** @description Tỷ lệ hoa hồng riêng của ngành hoặc kế thừa từ ngành cha; rỗng khi áp dụng tỷ lệ mặc định chung. */
+            commissionRate?: number;
+            /** @description Đang bị ẩn khỏi tìm kiếm vì sai ngành. */
+            restricted?: boolean;
+            /** @description Vụ sai ngành chưa đóng của món, nếu có. */
+            openCase?: components["schemas"]["ShopDishOpenCase"];
+        };
+        /** @description Các món đang bán của một cửa hàng với ngành và hoa hồng, để tìm món xếp sai ngành. */
+        ShopDishCategoryList: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            shopName?: string;
+            items?: components["schemas"]["ShopDishCategory"][];
+        };
+        ShopDishOpenCase: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            status?: string;
+        };
+        ShopSuspensionHistory: {
+            items?: components["schemas"]["ShopSuspension"][];
+        };
+        /** @description Vùng phủ thực tế do bán kính giao riêng của từng quán tạo thành. Chỉ đọc. */
+        AreaCoverage: {
+            /** Format: double */
+            outlierFactor?: number;
+            items?: components["schemas"]["CoverageShop"][];
+        };
+        CoverageShop: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            address?: string;
+            ward?: string;
+            province?: string;
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
+            radiusKm?: number;
+            /**
+             * Format: int64
+             * @description Số đơn đã giao: dấu hiệu hoạt động, không phải bộ lọc phạm vi.
+             */
+            deliveredOrders?: number;
+            /** @description Bán kính trung vị của các quán cùng tỉnh hoặc thành. */
+            provinceMedianRadiusKm?: number;
+            /** @description Bán kính lớn hơn `outlierFactor` lần trung vị cùng tỉnh: chỉ để quản trị viên xem kỹ, không bị hạn chế tự động. */
+            outlier?: boolean;
+        };
+        /** @description Cửa hàng đang đóng, yêu cầu cũ nhất trước. */
+        ClosingShopList: {
+            items?: components["schemas"]["ClosingShopRow"][];
+        };
+        ClosingShopRow: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            name?: string;
+            reason?: string;
+            reasonText?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            requestedAt?: string;
+            blockers?: components["schemas"]["ClosureBlockers"];
+        };
+        ShopApplicationSummary: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            vendorId?: string;
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            ownerUserId?: string;
+            name?: string;
+            ward?: string;
+            province?: string;
+            businessType?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSING" | "CLOSED";
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            submittedAt?: string;
+            payoutHolderMatchesIdentity?: boolean;
+        };
+        ShopReviewQueueRow: {
+            shop?: components["schemas"]["ShopApplicationSummary"];
+            resubmitted?: boolean;
+        };
+        ShopReviewApplication: {
+            shop?: components["schemas"]["ShopApplicationDetail"];
+            history?: components["schemas"]["ShopReviewDecision"][];
+        };
         ShopIdentityDocuments: {
             docType?: string;
             docNumber?: string;
             fullName?: string;
             frontPhotoUrl?: string;
             selfiePhotoUrl?: string;
+        };
+        /** @description Mọi phiên bản, theo loại rồi phiên bản mới nhất trước. */
+        LegalDocumentVersionList: {
+            items?: components["schemas"]["LegalDocumentVersion"][];
         };
         AdminHelpArticleList: {
             items?: components["schemas"]["AdminHelpArticle"][];
@@ -9439,6 +10841,141 @@ export interface operations {
             };
         };
     };
+    setAppVersionPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                platform: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetVersionPolicyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAppConfig"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `PLATFORM_INVALID`: `platform` không phải ANDROID hoặc IOS.
+             *     - `LATEST_BELOW_MINIMUM`: Bản mới nhất thấp hơn bản tối thiểu.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `app-config:write`.
+             *     - `REAUTH_REQUIRED`: Đăng nhập đã quá 10 phút.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    setMaintenance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetMaintenanceRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAppConfig"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `MAINTENANCE_WINDOW_INVALID`: Giờ kết thúc không sau giờ bắt đầu.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `app-config:write`.
+             *     - `REAUTH_REQUIRED`: Đăng nhập đã quá 10 phút.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listSupportTickets: {
         parameters: {
             query?: {
@@ -11242,6 +12779,84 @@ export interface operations {
             };
         };
     };
+    closeMyShop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloseShopRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopApplicationView"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `REASON_TEXT_REQUIRED`: Lý do OTHER thiếu ghi chú.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`.
+             *     - `REAUTH_REQUIRED`: Đăng nhập đã quá 10 phút.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_CANNOT_CLOSE`: Cửa hàng không ở trạng thái đang hoạt động hoặc bị đình chỉ; `status` cho biết trạng thái.
+             *     - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     appealShopPenalty: {
         parameters: {
             query?: never;
@@ -12289,6 +13904,396 @@ export interface operations {
                 };
             };
             /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    resolveMyCategoryCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveDishCategoryRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành không phải ngành lá đang hoạt động.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có vụ này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_OPEN`: Vụ không còn chờ quán sửa (đã xử lý, đã kháng nghị hoặc hết hạn); `status` cho biết trạng thái hiện tại. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    confirmMyCategoryCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có vụ này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_OPEN`: Vụ không ở trạng thái đã tự sửa, hoặc đã hết hạn. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    appealMyCategoryCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppealCategoryCorrectionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành không phải ngành lá đang hoạt động.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có vụ này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_OPEN`: Vụ không ở trạng thái đã tự sửa, đã hết hạn hoặc đã kháng nghị. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    deleteMyAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountDeletionScheduled"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CONFIRMATION_MISMATCH`: Từ xác nhận không phải DELETE hoặc email của tài khoản.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn.
+             *     - `INVALID_CREDENTIALS`: Mật khẩu không đúng.
+             */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `REAUTH_REQUIRED`: Đăng nhập đã quá 10 phút. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `DELETION_BLOCKED`: Còn việc chưa xong; chi tiết ở `blockers`.
+             *     - `ALREADY_PENDING`: Tài khoản đã đang chờ xoá.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    acceptLegalDocuments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptLegalDocumentsRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã ghi nhận. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CONSENT_REQUIRED`: Thiếu một văn bản đang chờ.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `hasAnyAuthority('order:create', 'vendor:create')`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `LEGAL_DOCUMENTS_CHANGED`: Có id không còn là phiên bản đang chờ (văn bản vừa đổi); tải lại danh sách. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -14628,6 +16633,85 @@ export interface operations {
             };
         };
     };
+    finishClosingShop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosureBlockers"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:decide`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_FOUND`: Không có cửa hàng này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `CLOSURE_BLOCKED`: Còn đơn đang làm, khiếu nại, kháng nghị, tiền bị giữ hoặc số dư khác 0; chi tiết ở `blockers`.
+             *     - `SHOP_NOT_CLOSING`: Cửa hàng không đang trong quá trình đóng.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     cancelShopSuspension: {
         parameters: {
             query?: never;
@@ -15085,6 +17169,295 @@ export interface operations {
             };
         };
     };
+    listLegalDocumentVersions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalDocumentVersionList"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `legal-document:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createLegalDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateLegalDraftRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã tạo. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalDocumentDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `legal-document:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `DRAFT_EXISTS`: Loại này đang có một bản nháp. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    publishLegalDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PublishLegalDocumentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalDocumentDetail"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `EFFECTIVE_TOO_SOON`: Thay đổi quan trọng nhưng ngày hiệu lực chưa đủ thời gian báo trước.
+             *     - `EFFECTIVE_IN_THE_PAST`: Ngày hiệu lực ở quá khứ.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `legal-document:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `LEGAL_DOCUMENT_NOT_FOUND`: Không có phiên bản này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `NOT_A_DRAFT`: Phiên bản không còn là bản nháp.
+             *     - `VERSION_ALREADY_SCHEDULED`: Loại này đã có một phiên bản chờ đến ngày hiệu lực.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    cancelLegalDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CancelLegalDocumentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalDocumentDetail"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `REASON_REQUIRED`: Huỷ bản đã đăng nhưng thiếu lý do.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `legal-document:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `LEGAL_DOCUMENT_NOT_FOUND`: Không có phiên bản này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `ALREADY_EFFECTIVE`: Phiên bản đã có hiệu lực.
+             *     - `ALREADY_CANCELLED`: Phiên bản đã bị huỷ.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listAdminHelpArticles: {
         parameters: {
             query?: {
@@ -15210,6 +17583,178 @@ export interface operations {
             };
         };
     };
+    reclassifyDish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReclassifyDishRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành không phải ngành lá đang hoạt động.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `dish:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `DISH_NOT_FOUND`: Không có món này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `APPEAL_PENDING`: Quán đang kháng nghị món này. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    flagDishCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FlagDishCategoryRequest"];
+            };
+        };
+        responses: {
+            /** @description Đã đánh dấu. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành gợi ý không phải ngành lá đang hoạt động.
+             *     - `SAME_CATEGORY`: Ngành gợi ý trùng ngành hiện tại.
+             *     - `DEADLINE_IN_THE_PAST`: Hạn ở quá khứ.
+             *     - `DEADLINE_TOO_FAR`: Hạn quá 7 ngày.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `dish:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `DISH_NOT_FOUND`: Không có món này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `DISH_ARCHIVED`: Món đã bị xoá khỏi thực đơn.
+             *     - `CASE_OPEN`: Món đang có một vụ chưa đóng.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     revealAdminCustomerContact: {
         parameters: {
             query?: never;
@@ -15266,6 +17811,89 @@ export interface operations {
             };
             /** @description - `CUSTOMER_NOT_FOUND`: Không có tài khoản này (hoặc là tài khoản quản trị). */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    decideCategoryAppeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideCategoryAppealRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành chọn không phải ngành lá đang hoạt động.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `dish:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có vụ này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_APPEALED`: Vụ không có kháng nghị đang chờ. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16306,6 +18934,153 @@ export interface operations {
                 };
             };
             /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getLegalDocumentVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalDocumentDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `legal-document:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `LEGAL_DOCUMENT_NOT_FOUND`: Không có phiên bản này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateLegalDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLegalDraftRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalDocumentDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `legal-document:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `LEGAL_DOCUMENT_NOT_FOUND`: Không có phiên bản này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NOT_A_DRAFT`: Phiên bản đã đăng hoặc đã huỷ. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -18577,6 +21352,305 @@ export interface operations {
             };
         };
     };
+    getMyShopClosure: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyClosureStatus"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_CLOSING`: Cửa hàng của người gọi không đang trong quá trình đóng. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listMyCategoryCases: {
+        parameters: {
+            query?: {
+                status?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCasePage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_STATUS`: `status` không hợp lệ.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng đang hoạt động. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getMyCategoryCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `vendor:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có vụ này ở cửa hàng của người gọi. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng đang hoạt động. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    checkAccountDeletion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountDeletionCheck"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NOT_A_PERSON_ACCOUNT`: Tài khoản quản trị không tự xoá được. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getPendingLegalDocuments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PendingLegalDocuments"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `hasAnyAuthority('order:create', 'vendor:create')`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getLegalDocument: {
         parameters: {
             query?: never;
@@ -18921,6 +21995,38 @@ export interface operations {
             };
         };
     };
+    getAppConfig: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-App-Platform"?: string;
+                "X-App-Version"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppConfig"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listAdminSupportTickets: {
         parameters: {
             query?: {
@@ -19034,6 +22140,204 @@ export interface operations {
             };
             /** @description - `TICKET_NOT_FOUND`: Không có phiếu này. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getUserGrowth: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                granularity?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserGrowthReport"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
+             *     - `INVALID_RANGE`: `from` sau `to`.
+             *     - `RANGE_TOO_LONG`: Quá nhiều kỳ (hơn 400); chia theo tuần hoặc tháng.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `platform-stats:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getRevenueByMerchant: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                sort?: string;
+                q?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MerchantRevenuePage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_RANGE`: `from` sau `to`.
+             *     - `INVALID_SORT`: `sort` không hợp lệ.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `platform-stats:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getPlatformOverview: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                granularity?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformOverview"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
+             *     - `INVALID_RANGE`: `from` sau `to`.
+             *     - `RANGE_TOO_LONG`: Quá nhiều kỳ (hơn 400); chia theo tuần hoặc tháng.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `platform-stats:read`. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -19921,6 +23225,205 @@ export interface operations {
             };
         };
     };
+    listMerchants: {
+        parameters: {
+            query?: {
+                status?: string;
+                q?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MerchantDirectoryPage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `STATUS_FILTER_INVALID`: `status` không thuộc các giá trị cho phép.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getMerchantDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminMerchantDetail"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_APPLICATION_NOT_FOUND`: Không có cửa hàng đã gửi hồ sơ với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listShopDishesForModeration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopDishCategoryList"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `dish:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_FOUND`: Không có cửa hàng này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listShopSuspensions: {
         parameters: {
             query?: never;
@@ -19970,6 +23473,112 @@ export interface operations {
             };
             /** @description - `SHOP_NOT_FOUND`: Không có cửa hàng với id này. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getAreaCoverage: {
+        parameters: {
+            query?: {
+                province?: string;
+                ward?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AreaCoverage"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listClosingShops: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosingShopList"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -20546,6 +24155,185 @@ export interface operations {
                 };
             };
             /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `commission:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listDishCategoryCases: {
+        parameters: {
+            query?: {
+                status?: string;
+                vendorId?: string;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCasePage"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_STATUS`: `status` không hợp lệ.
+             *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `dish:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getDishCategoryCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DishCategoryCase"];
+                };
+            };
+            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `dish:moderate`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `CASE_NOT_FOUND`: Không có vụ này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getAdminAppConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAppConfig"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `app-config:write`. */
             403: {
                 headers: {
                     [name: string]: unknown;

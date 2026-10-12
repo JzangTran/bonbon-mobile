@@ -10,7 +10,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState, type ReactNode } from 'react'
 import { SessionProvider } from '@/entities/session'
+import { isApiProblem } from '@/shared/api'
 import { ToastProvider } from '@/shared/ui'
+import { AppGate } from './app-gate'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -27,7 +29,16 @@ export function AppShell({ children }: { children: ReactNode }) {
     PlusJakartaSans_800ExtraBold,
   })
   const [queryClient] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } }),
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 30_000,
+            // A gate answer (legal, maintenance, update) will not change by asking again: let the gate screen take over at once.
+            retry: (failureCount, error) => failureCount < 1 && !(isApiProblem(error) && [403, 426, 503].includes(error.status)),
+          },
+        },
+      }),
   )
 
   useEffect(() => {
@@ -39,7 +50,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          <AppGate>{children}</AppGate>
+        </ToastProvider>
       </SessionProvider>
     </QueryClientProvider>
   )

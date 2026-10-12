@@ -1,7 +1,13 @@
+import { Platform } from 'react-native'
+
 /** iOS OAuth client of the bonbon Google Cloud project (public); app.config.ts uses the same default. */
 export const DEFAULT_GOOGLE_IOS_CLIENT_ID = '1083524871594-2dpqinqn9opkekea75vm6gg0ttkfrf67.apps.googleusercontent.com'
 
+/** The store platform the server checks versions for; the web preview sends none, so it is never held back (override only to try the update screen). */
+const nativePlatform = Platform.OS === 'ios' ? 'IOS' : Platform.OS === 'android' ? 'ANDROID' : undefined
+
 export const env = {
+  appPlatform: process.env.EXPO_PUBLIC_APP_PLATFORM ?? nativePlatform,
   apiUrl: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:8080',
   /** Web app origin: legal documents and email links (reset password, verify email) open there. */
   webUrl: process.env.EXPO_PUBLIC_WEB_URL ?? 'http://localhost:5173',

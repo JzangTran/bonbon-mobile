@@ -1,6 +1,7 @@
 import Constants from 'expo-constants'
 import createClient, { type Middleware } from 'openapi-fetch'
 import { env } from '@/shared/config/env'
+import { reportLegalRequired, reportMaintenance, reportUpdateRequired } from './gate'
 import type { paths } from './generated/schema'
 
 /** RFC 9457 body the backend returns for every error (see GlobalExceptionHandler). */
@@ -54,6 +55,7 @@ const authMiddleware: Middleware = {
   onRequest({ request, id }) {
     request.headers.set('X-Client-Channel', 'MOBILE')
     request.headers.set('X-App-Version', appVersion)
+    if (env.appPlatform) request.headers.set('X-App-Platform', env.appPlatform)
     // The refresh call must not carry the (possibly expired) access token: the resource server rejects
     // any invalid bearer token, even on public endpoints.
     const token = isRefreshRequest(request) ? null : auth.getAccessToken()
@@ -80,8 +82,25 @@ const authMiddleware: Middleware = {
   },
 }
 
+/** Tells the app gate when the server refuses everything for a reason that is not about one call (too old, maintenance, legal re-acceptance). */
+const gateMiddleware: Middleware = {
+  async onResponse({ response }) {
+    if (response.status !== 403 && response.status !== 426 && response.status !== 503) return response
+    try {
+      const body = (await response.clone().json()) as { code?: unknown }
+      if (body.code === 'APP_UPDATE_REQUIRED') reportUpdateRequired()
+      else if (body.code === 'MAINTENANCE') reportMaintenance()
+      else if (body.code === 'LEGAL_ACCEPTANCE_REQUIRED') reportLegalRequired()
+    } catch {
+      // not a problem body: nothing to report
+    }
+    return response
+  },
+}
+
 export const api = createClient<paths>({ baseUrl: env.apiUrl })
 api.use(authMiddleware)
+api.use(gateMiddleware)
 
 export function isApiProblem(value: unknown): value is ApiProblem {
   return typeof value === 'object' && value !== null && 'code' in value && 'status' in value

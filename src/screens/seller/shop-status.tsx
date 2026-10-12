@@ -61,9 +61,15 @@ export default function ShopStatusScreen() {
           <Button title="Sửa và gửi lại trên web" size="lg" fullWidth onPress={openWeb} />
         </Card>
       ) : null}
-      {status === 'SUSPENDED' || status === 'CLOSED' ? (
+      {status === 'CLOSED' ? (
         <Card>
-          <Text variant="titleSm">Cửa hàng đang bị khoá hoặc đã đóng</Text>
+          <Text variant="titleSm">Cửa hàng đã đóng</Text>
+          <Text muted>Mọi việc đã xong và cửa hàng đã đóng. Muốn bán lại, hãy mở cửa hàng mới trên web hoặc liên hệ hỗ trợ của bonbon.</Text>
+        </Card>
+      ) : null}
+      {status === 'SUSPENDED' ? (
+        <Card>
+          <Text variant="titleSm">Cửa hàng đang bị khoá</Text>
           <Text muted>Hãy liên hệ bộ phận hỗ trợ của bonbon.</Text>
         </Card>
       ) : null}

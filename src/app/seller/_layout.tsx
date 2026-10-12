@@ -11,15 +11,17 @@ import { fonts, useTheme } from '@/shared/ui'
 export default function SellerTabsLayout() {
   const shop = useShop()
   if (shop.isPending) return null
-  if (shopStatus(shop.data) !== 'APPROVED') return <ShopStatusScreen />
+  const status = shopStatus(shop.data)
+  if (status !== 'APPROVED' && status !== 'CLOSING') return <ShopStatusScreen />
   return (
     <OrderLiveProvider>
-      <SellerTabs />
+      <SellerTabs closing={status === 'CLOSING'} />
     </OrderLiveProvider>
   )
 }
 
-function SellerTabs() {
+/** A closing shop still works its orders, cases and earnings, but its menu can no longer be edited. */
+function SellerTabs({ closing }: { closing: boolean }) {
   const theme = useTheme()
   const { waiting } = useOrderLive()
   // The shop is approved: this is the moment with context to ask for notification permission.
@@ -40,7 +42,10 @@ function SellerTabs() {
         name="index"
         options={{ title: 'Đơn hàng', tabBarBadge: waiting > 0 ? waiting : undefined, tabBarIcon: ({ color }) => <ClipboardList color={color} size={22} /> }}
       />
-      <Tabs.Screen name="menu" options={{ title: 'Thực đơn', tabBarIcon: ({ color }) => <UtensilsCrossed color={color} size={22} /> }} />
+      <Tabs.Screen
+        name="menu"
+        options={{ title: 'Thực đơn', href: closing ? null : undefined, tabBarIcon: ({ color }) => <UtensilsCrossed color={color} size={22} /> }}
+      />
       {/* Screens on top of their tabs, not tabs of their own. */}
       <Tabs.Screen name="notifications" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="order-detail" options={{ href: null, tabBarStyle: { display: 'none' } }} />

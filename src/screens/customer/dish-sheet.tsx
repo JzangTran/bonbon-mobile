@@ -92,7 +92,7 @@ function DishForm({ dish, canOrder, onAdd }: { dish: ShopDish; canOrder: boolean
                 <Pressable
                   key={option.id}
                   accessibilityRole={single ? 'radio' : 'checkbox'}
-                  accessibilityState={{ checked: on, disabled: !option.available }}
+                  aria-checked={on} aria-disabled={!option.available}
                   disabled={!option.available || !canOrder}
                   onPress={() => toggle(group, option.id!)}
                   style={[styles.option, { borderTopColor: theme.divider }]}

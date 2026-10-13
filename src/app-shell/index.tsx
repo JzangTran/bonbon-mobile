@@ -13,6 +13,7 @@ import { SessionProvider } from '@/entities/session'
 import { isApiProblem } from '@/shared/api'
 import { ToastProvider } from '@/shared/ui'
 import { AppGate } from './app-gate'
+import { DocumentTitle } from './document-title'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -51,6 +52,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <ToastProvider>
+          <DocumentTitle />
           <AppGate>{children}</AppGate>
         </ToastProvider>
       </SessionProvider>

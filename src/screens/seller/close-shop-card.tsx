@@ -60,7 +60,7 @@ export function CloseShopCard() {
             <Pressable
               key={r}
               accessibilityRole="radio"
-              accessibilityState={{ selected: reason === r }}
+              aria-checked={reason === r}
               onPress={() => setReason(r)}
               style={[styles.reason, { borderColor: reason === r ? theme.primary : theme.divider, backgroundColor: reason === r ? theme.surfaceMuted : 'transparent' }]}
             >

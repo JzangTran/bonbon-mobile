@@ -79,7 +79,7 @@ export default function SellerStatisticsScreen() {
       {buckets.length > 1 && (totals?.orders ?? 0) > 0 ? (
         <Card>
           <Text variant="titleSm">Doanh thu theo ngày</Text>
-          <View style={[styles.bars, { height: CHART_HEIGHT }]} accessibilityLabel="Biểu đồ doanh thu theo ngày">
+          <View style={[styles.bars, { height: CHART_HEIGHT }]} accessible accessibilityRole="image" accessibilityLabel="Biểu đồ doanh thu theo ngày">
             {buckets.map((b) => (
               <View key={b.start} style={styles.barSlot}>
                 <View

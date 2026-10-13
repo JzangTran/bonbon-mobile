@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { AccessibilityInfo, Platform, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Text } from './text'
 import { useTheme } from './theme'
@@ -20,6 +20,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback((message: string, tone: Tone = 'success') => {
     if (timer.current) clearTimeout(timer.current)
     setToast({ message, tone })
+    // Android reads the live region below; VoiceOver needs an explicit announcement.
+    if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(message)
     timer.current = setTimeout(() => setToast(null), 3000)
   }, [])
 

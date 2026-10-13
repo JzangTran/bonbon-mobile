@@ -31,7 +31,7 @@ function Choice({ label, selected, onPress }: { label: string; selected: boolean
   return (
     <Pressable
       accessibilityRole="radio"
-      accessibilityState={{ selected }}
+      aria-checked={selected}
       onPress={onPress}
       style={[
         styles.chip,

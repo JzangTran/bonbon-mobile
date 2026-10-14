@@ -134,7 +134,7 @@ export default function CartScreen() {
             <Pressable
               key={a.id}
               accessibilityRole="radio"
-              accessibilityState={{ selected }}
+              aria-checked={selected}
               onPress={() => setChosenAddress(a.id ?? null)}
               style={[styles.address, { borderColor: selected ? theme.primary : theme.borderInput, backgroundColor: selected ? theme.primarySubtle : theme.surface }]}
             >
@@ -170,7 +170,7 @@ export default function CartScreen() {
             <Pressable
               key={option.id}
               accessibilityRole="radio"
-              accessibilityState={{ selected, disabled: !option.enabled }}
+              aria-checked={selected} aria-disabled={!option.enabled}
               disabled={!option.enabled}
               onPress={() => setMethod(option.id)}
               style={[

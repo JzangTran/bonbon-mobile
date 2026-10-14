@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useHelpArticles } from '@/entities/help'
 import { problemMessage } from '@/shared/api'
-import { Button, Card, Input, Notice, Text, spacing, useTheme } from '@/shared/ui'
+import { Button, Card, Input, Notice, Text, spacing, touchTarget, useTheme } from '@/shared/ui'
 
 /** Articles written by the Bonbon team for the role in use, searchable (browse-help-center.md); the last row leads to a ticket. */
 export function HelpCenter({ onContact }: { onContact: () => void }) {
@@ -43,6 +43,6 @@ export function HelpCenter({ onContact }: { onContact: () => void }) {
 
 const styles = StyleSheet.create({
   list: { gap: spacing.md },
-  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: touchTarget.min },
   flex: { flex: 1 },
 })

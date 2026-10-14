@@ -98,7 +98,7 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
             <Pressable
               key={l}
               accessibilityRole="radio"
-              accessibilityState={{ selected: label === l }}
+              aria-checked={label === l}
               onPress={() => setLabel(l)}
               style={[
                 styles.chip,

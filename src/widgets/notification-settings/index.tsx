@@ -27,7 +27,11 @@ export function NotificationSettings() {
             <Text variant="titleSm" style={styles.flex}>
               {c.title}
             </Text>
-            {c.locked ? <Lock size={16} color={theme.textMuted} accessibilityLabel="Không tắt được" /> : null}
+            {c.locked ? (
+              <View accessible accessibilityRole="image" accessibilityLabel="Không tắt được">
+                <Lock size={16} color={theme.textMuted} />
+              </View>
+            ) : null}
           </View>
           <Text variant="bodySm" muted>
             {c.description}

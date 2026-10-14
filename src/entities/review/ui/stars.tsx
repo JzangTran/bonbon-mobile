@@ -6,7 +6,7 @@ import { Text, palette, spacing, useTheme } from '@/shared/ui'
 export function Stars({ value, size = 16 }: { value: number; size?: number }) {
   const theme = useTheme()
   return (
-    <View style={styles.row} accessibilityLabel={`${value} trên 5 sao`} accessible>
+    <View style={styles.row} accessibilityRole="image" accessibilityLabel={`${value} trên 5 sao`} accessible>
       {[1, 2, 3, 4, 5].map((n) => (
         <Star key={n} size={size} color={n <= value ? palette.amber400 : theme.borderInput} fill={n <= value ? palette.amber400 : 'transparent'} />
       ))}
@@ -47,7 +47,7 @@ export function RatingSummary({ average, count }: { average?: number | null; cou
     )
   }
   return (
-    <View style={styles.row} accessibilityLabel={`${average} trên 5 sao, ${count} đánh giá`} accessible>
+    <View style={styles.row} accessibilityRole="image" accessibilityLabel={`${average} trên 5 sao, ${count} đánh giá`} accessible>
       <Star size={14} color={palette.amber400} fill={palette.amber400} />
       <Text variant="bodySm" style={{ color: theme.text }}>
         {average.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}

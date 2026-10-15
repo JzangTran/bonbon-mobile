@@ -16,7 +16,7 @@ export function NotificationBell({ href }: { href: Href }) {
       onPress={() => router.push(href)}
       style={styles.button}
     >
-      <Bell size={24} color={theme.text} />
+      <Bell size={22} color={theme.text} strokeWidth={1.75} />
       {unread > 0 ? (
         <View style={[styles.badge, { backgroundColor: theme.danger }]}>
           <Text variant="caption" color={theme.onDanger}>
@@ -29,6 +29,6 @@ export function NotificationBell({ href }: { href: Href }) {
 }
 
 const styles = StyleSheet.create({
-  button: { minWidth: touchTarget.min, minHeight: touchTarget.min, alignItems: 'center', justifyContent: 'center' },
-  badge: { position: 'absolute', top: 6, right: 4, minWidth: 18, height: 18, borderRadius: radius.pill, paddingHorizontal: 4, alignItems: 'center', justifyContent: 'center' },
+  button: { width: touchTarget.min, height: touchTarget.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  badge: { position: 'absolute', top: 4, right: 2, minWidth: 18, height: 18, borderRadius: radius.pill, paddingHorizontal: 4, alignItems: 'center', justifyContent: 'center' },
 })

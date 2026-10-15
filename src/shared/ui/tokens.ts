@@ -47,6 +47,10 @@ const light = {
   highlightSubtle: palette.amber50,
   onHighlightSubtle: palette.amber800,
   imageSlot: '#E9EEEB',
+  /** v3: the floating tab bar, the round filter button and two-tone headlines */
+  ink: palette.ink,
+  headlineSoft: '#7C8A83',
+  pillPale: '#EDF1EF',
 } as const
 
 export type ColorScheme = { [K in keyof typeof light]: string }
@@ -80,17 +84,20 @@ const dark: ColorScheme = {
   highlightSubtle: '#2E2410',
   onHighlightSubtle: '#F2CB7A',
   imageSlot: '#1E2A24',
+  ink: '#0E1512',
+  headlineSoft: '#7C8A83',
+  pillPale: '#1E2A24',
 }
 
 export const colors = { light: light as ColorScheme, dark }
 
-/** Plus Jakarta Sans (loaded in app-shell); 800 only for the wordmark and big headlines. */
+/** Be Vietnam Pro (loaded in app-shell); 800 only for the wordmark and big headlines. */
 export const fonts = {
-  regular: 'PlusJakartaSans_400Regular',
-  medium: 'PlusJakartaSans_500Medium',
-  semibold: 'PlusJakartaSans_600SemiBold',
-  bold: 'PlusJakartaSans_700Bold',
-  extrabold: 'PlusJakartaSans_800ExtraBold',
+  regular: 'BeVietnamPro_400Regular',
+  medium: 'BeVietnamPro_500Medium',
+  semibold: 'BeVietnamPro_600SemiBold',
+  bold: 'BeVietnamPro_700Bold',
+  extrabold: 'BeVietnamPro_800ExtraBold',
 } as const
 
 export const typography = {
@@ -109,8 +116,8 @@ export type TypographyVariant = keyof typeof typography
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32 } as const
 
-/** Only buttons (and pressable filter chips, avatars, toggles) are pills; everything else is 4 or square. */
-export const radius = { sm: 4, pill: 999 } as const
+/** v3 (radius option A): cards 24, photos 18, form fields 18, pills 999. `sm` stays for small marks (badges, thumbnails). */
+export const radius = { sm: 4, media: 18, card: 24, pill: 999 } as const
 
 /** ≥44pt iOS / 48dp Android; the seller's "next status" button uses `large`. */
 export const touchTarget = { min: 48, large: 56 } as const

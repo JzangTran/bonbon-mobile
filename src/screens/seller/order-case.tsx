@@ -134,6 +134,6 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   row: { flexDirection: 'row', gap: spacing.md },
   photos: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  photo: { width: 96, height: 96, borderRadius: radius.sm },
+  photo: { width: 96, height: 96, borderRadius: radius.media },
   note: { minHeight: 96, textAlignVertical: 'top', paddingTop: spacing.sm },
 })

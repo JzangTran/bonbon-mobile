@@ -11,7 +11,7 @@ import {
 import { problemMessage } from '@/shared/api'
 import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatAgo, formatVnd } from '@/shared/lib/format'
-import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme , EmptyState } from '@/shared/ui'
+import { Button, Card, EmptyState, Notice, Screen, Text, fonts, radius, spacing, useTheme } from '@/shared/ui'
 import { NotificationBell } from '@/widgets/notification-bell'
 import { OrderActions } from './order-actions'
 
@@ -43,7 +43,7 @@ export default function SellerOrdersScreen() {
   return (
     <Screen>
       <View style={styles.top}>
-        <Text variant="headline" style={styles.flex}>
+        <Text variant="headline" style={[styles.flex, styles.title]} accessibilityRole="header">
           Đơn hàng
         </Text>
         <NotificationBell href="/seller/notifications" />
@@ -60,22 +60,26 @@ export default function SellerOrdersScreen() {
         </Pressable>
       ) : null}
 
-      <View style={styles.tabs} accessibilityRole="tablist">
+      <View style={[styles.tabs, { backgroundColor: theme.surface }]} accessibilityRole="tablist">
         {tabs.map((t) => (
           <Pressable
             key={t.id}
             accessibilityRole="tab"
             accessibilityState={{ selected: tab === t.id }}
             onPress={() => setTab(t.id)}
-            style={[
-              styles.tab,
-              { borderColor: tab === t.id ? theme.primary : theme.borderInput, backgroundColor: tab === t.id ? theme.primarySubtle : theme.surface },
-            ]}
+            style={[styles.tab, tab === t.id && { backgroundColor: theme.ink }]}
           >
-            <Text variant="bodySm" color={tab === t.id ? theme.onPrimarySubtle : theme.text}>
+            <Text variant="bodySm" color={tab === t.id ? '#FFFFFF' : theme.textMuted} style={styles.tabLabel}>
               {t.label}
-              {t.count > 0 ? `  ${t.count}` : ''}
+              {t.count > 0 && t.id !== 'new' ? `  ${t.count}` : ''}
             </Text>
+            {t.id === 'new' && t.count > 0 ? (
+              <View style={[styles.count, { backgroundColor: theme.danger }]}>
+                <Text variant="caption" color={theme.onDanger} style={styles.tabLabel}>
+                  {t.count}
+                </Text>
+              </View>
+            ) : null}
           </Pressable>
         ))}
       </View>
@@ -148,9 +152,12 @@ function OrderCard({ order }: { order: ShopOrderSummary }) {
 }
 
 const styles = StyleSheet.create({
-  tabs: { flexDirection: 'row', gap: spacing.sm },
-  tab: { flex: 1, minHeight: touchTarget.min, borderRadius: radius.pill, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  banner: { padding: spacing.lg, borderRadius: radius.sm, gap: spacing.xs },
+  title: { fontFamily: fonts.extrabold, letterSpacing: -0.4 },
+  tabs: { flexDirection: 'row', gap: 4, padding: 4, borderRadius: radius.pill },
+  tab: { flex: 1, minHeight: 44, borderRadius: radius.pill, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
+  tabLabel: { fontFamily: fonts.semibold },
+  count: { minWidth: 20, height: 20, borderRadius: 10, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center' },
+  banner: { padding: spacing.lg, borderRadius: radius.media, gap: spacing.xs },
   cardMain: { gap: spacing.xs, marginBottom: spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   flex: { flex: 1 },

@@ -145,6 +145,6 @@ const styles = StyleSheet.create({
   stepper: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   count: { minWidth: 24, textAlign: 'center' },
   photos: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  photo: { width: 88, height: 88, borderRadius: radius.sm },
+  photo: { width: 88, height: 88, borderRadius: radius.media },
   note: { minHeight: 80, textAlignVertical: 'top', paddingTop: spacing.sm },
 })

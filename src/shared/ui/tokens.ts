@@ -84,13 +84,13 @@ const dark: ColorScheme = {
 
 export const colors = { light: light as ColorScheme, dark }
 
-/** Plus Jakarta Sans (loaded in app-shell); 800 only for the wordmark and big headlines. */
+/** Be Vietnam Pro (loaded in app-shell); 800 only for the wordmark and big headlines. */
 export const fonts = {
-  regular: 'PlusJakartaSans_400Regular',
-  medium: 'PlusJakartaSans_500Medium',
-  semibold: 'PlusJakartaSans_600SemiBold',
-  bold: 'PlusJakartaSans_700Bold',
-  extrabold: 'PlusJakartaSans_800ExtraBold',
+  regular: 'BeVietnamPro_400Regular',
+  medium: 'BeVietnamPro_500Medium',
+  semibold: 'BeVietnamPro_600SemiBold',
+  bold: 'BeVietnamPro_700Bold',
+  extrabold: 'BeVietnamPro_800ExtraBold',
 } as const
 
 export const typography = {

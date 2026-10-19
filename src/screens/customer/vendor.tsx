@@ -74,6 +74,11 @@ export default function VendorScreen() {
           <Text variant="bodySm" muted>
             {shop.address}
           </Text>
+          {shop.serviceAreaName ? (
+            <Text variant="bodySm" muted>
+              Khu vực: {shop.serviceAreaName}
+            </Text>
+          ) : null}
           <Text variant="bodySm" muted>
             {[formatDistance(shop.distanceKm), deliveryText(shop)].filter(Boolean).join(' · ')}
           </Text>

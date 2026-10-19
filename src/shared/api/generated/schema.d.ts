@@ -1882,6 +1882,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/service-areas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách khu vực phục vụ
+         * @description Gồm cả khu vực đã tắt, xếp theo tên.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:read`.
+         */
+        get: operations["listServiceAreas"];
+        put?: never;
+        /**
+         * Thêm khu vực phục vụ
+         * @description Quán có vị trí nằm trong hình tròn của khu vực (khu vực có tâm gần nhất nếu chồng nhau) thuộc về khu vực đó.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:write-settings`.
+         */
+        post: operations["createServiceArea"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/reviews/{id}/unhide": {
         parameters: {
             query?: never;
@@ -2670,6 +2698,28 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `vendor:write`.
          */
         patch: operations["setMenuItemAvailability"];
+        trace?: never;
+    };
+    "/api/admin/service-areas/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Sửa khu vực phục vụ
+         * @description Đổi tên, tâm, bán kính, bán kính giao tối đa hoặc tắt/bật (`active`). Khu vực đã tắt không nhận thêm quán mới; quán đang thuộc khu vực đó giữ nguyên. Giới hạn mới áp dụng cho các lần lưu bán kính sau.
+         *
+         *     **Cần đăng nhập**, quyền `merchant-approval:write-settings`.
+         */
+        patch: operations["updateServiceArea"];
         trace?: never;
     };
     "/api/admin/legal-documents/{id}": {
@@ -3536,6 +3586,94 @@ export interface paths {
          *     **Không cần đăng nhập.**
          */
         get: operations["getHelpArticle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/geo/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Địa chỉ tại một điểm trên bản đồ
+         * @description Gọi khi người dùng dừng kéo bản đồ: đổi toạ độ ở tâm bản đồ thành địa chỉ, kèm mã tỉnh và phường/xã khớp với danh sách. Toạ độ phải nằm trong lãnh thổ Việt Nam.
+         *
+         *     **Cần đăng nhập.**
+         */
+        get: operations["reverseGeocode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/geo/provinces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách tỉnh, thành phố
+         * @description 34 tỉnh và thành phố trực thuộc trung ương sau sáp nhập (2025). Danh sách nằm trong ứng dụng, không gọi bên ngoài; dùng cho ô chọn Tỉnh/Thành phố.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["listProvinces"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/geo/provinces/{code}/wards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách phường, xã của một tỉnh
+         * @description Phường, xã, đặc khu của tỉnh hoặc thành phố đã chọn (không còn cấp quận/huyện). Dùng cho ô chọn Phường/Xã.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["listWards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/geo/place": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Toạ độ của một gợi ý địa chỉ
+         * @description Đổi `placeId` của một gợi ý thành điểm trên bản đồ (một lần gọi Place Detail của Goong), kèm mã tỉnh và phường/xã khớp với danh sách. Dùng khi người dùng chọn một dòng gợi ý trong cửa sổ bản đồ.
+         *
+         *     **Cần đăng nhập.**
+         */
+        get: operations["getPlace"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4655,6 +4793,10 @@ export interface components {
             formattedAddress?: string;
             ward?: string;
             province?: string;
+            /** Format: int32 */
+            wardCode?: number;
+            /** Format: int32 */
+            provinceCode?: number;
             detail?: string;
             /** Format: double */
             lat?: number;
@@ -4685,6 +4827,7 @@ export interface components {
             firstIncompleteStep?: number;
             steps?: components["schemas"]["ShopApplicationStep"][];
             maxDeliveryRadiusKm?: number;
+            serviceArea?: components["schemas"]["ShopServiceArea"];
             acceptingOrders?: boolean;
             openNow?: boolean;
             shop?: components["schemas"]["ShopApplicationShopInfo"];
@@ -4721,6 +4864,15 @@ export interface components {
             accountLast4?: string;
             accountHolderName?: string;
             holderMatchesIdentity?: boolean;
+        };
+        ShopServiceArea: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            name?: string;
+            maxDeliveryRadiusKm?: number;
         };
         ShopShipping: {
             openingHours?: components["schemas"]["ShopOpeningWindow"][];
@@ -4799,9 +4951,15 @@ export interface components {
             phone?: string;
             /** Format: email */
             email?: string;
-            /** @description UUID. */
-            placeId?: string;
+            /** Format: int32 */
+            provinceCode?: number;
+            /** Format: int32 */
+            wardCode?: number;
             addressDetail?: string;
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
         };
         ShopOpeningHoursRequest: {
             openingHours: components["schemas"]["OpeningWindowInput"][];
@@ -6142,6 +6300,37 @@ export interface components {
             /** @description Lý do gia hạn. */
             extensionReason?: string;
         };
+        /** @description Một khu vực phục vụ: hình tròn quanh một tâm. Quán nằm trong hình tròn thuộc khu vực; bán kính giao của quán không vượt `maxDeliveryRadiusKm`. */
+        ServiceAreaRequest: {
+            name: string;
+            /** Format: double */
+            centerLat: number;
+            /** Format: double */
+            centerLng: number;
+            radiusKm: number;
+            maxDeliveryRadiusKm: number;
+            active?: boolean;
+        };
+        ServiceArea: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            name?: string;
+            /** Format: double */
+            centerLat?: number;
+            /** Format: double */
+            centerLng?: number;
+            radiusKm?: number;
+            maxDeliveryRadiusKm?: number;
+            active?: boolean;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            updatedAt?: string;
+        };
         ReviewModerationRequest: {
             /** @description Lý do ẩn, bắt buộc (ghi vào nhật ký kiểm toán). */
             reason: string;
@@ -6591,9 +6780,15 @@ export interface components {
             phone?: string;
             /** Format: email */
             email?: string;
-            /** @description UUID. */
-            placeId?: string;
+            /** Format: int32 */
+            provinceCode?: number;
+            /** Format: int32 */
+            wardCode?: number;
             addressDetail?: string;
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
             deliveryRadiusKm?: number;
             /**
              * Format: int32
@@ -6705,6 +6900,7 @@ export interface components {
             id?: string;
             name?: string;
             address?: string;
+            serviceAreaName?: string;
             /** Format: double */
             distanceKm?: number;
             open?: boolean;
@@ -7556,6 +7752,59 @@ export interface components {
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
             updatedAt?: string;
+        };
+        /** @description Một điểm trên bản đồ, đã đổi ra địa chỉ. */
+        GeoPlace: {
+            /** @description Mã địa điểm của Goong; trống khi điểm lấy từ vị trí ghim. */
+            placeId?: string;
+            /** @description Địa chỉ đầy đủ theo Goong. */
+            formattedAddress?: string;
+            /** @description Phần số nhà và đường (đã bỏ phường/xã và tỉnh), để điền sẵn ô địa chỉ chi tiết; có thể trống. */
+            street?: string;
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
+            /** @description Tên tỉnh theo Goong. */
+            province?: string;
+            /** @description Tên phường/xã theo Goong. */
+            ward?: string;
+            /**
+             * Format: int32
+             * @description Mã tỉnh khớp với danh sách; trống khi không khớp được.
+             */
+            provinceCode?: number;
+            /**
+             * Format: int32
+             * @description Mã phường/xã khớp với danh sách; trống khi không khớp được.
+             */
+            wardCode?: number;
+        };
+        /** @description Tỉnh hoặc thành phố trực thuộc trung ương (34 đơn vị sau sáp nhập 2025). */
+        GeoProvince: {
+            /**
+             * Format: int32
+             * @description Mã đơn vị hành chính; dùng để gửi kèm biểu mẫu.
+             * @example 1
+             */
+            code?: number;
+            /** @example Thành phố Hà Nội */
+            name?: string;
+            /** @description tỉnh hoặc thành phố trung ương. */
+            type?: string;
+        };
+        /** @description Phường, xã hoặc đặc khu (không còn cấp quận/huyện). */
+        GeoWard: {
+            /**
+             * Format: int32
+             * @description Mã đơn vị hành chính; duy nhất trên cả nước.
+             * @example 10101
+             */
+            code?: number;
+            /** @example Phường Tây Mỗ */
+            name?: string;
+            /** @description phường, xã hoặc đặc khu. */
+            type?: string;
         };
         PlaceSuggestion: {
             /** @description UUID. */
@@ -16111,6 +16360,125 @@ export interface operations {
             };
         };
     };
+    listServiceAreas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceArea"][];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createServiceArea: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ServiceAreaRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceArea"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:write-settings`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SERVICE_AREA_NAME_TAKEN`: Đã có khu vực trùng tên. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     unhideReview: {
         parameters: {
             query?: never;
@@ -19228,6 +19596,89 @@ export interface operations {
             };
         };
     };
+    updateServiceArea: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ServiceAreaRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceArea"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `merchant-approval:write-settings`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SERVICE_AREA_NOT_FOUND`: Không có khu vực với id này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SERVICE_AREA_NAME_TAKEN`: Đã có khu vực trùng tên. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getLegalDocumentVersion: {
         parameters: {
             query?: never;
@@ -22123,6 +22574,238 @@ export interface operations {
             };
             /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    reverseGeocode: {
+        parameters: {
+            query: {
+                lat: number;
+                lng: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeoPlace"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ADDRESS_NOT_FOUND`: Không có địa chỉ nào ở vị trí này. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listProvinces: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeoProvince"][];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listWards: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeoWard"][];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PROVINCE_NOT_FOUND`: Mã tỉnh không có trong danh sách. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getPlace: {
+        parameters: {
+            query: {
+                placeId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeoPlace"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `ADDRESS_NOT_FOUND`: Không xác định được địa chỉ này.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };

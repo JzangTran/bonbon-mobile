@@ -1,5 +1,4 @@
 import { Image } from 'expo-image'
-import * as ImagePicker from 'expo-image-picker'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
@@ -7,6 +6,7 @@ import { useMyOrder } from '@/entities/order'
 import { CASE_TYPE_LABEL, useIncidentQuote, useReportIncident, type IncidentType, type PickedPhoto } from '@/entities/order-case'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
+import { pickImages } from '@/shared/lib/pick-image'
 import { Button, Card, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
 
 const TYPES: IncidentType[] = ['MISSING_ITEM', 'WRONG_ITEM', 'QUALITY']
@@ -36,14 +36,9 @@ export default function ReportProblemScreen() {
     setQuantities((q) => ({ ...q, [itemId]: Math.min(max, Math.max(0, (q[itemId] ?? 0) + delta)) }))
 
   const addPhotos = async () => {
-    const picked = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsMultipleSelection: true,
-      selectionLimit: MAX_PHOTOS - photos.length,
-      quality: 0.7,
-    })
-    if (picked.canceled) return
-    setPhotos((current) => [...current, ...picked.assets.map((a) => ({ uri: a.uri, mimeType: a.mimeType, fileName: a.fileName }))].slice(0, MAX_PHOTOS))
+    const { images, problems } = await pickImages({ limit: MAX_PHOTOS - photos.length })
+    problems.forEach((p) => toast.show(p))
+    setPhotos((current) => [...current, ...images].slice(0, MAX_PHOTOS))
   }
 
   const submit = () => {

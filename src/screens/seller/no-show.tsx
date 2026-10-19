@@ -1,10 +1,10 @@
 import { Image } from 'expo-image'
-import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { CASE_STATUS_LABEL, useReportNoShow, useShopNoShow, type PickedPhoto } from '@/entities/order-case'
-import { Button, Card, Input, Sheet, Text, radius, spacing } from '@/shared/ui'
+import { Button, Card, Input, Sheet, Text, radius, spacing, useToast } from '@/shared/ui'
 import { formatDateTime } from '@/shared/lib/format'
+import { pickImages } from '@/shared/lib/pick-image'
 
 /**
  * An order out for delivery whose customer is not there (report-customer-no-show.md). Only the shop knows, so it is opt-in: a shop
@@ -12,17 +12,16 @@ import { formatDateTime } from '@/shared/lib/format'
  */
 export function NoShowCard({ orderId }: { orderId: string }) {
   const existing = useShopNoShow(orderId)
+  const toast = useToast()
   const report = useReportNoShow(orderId)
   const [open, setOpen] = useState(false)
   const [note, setNote] = useState('')
   const [photo, setPhoto] = useState<PickedPhoto | null>(null)
 
   const pick = async () => {
-    const picked = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 })
-    if (!picked.canceled && picked.assets[0]) {
-      const a = picked.assets[0]
-      setPhoto({ uri: a.uri, mimeType: a.mimeType, fileName: a.fileName })
-    }
+    const { images, problems } = await pickImages({ limit: 1 })
+    problems.forEach((p) => toast.show(p))
+    if (images[0]) setPhoto(images[0])
   }
 
   if (existing.isPending) return null

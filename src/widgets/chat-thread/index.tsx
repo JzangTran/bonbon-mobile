@@ -1,4 +1,3 @@
-import * as ImagePicker from 'expo-image-picker'
 import { CornerUpLeft, ImagePlus, Send, X } from 'lucide-react-native'
 import { useEffect, useState, type ReactNode } from 'react'
 import { ActivityIndicator, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native'
@@ -6,7 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMarkRead, useSendMessage, useShopConversation, useThread, type ChatMessage, type PickedImage } from '@/entities/chat'
 import { problemMessage } from '@/shared/api'
 import { formatDateTime } from '@/shared/lib/format'
-import { Button, Notice, Text, fonts, radius, spacing, touchTarget, typography, useTheme } from '@/shared/ui'
+import { pickImages } from '@/shared/lib/pick-image'
+import { Button, Notice, Text, fonts, radius, spacing, touchTarget, typography, useTheme, useToast } from '@/shared/ui'
 
 type Props = {
   /** An existing conversation; a customer opening a shop's chat for the first time passes {@code vendorId} instead. */
@@ -22,6 +22,7 @@ type Props = {
 /** One conversation: newest message at the bottom, older ones on demand, a composer with one image and reply-to (send-message.md). */
 export function ChatThread({ conversationId: given, vendorId, live, topInset = false, header }: Props) {
   const theme = useTheme()
+  const toast = useToast()
   const existing = useShopConversation(given ? undefined : vendorId)
   const conversationId = given ?? existing.data?.id ?? null
   const thread = useThread(conversationId, live)
@@ -40,10 +41,9 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
   }, [conversationId, newest])
 
   const pickImage = async () => {
-    const picked = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 })
-    if (picked.canceled) return
-    const a = picked.assets[0]
-    setImage({ uri: a.uri, mimeType: a.mimeType, fileName: a.fileName })
+    const { images, problems } = await pickImages({ limit: 1 })
+    problems.forEach((p) => toast.show(p))
+    if (images[0]) setImage(images[0])
   }
 
   const submit = () => {

@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   chips: { gap: spacing.sm },
   chip: { minHeight: 44, paddingHorizontal: spacing.lg, borderRadius: radius.pill, justifyContent: 'center' },
   chipLabel: { fontFamily: fonts.semibold },
-  shop: { padding: 10, gap: 10 },
+  shop: { padding: 10, gap: 10, borderRadius: radius.card },
   closed: { opacity: 0.7 },
   cover: { height: 150, borderRadius: radius.media },
   pill: { position: 'absolute', top: 10, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 5 },

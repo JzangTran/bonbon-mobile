@@ -82,5 +82,5 @@ export function CloseShopCard() {
 
 const styles = StyleSheet.create({
   gap: { gap: spacing.xs },
-  reason: { borderWidth: 1, borderRadius: radius.media, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' },
+  reason: { borderWidth: 1, borderRadius: radius.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' },
 })

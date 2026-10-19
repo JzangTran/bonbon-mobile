@@ -1,11 +1,11 @@
-import * as ImagePicker from 'expo-image-picker'
 import { ImagePlus, X } from 'lucide-react-native'
 import { useState } from 'react'
 import { Image, Pressable, StyleSheet, View } from 'react-native'
 import { TICKET_STATUS_LABEL, useCloseTicket, useMyTicket, useMyTickets, useOpenTicket, useReplyTicket, type PickedImage } from '@/entities/support-ticket'
 import { problemMessage } from '@/shared/api'
 import { formatAgo, formatDateTime } from '@/shared/lib/format'
-import { Button, Card, Input, Notice, Text, radius, spacing, useTheme } from '@/shared/ui'
+import { pickImages } from '@/shared/lib/pick-image'
+import { Button, Card, Input, Notice, Text, radius, spacing, useTheme, useToast } from '@/shared/ui'
 
 const MAX_IMAGES = 3
 
@@ -162,10 +162,11 @@ export function TicketThread({ id }: { id: string }) {
 
 function ImageStrip({ images, onChange }: { images: PickedImage[]; onChange: (images: PickedImage[]) => void }) {
   const theme = useTheme()
+  const toast = useToast()
   const add = async () => {
-    const picked = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, selectionLimit: MAX_IMAGES - images.length, quality: 0.7 })
-    if (picked.canceled) return
-    onChange([...images, ...picked.assets.map((a) => ({ uri: a.uri, mimeType: a.mimeType, fileName: a.fileName }))].slice(0, MAX_IMAGES))
+    const { images: added, problems } = await pickImages({ limit: MAX_IMAGES - images.length })
+    problems.forEach((p) => toast.show(p))
+    onChange([...images, ...added].slice(0, MAX_IMAGES))
   }
   return (
     <View style={styles.strip}>
@@ -191,10 +192,10 @@ const styles = StyleSheet.create({
   buttons: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
   multiline: { minHeight: 100, textAlignVertical: 'top' },
   messageRow: { gap: 2 },
-  message: { maxWidth: '90%', borderRadius: radius.media, padding: spacing.md, gap: spacing.xs },
-  photo: { width: 200, height: 150, borderRadius: radius.media },
+  message: { maxWidth: '90%', borderRadius: radius.md, padding: spacing.md, gap: spacing.xs },
+  photo: { width: 200, height: 150, borderRadius: radius.md },
   strip: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
-  thumb: { width: 64, height: 64, borderRadius: radius.media },
+  thumb: { width: 64, height: 64, borderRadius: radius.md },
   remove: { position: 'absolute', top: -6, right: -6, width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
-  add: { width: 64, height: 64, borderRadius: radius.media, borderWidth: 1, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },
+  add: { width: 64, height: 64, borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },
 })

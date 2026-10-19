@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
     left: spacing.lg,
     right: spacing.lg,
     padding: spacing.md,
-    borderRadius: radius.media,
+    borderRadius: radius.md,
   },
 })

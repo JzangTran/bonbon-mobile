@@ -8693,7 +8693,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -8767,7 +8770,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -8853,7 +8859,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -8930,7 +8939,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9016,7 +9028,10 @@ export interface operations {
                     "application/json": components["schemas"]["RefundStatus"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9096,6 +9111,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `DOC_NUMBER_INVALID`: Số giấy tờ không đúng định dạng của loại giấy tờ.
              *     - `CONSENT_REQUIRED`: Chưa đồng ý đủ các văn bản bắt buộc (điều khoản của vai trò và chính sách bảo mật).
              */
@@ -9170,7 +9186,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopApplicationView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9241,6 +9260,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `DELIVERY_RADIUS_TOO_LARGE`: Vượt bán kính giao tối đa; có `maxDeliveryRadiusKm`.
              *     - `OPENING_HOURS_INVALID`: Khung giờ không hợp lệ.
              *     - `OPENING_HOURS_OVERLAP`: Các khung giờ chồng nhau.
@@ -9316,6 +9336,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `ADDRESS_NOT_FOUND`: `placeId` không tra được ra địa chỉ.
              */
             400: {
@@ -9397,6 +9418,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `OPENING_HOURS_INVALID`: Khung giờ không hợp lệ.
              *     - `OPENING_HOURS_OVERLAP`: Các khung giờ chồng nhau.
              *     - `OPENING_HOURS_TOO_MANY`: Quá nhiều khung giờ trong một ngày.
@@ -9469,7 +9491,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopApplicationView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9540,7 +9565,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9627,7 +9655,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9704,7 +9735,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9793,6 +9827,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `OPTION_GROUP_INVALID`: Vi phạm quy tắc min/max.
              */
             400: {
@@ -9873,7 +9908,10 @@ export interface operations {
                     "application/json": components["schemas"]["OptionGroupsView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -9955,6 +9993,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `MENU_ORDER_MISMATCH`: Danh sách thiếu, thừa hoặc trùng món.
              */
             400: {
@@ -10036,6 +10075,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `MENU_ORDER_MISMATCH`: Danh sách thiếu, thừa hoặc trùng mục.
              */
             400: {
@@ -10113,8 +10153,11 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `FILE_REQUIRED`: Không có tệp trong trường `file`.
              *     - `FILE_UNREADABLE`: Không đọc được tệp.
+             *     - `IMAGE_INVALID`: Ảnh bị cắt dở hoặc không đúng cấu trúc tệp.
+             *     - `IMAGE_DIMENSIONS_TOO_LARGE`: Ảnh dài hơn 10.000 px một cạnh hoặc quá 50 triệu điểm ảnh.
              */
             400: {
                 headers: {
@@ -10209,7 +10252,10 @@ export interface operations {
                     "application/json": components["schemas"]["MenuView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -10291,6 +10337,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `OPTION_GROUP_INVALID`: Một nhóm bị gắn hai lần.
              */
             400: {
@@ -10375,6 +10422,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `QUIET_HOURS_INCOMPLETE`: Chỉ có một trong `start` và `end`.
              *     - `QUIET_HOURS_EMPTY`: `start` bằng `end`.
              *     - `TIME_ZONE_INVALID`: Múi giờ không hợp lệ.
@@ -10487,6 +10535,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `UNKNOWN_CATEGORY`: Nhóm không tồn tại hoặc không dành cho vai trò đang dùng.
              *     - `CHANNEL_NOT_AVAILABLE`: Nhóm này không có kênh đó (ví dụ email cho tiến trình đơn).
              */
@@ -10605,7 +10654,10 @@ export interface operations {
                     "application/json": components["schemas"]["DeliveryRadiusCapSetting"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -10665,7 +10717,10 @@ export interface operations {
                     "application/json": components["schemas"]["CommissionRates"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -10727,7 +10782,10 @@ export interface operations {
                     "application/json": components["schemas"]["CommissionRates"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -10794,7 +10852,10 @@ export interface operations {
                     "application/json": components["schemas"]["CommissionRates"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -10867,6 +10928,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `PLATFORM_INVALID`: `platform` không phải ANDROID hoặc IOS.
              *     - `LATEST_BELOW_MINIMUM`: Bản mới nhất thấp hơn bản tối thiểu.
              */
@@ -10934,6 +10996,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `MAINTENANCE_WINDOW_INVALID`: Giờ kết thúc không sau giờ bắt đầu.
              */
             400: {
@@ -10999,6 +11062,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -11062,6 +11126,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `ATTACHMENT_INVALID`: Khoá ảnh không phải ảnh người gọi đã tải lên hoặc bị lặp.
              */
             400: {
@@ -11145,6 +11210,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `ATTACHMENT_INVALID`: Khoá ảnh không phải ảnh người gọi đã tải lên hoặc bị lặp.
              */
             400: {
@@ -11222,7 +11288,10 @@ export interface operations {
                     "application/json": components["schemas"]["SupportTicketDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -11294,7 +11363,12 @@ export interface operations {
                     "application/json": components["schemas"]["SupportAttachmentUpload"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `IMAGE_INVALID`: Ảnh bị cắt dở hoặc không đúng cấu trúc tệp.
+             *     - `IMAGE_DIMENSIONS_TOO_LARGE`: Ảnh dài hơn 10.000 px một cạnh hoặc quá 50 triệu điểm ảnh.
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -11385,6 +11459,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `MESSAGE_EMPTY`: Không có chữ lẫn ảnh.
              *     - `MESSAGE_TOO_LONG`: Chữ quá 1.000 ký tự.
              *     - `IMAGE_INVALID`: Khoá ảnh không phải ảnh người gọi đã tải lên.
@@ -11506,7 +11581,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -11555,7 +11633,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -11606,6 +11687,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_SIGNATURE`: Chữ ký không khớp.
              *     - `INVALID_PARTNER`: Mã đối tác không phải của bonbon.
              *     - `PAYMENT_NOT_FOUND`: Không có giao dịch với `orderId` này.
@@ -11663,6 +11745,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -11737,6 +11820,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `OPTION_COUNT_INVALID`: Số lựa chọn trong một nhóm ngoài min/max.
              *     - `OPTION_DUPLICATED`: Một lựa chọn bị chọn hai lần.
              *     - `OPTION_NOT_OFFERED`: Lựa chọn không thuộc món.
@@ -11833,7 +11917,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -11914,7 +12001,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -11993,7 +12083,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -12079,6 +12172,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `NOTE_REQUIRED`: `SHOP_NEVER_CAME` thiếu ghi chú.
              */
             400: {
@@ -12165,6 +12259,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `LINE_NOT_IN_ORDER`: Có món không thuộc đơn này.
              *     - `LINE_REPEATED`: Một món được chọn nhiều lần.
              *     - `QUANTITY_INVALID`: Số phần ngoài khoảng từ 1 đến số đã đặt.
@@ -12257,6 +12352,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `LINE_NOT_IN_ORDER`: Có món không thuộc đơn này.
              *     - `LINE_REPEATED`: Một món được chọn nhiều lần.
              *     - `QUANTITY_INVALID`: Số phần ngoài khoảng từ 1 đến số đã đặt.
@@ -12347,7 +12443,12 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCasePhotoUpload"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `IMAGE_INVALID`: Ảnh bị cắt dở hoặc không đúng cấu trúc tệp.
+             *     - `IMAGE_DIMENSIONS_TOO_LARGE`: Ảnh dài hơn 10.000 px một cạnh hoặc quá 50 triệu điểm ảnh.
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -12458,7 +12559,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -12535,7 +12639,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -12703,8 +12810,12 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `FILE_REQUIRED`: Không có tệp trong trường `file`.
              *     - `FILE_UNREADABLE`: Không đọc được tệp.
+             *     - `IMAGE_INVALID`: Ảnh bị cắt dở hoặc không đúng cấu trúc tệp.
+             *     - `IMAGE_DIMENSIONS_TOO_LARGE`: Ảnh dài hơn 10.000 px một cạnh hoặc quá 50 triệu điểm ảnh.
+             *     - `PDF_ACTIVE_CONTENT`: Tệp PDF có script hoặc tệp đính kèm chạy được.
              */
             400: {
                 headers: {
@@ -12803,6 +12914,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `REASON_TEXT_REQUIRED`: Lý do OTHER thiếu ghi chú.
              */
             400: {
@@ -12879,7 +12991,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -12964,7 +13079,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopOrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -13050,6 +13168,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `REASON_REQUIRED`: Thiếu lý do.
              */
             400: {
@@ -13137,6 +13256,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `PHOTO_INVALID`: Khoá ảnh không thuộc đơn này.
              */
             400: {
@@ -13227,7 +13347,12 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCasePhotoUpload"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `IMAGE_INVALID`: Ảnh bị cắt dở hoặc không đúng cấu trúc tệp.
+             *     - `IMAGE_DIMENSIONS_TOO_LARGE`: Ảnh dài hơn 10.000 px một cạnh hoặc quá 50 triệu điểm ảnh.
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -13333,7 +13458,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopOrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -13419,6 +13547,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `REASON_REQUIRED`: Thiếu lý do.
              */
             400: {
@@ -13504,7 +13633,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -13583,7 +13715,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -13722,6 +13857,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `OPTION_GROUP_INVALID`: Vi phạm quy tắc min/max, số lựa chọn mặc định hoặc trạng thái.
              */
             400: {
@@ -13792,7 +13928,10 @@ export interface operations {
                     "application/json": components["schemas"]["MenuView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -13866,6 +14005,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành hàng không phải ngành cấp 3 đang hoạt động.
              */
             400: {
@@ -13949,6 +14089,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành không phải ngành lá đang hoạt động.
              */
             400: {
@@ -14026,7 +14167,10 @@ export interface operations {
                     "application/json": components["schemas"]["DishCategoryCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -14108,6 +14252,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành không phải ngành lá đang hoạt động.
              */
             400: {
@@ -14189,6 +14334,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CONFIRMATION_MISMATCH`: Từ xác nhận không phải DELETE hoặc email của tài khoản.
              */
             400: {
@@ -14265,6 +14411,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CONSENT_REQUIRED`: Thiếu một văn bản đang chờ.
              */
             400: {
@@ -14331,7 +14478,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -14412,6 +14562,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `size` ngoài 1–50.
              */
             400: {
@@ -14495,6 +14646,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `MESSAGE_EMPTY`: Không có chữ lẫn ảnh.
              *     - `MESSAGE_TOO_LONG`: Chữ quá 1.000 ký tự.
              *     - `IMAGE_INVALID`: Khoá ảnh không phải ảnh người gọi đã tải lên.
@@ -14592,7 +14744,12 @@ export interface operations {
                     "application/json": components["schemas"]["ChatImageUpload"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `IMAGE_INVALID`: Ảnh bị cắt dở hoặc không đúng cấu trúc tệp.
+             *     - `IMAGE_DIMENSIONS_TOO_LARGE`: Ảnh dài hơn 10.000 px một cạnh hoặc quá 50 triệu điểm ảnh.
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -14679,7 +14836,10 @@ export interface operations {
                     "application/json": components["schemas"]["LoginResponse"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -14739,6 +14899,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_OR_EXPIRED_TOKEN`: Mã sai, đã dùng hoặc đã hết hạn.
              */
             400: {
@@ -14784,6 +14945,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_ROLE_TOKEN`: `roleToken` sai hoặc đã hết hạn; đăng nhập lại.
              */
             400: {
@@ -14836,6 +14998,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_OR_EXPIRED_TOKEN`: Mã sai, đã dùng hoặc đã hết hạn.
              */
             400: {
@@ -14881,6 +15044,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CAPTCHA_REQUIRED`: Sai nhiều lần liên tiếp: gửi lại kèm `captchaToken` (reCAPTCHA).
              */
             400: {
@@ -14944,6 +15108,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `NAME_REQUIRED`: Thiếu họ tên khi tạo tài khoản mới.
              *     - `PASSWORD_REQUIRED`: Thiếu mật khẩu khi tạo tài khoản mới.
              *     - `ROLE_NOT_SELF_REGISTERABLE`: Vai trò này không tự đăng ký được.
@@ -15024,7 +15189,10 @@ export interface operations {
                     "application/json": components["schemas"]["TokenResponse"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15073,7 +15241,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15122,7 +15293,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15187,6 +15361,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CAPTCHA_REQUIRED`: Sai nhiều lần liên tiếp: gửi lại kèm `captchaToken` (reCAPTCHA).
              */
             400: {
@@ -15250,6 +15425,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `OAUTH_EMAIL_UNVERIFIED`: Google chưa xác thực email này.
              *     - `PROVIDER_NOT_SUPPORTED`: Nhà cung cấp chưa được hỗ trợ (hiện chỉ có Google).
              *     - `ROLE_NOT_SELF_REGISTERABLE`: Vai trò này không tự đăng ký được.
@@ -15323,7 +15499,10 @@ export interface operations {
                     "application/json": components["schemas"]["StatusResponse"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15376,7 +15555,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminSupportTicketDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15452,7 +15634,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopPenaltyHistory"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15523,7 +15708,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopPenaltyHistory"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15594,7 +15782,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopPenaltyHistory"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15674,7 +15865,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopPenaltyHistory"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -15767,6 +15961,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `AMOUNT_INVALID`: Số tiền không hợp lệ (PAYOUT và COLLECTION phải dương, ADJUSTMENT khác 0).
              *     - `REFERENCE_REQUIRED`: PAYOUT hoặc COLLECTION thiếu mã giao dịch ngân hàng.
              *     - `REASON_REQUIRED`: ADJUSTMENT thiếu lý do.
@@ -15857,6 +16052,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `DUE_DATE_INVALID`: Hạn mới không sau hạn hiện tại.
              *     - `DUE_DATE_TOO_FAR`: Hạn mới quá 30 ngày kể từ bây giờ.
              */
@@ -15935,7 +16131,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16015,7 +16214,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16091,7 +16293,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16171,7 +16376,10 @@ export interface operations {
                     "application/json": components["schemas"]["Review"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16251,7 +16459,10 @@ export interface operations {
                     "application/json": components["schemas"]["RefundRow"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16331,7 +16542,10 @@ export interface operations {
                     "application/json": components["schemas"]["RefundRow"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16416,6 +16630,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `NOTE_REQUIRED`: Lý do OTHER thiếu ghi chú.
              */
             400: {
@@ -16488,7 +16703,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16573,6 +16791,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `LINES_NOT_ALLOWED`: `lines` chỉ dùng với UPHELD cho khiếu nại thiếu món, sai món hoặc chất lượng chưa từng mở lại.
              *     - `LINE_NOT_IN_CASE`: Có món không thuộc khiếu nại này.
              *     - `LINE_REPEATED`: Một món được chọn nhiều lần.
@@ -16653,7 +16872,10 @@ export interface operations {
                     "application/json": components["schemas"]["ClosureBlockers"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16736,7 +16958,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopSuspension"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16809,6 +17034,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `NOTICE_TOO_SHORT`: `effectiveAt` cách bây giờ chưa đủ 5 ngày; kèm `earliest`.
              *     - `AUTHORITY_REFERENCE_REQUIRED`: Đình chỉ ngay thiếu số hiệu và ngày yêu cầu của cơ quan có thẩm quyền.
              *     - `EFFECTIVE_AT_NOT_ALLOWED`: Đình chỉ ngay không có `effectiveAt`.
@@ -16895,7 +17121,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopSuspension"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -16966,7 +17195,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopDecision"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -17042,7 +17274,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopDecision"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -17122,7 +17357,10 @@ export interface operations {
                     };
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -17238,7 +17476,10 @@ export interface operations {
                     "application/json": components["schemas"]["LegalDocumentDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -17311,6 +17552,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `EFFECTIVE_TOO_SOON`: Thay đổi quan trọng nhưng ngày hiệu lực chưa đủ thời gian báo trước.
              *     - `EFFECTIVE_IN_THE_PAST`: Ngày hiệu lực ở quá khứ.
              */
@@ -17398,6 +17640,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `REASON_REQUIRED`: Huỷ bản đã đăng nhưng thiếu lý do.
              */
             400: {
@@ -17483,6 +17726,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không phải DRAFT hoặc PUBLISHED.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
@@ -17545,7 +17789,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminHelpArticle"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -17609,6 +17856,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành không phải ngành lá đang hoạt động.
              */
             400: {
@@ -17692,6 +17940,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành gợi ý không phải ngành lá đang hoạt động.
              *     - `SAME_CATEGORY`: Ngành gợi ý trùng ngành hiện tại.
              *     - `DEADLINE_IN_THE_PAST`: Hạn ở quá khứ.
@@ -17781,6 +18030,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `NOTE_REQUIRED`: Lý do OTHER thiếu ghi chú.
              */
             400: {
@@ -17855,6 +18105,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành chọn không phải ngành lá đang hoạt động.
              */
             400: {
@@ -17983,6 +18234,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_DEPTH_EXCEEDED`: Cây chỉ có 3 cấp.
              */
             400: {
@@ -18063,7 +18315,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18116,6 +18371,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CAPTCHA_REQUIRED`: Sai nhiều lần liên tiếp: gửi lại kèm `captchaToken` (reCAPTCHA).
              */
             400: {
@@ -18168,7 +18424,10 @@ export interface operations {
                     "application/json": components["schemas"]["IssuedSession"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18280,6 +18539,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `ADDRESS_NOT_FOUND`: `placeId` không tra được ra địa chỉ.
              */
             400: {
@@ -18408,6 +18668,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `DELIVERY_RADIUS_TOO_LARGE`: Vượt bán kính giao tối đa.
              *     - `ADDRESS_NOT_FOUND`: `placeId` không tra được.
              */
@@ -18492,6 +18753,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `OPTION_GROUP_INVALID`: Chỉ nhận `AVAILABLE` hoặc `SOLD_OUT`.
              */
             400: {
@@ -18569,7 +18831,10 @@ export interface operations {
                     "application/json": components["schemas"]["MenuView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18652,7 +18917,10 @@ export interface operations {
                     "application/json": components["schemas"]["MenuView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18731,7 +18999,10 @@ export interface operations {
                     "application/json": components["schemas"]["MenuView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18813,6 +19084,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_NOT_ASSIGNABLE`: Ngành hàng không phải ngành cấp 3 đang hoạt động.
              */
             400: {
@@ -18897,7 +19169,10 @@ export interface operations {
                     "application/json": components["schemas"]["MenuView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18973,7 +19248,10 @@ export interface operations {
                     "application/json": components["schemas"]["LegalDocumentDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19044,7 +19322,10 @@ export interface operations {
                     "application/json": components["schemas"]["LegalDocumentDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19120,7 +19401,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminHelpArticle"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19185,7 +19469,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19256,7 +19543,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminHelpArticle"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19321,7 +19611,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19407,6 +19700,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `CATEGORY_MOVE_INVALID`: Ngành cha mới không hợp lệ (sai cấp hoặc tạo vòng).
              */
             400: {
@@ -19536,7 +19830,10 @@ export interface operations {
                     "application/json": components["schemas"]["Profile"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19592,7 +19889,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19663,7 +19963,10 @@ export interface operations {
                     "application/json": components["schemas"]["DeliveryAddress"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19739,7 +20042,10 @@ export interface operations {
                     "application/json": components["schemas"]["DeliveryAddress"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19814,6 +20120,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_POSITION`: Toạ độ ngoài phạm vi.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              *     - `INVALID_QUERY`: Từ khoá quá dài (tối đa 100 ký tự).
@@ -19863,6 +20170,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -19918,6 +20226,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_POSITION`: Chỉ gửi một trong hai toạ độ, hoặc toạ độ ngoài phạm vi.
              */
             400: {
@@ -19968,7 +20277,10 @@ export interface operations {
                     "application/json": components["schemas"]["SupportTicketDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -20026,7 +20338,10 @@ export interface operations {
                     "application/json": components["schemas"]["ConversationSummary"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -20096,7 +20411,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -20163,7 +20481,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -20230,7 +20551,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -20304,6 +20628,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -20414,6 +20739,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
              *     - `INVALID_RANGE`: `from` sau `to`.
              *     - `RANGE_TOO_LONG`: Quá nhiều kỳ (hơn 400); chia theo tuần hoặc tháng.
@@ -20488,6 +20814,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_RANGE`: `from` sau `to`.
              *     - `INVALID_LIMIT`: `limit` ngoài 1–50.
              */
@@ -20617,6 +20944,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -20743,6 +21071,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_WEEK`: `week` không phải một ngày thứ Hai.
              */
             400: {
@@ -20818,6 +21147,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -20886,7 +21216,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopOrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -20966,6 +21299,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không phải AWAITING_SHOP, AWAITING_CUSTOMER, OPEN, UPHELD hoặc DISMISSED.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
@@ -21035,7 +21369,10 @@ export interface operations {
                     "application/json": components["schemas"]["OrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -21227,6 +21564,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
              *     - `INVALID_RANGE`: `from` sau `to`, hoặc khoảng quá 2 năm.
              */
@@ -21302,6 +21640,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_TYPE`: `type` không phải một loại bút toán.
              *     - `INVALID_RANGE`: `from` sau `to`.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
@@ -21432,6 +21771,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không hợp lệ.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
@@ -21501,7 +21841,10 @@ export interface operations {
                     "application/json": components["schemas"]["DishCategoryCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -21671,7 +22014,10 @@ export interface operations {
                     "application/json": components["schemas"]["LegalDocumentView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -21711,7 +22057,10 @@ export interface operations {
                     "application/json": components["schemas"]["HelpArticleList"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -21751,7 +22100,10 @@ export interface operations {
                     "application/json": components["schemas"]["HelpArticleSummary"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -21802,7 +22154,10 @@ export interface operations {
                     "application/json": components["schemas"]["PlaceSuggestion"][];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -21872,6 +22227,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -21974,6 +22330,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_OR_EXPIRED_TOKEN`: Liên kết sai hoặc đã hết hạn; gửi lại thư xác thực.
              */
             400: {
@@ -22051,6 +22408,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không phải OPEN, ANSWERED hoặc CLOSED.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
@@ -22111,7 +22469,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminSupportTicketDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22182,6 +22543,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
              *     - `INVALID_RANGE`: `from` sau `to`.
              *     - `RANGE_TOO_LONG`: Quá nhiều kỳ (hơn 400); chia theo tuần hoặc tháng.
@@ -22250,6 +22612,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_RANGE`: `from` sau `to`.
              *     - `INVALID_SORT`: `sort` không hợp lệ.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
@@ -22315,6 +22678,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
              *     - `INVALID_RANGE`: `from` sau `to`.
              *     - `RANGE_TOO_LONG`: Quá nhiều kỳ (hơn 400); chia theo tuần hoặc tháng.
@@ -22380,6 +22744,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_MIN_POINTS`: `minPoints` âm.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
              */
@@ -22443,6 +22808,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
              */
             400: {
@@ -22502,7 +22868,10 @@ export interface operations {
                     "application/json": components["schemas"]["SettlementVendor"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22575,6 +22944,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_GRANULARITY`: `granularity` không phải day, week hoặc month.
              *     - `INVALID_RANGE`: `from` sau `to`, hoặc khoảng quá 2 năm.
              */
@@ -22650,6 +23020,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_TYPE`: `type` không phải một loại bút toán.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
              */
@@ -22719,7 +23090,10 @@ export interface operations {
                     "application/json": components["schemas"]["CommissionStatementList"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22791,6 +23165,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không phải OWED_TO_SHOP hoặc OWED_BY_SHOP.
              *     - `INVALID_SORT`: `sort` không phải balance_desc hoặc balance_asc.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
@@ -22858,6 +23233,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
             400: {
@@ -22921,6 +23297,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không thuộc REQUESTED, NEEDS_DESTINATION, COMPLETED, ALL.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
@@ -22985,6 +23362,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `IDENTIFIER_REQUIRED`: Không có hoặc có nhiều hơn một mã tìm kiếm.
              *     - `CODE_INVALID`: `code` không phải một số.
              */
@@ -23045,7 +23423,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminOrderDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23117,6 +23498,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không phải AWAITING_SHOP, AWAITING_CUSTOMER, OPEN, UPHELD hoặc DISMISSED.
              *     - `INVALID_TYPE`: `type` không phải một loại khiếu nại.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
@@ -23178,7 +23560,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminOrderCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23250,6 +23635,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `STATUS_FILTER_INVALID`: `status` không thuộc các giá trị cho phép.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
              */
@@ -23310,7 +23696,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminMerchantDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23377,7 +23766,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopDishCategoryList"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23444,7 +23836,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopSuspensionHistory"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23512,7 +23907,10 @@ export interface operations {
                     "application/json": components["schemas"]["AreaCoverage"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23620,6 +24018,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `STATUS_FILTER_INVALID`: `status` không thuộc các giá trị cho phép.
              */
             400: {
@@ -23679,7 +24078,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopReviewApplication"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23746,7 +24148,10 @@ export interface operations {
                     "application/json": components["schemas"]["ShopIdentityDocuments"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23816,6 +24221,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `IDENTIFIER_REQUIRED`: Không có hoặc có cả hai mã tìm kiếm.
              */
             400: {
@@ -23875,7 +24281,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminCustomerDetail"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -23942,7 +24351,10 @@ export interface operations {
                     "application/json": components["schemas"]["AdminConversationView"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -24014,6 +24426,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `size` ngoài 1–50.
              */
             400: {
@@ -24134,6 +24547,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_SCOPE`: `scope` không phải DEFAULT hoặc CATEGORY.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
              */
@@ -24199,6 +24613,7 @@ export interface operations {
             };
             /**
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_STATUS`: `status` không hợp lệ.
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–50.
              */
@@ -24259,7 +24674,10 @@ export interface operations {
                     "application/json": components["schemas"]["DishCategoryCase"];
                 };
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -24371,7 +24789,10 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do. */
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
             400: {
                 headers: {
                     [name: string]: unknown;

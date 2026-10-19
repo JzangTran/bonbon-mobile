@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   option: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderTopWidth: 1, minHeight: touchTarget.min },
   mark: { width: 22, height: 22, borderWidth: 2 },
   round: { borderRadius: radius.pill },
-  square: { borderRadius: radius.media },
+  square: { borderRadius: radius.md },
   money: { fontVariant: ['tabular-nums'] },
   stepper: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.lg },
   qty: { minWidth: 32, textAlign: 'center', fontVariant: ['tabular-nums'] },

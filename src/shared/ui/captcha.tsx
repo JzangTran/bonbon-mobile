@@ -67,7 +67,7 @@ export function Captcha({ token, onToken }: { token: string | null; onToken: (to
 }
 
 const styles = StyleSheet.create({
-  done: { borderRadius: radius.media, padding: spacing.md },
-  frame: { height: 520, borderRadius: radius.media, overflow: 'hidden' },
+  done: { borderRadius: radius.md, padding: spacing.md },
+  frame: { height: 520, borderRadius: radius.md, overflow: 'hidden' },
   web: { flex: 1, backgroundColor: 'transparent' },
 })

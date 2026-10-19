@@ -6,6 +6,27 @@ import { fonts, radius, spacing, touchTarget, typography } from './tokens'
 
 type Props = TextInputProps & { label: string; error?: string }
 
+/**
+ * A ceiling for what can be typed when the field names none: the backend limits every field, so nothing past these could be
+ * accepted anyway. A field with its own `maxLength` wins.
+ */
+function defaultMaxLength(p: TextInputProps): number {
+  if (p.secureTextEntry) return 100
+  if (p.multiline) return 2000
+  switch (p.keyboardType) {
+    case 'email-address':
+      return 255
+    case 'phone-pad':
+      return 30
+    case 'numeric':
+    case 'number-pad':
+    case 'decimal-pad':
+      return 12
+    default:
+      return 255
+  }
+}
+
 export function Input({ label, error, style, onFocus, onBlur, ...props }: Props) {
   const theme = useTheme()
   const [focused, setFocused] = useState(false)
@@ -19,6 +40,7 @@ export function Input({ label, error, style, onFocus, onBlur, ...props }: Props)
       <TextInput
         accessibilityLabel={label}
         placeholderTextColor={theme.textMuted}
+        maxLength={defaultMaxLength(props)}
         onFocus={(e) => {
           setFocused(true)
           onFocus?.(e)
@@ -47,5 +69,5 @@ export function Input({ label, error, style, onFocus, onBlur, ...props }: Props)
 const styles = StyleSheet.create({
   field: { gap: spacing.xs },
   label: { fontFamily: fonts.medium },
-  input: { minHeight: touchTarget.min, borderRadius: radius.media, paddingHorizontal: spacing.lg },
+  input: { minHeight: touchTarget.min, borderRadius: radius.md, paddingHorizontal: spacing.lg },
 })

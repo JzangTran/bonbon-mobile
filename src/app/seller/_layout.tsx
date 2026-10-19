@@ -5,7 +5,7 @@ import { OrderLiveProvider, useOrderLive } from '@/entities/order'
 import { shopStatus, useShop } from '@/entities/shop'
 import { registerForPush } from '@/features/push'
 import ShopStatusScreen from '@/screens/seller/shop-status'
-import { fonts, useTheme } from '@/shared/ui'
+import { FloatingTabBar } from '@/shared/ui'
 
 /** Until the shop is approved, the seller side shows its application status instead of the tabs (open-shop.md). */
 export default function SellerTabsLayout() {
@@ -22,22 +22,13 @@ export default function SellerTabsLayout() {
 
 /** A closing shop still works its orders, cases and earnings, but its menu can no longer be edited. */
 function SellerTabs({ closing }: { closing: boolean }) {
-  const theme = useTheme()
   const { waiting } = useOrderLive()
   // The shop is approved: this is the moment with context to ask for notification permission.
   useEffect(() => {
     void registerForPush({ ask: true })
   }, [])
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: theme.primary,
-        tabBarInactiveTintColor: theme.textMuted,
-        tabBarStyle: { backgroundColor: theme.surface, borderTopColor: theme.divider },
-        tabBarLabelStyle: { fontFamily: fonts.medium },
-      }}
-    >
+    <Tabs tabBar={(props) => <FloatingTabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tabs.Screen
         name="index"
         options={{ title: 'Đơn hàng', tabBarBadge: waiting > 0 ? waiting : undefined, tabBarIcon: ({ color }) => <ClipboardList color={color} size={22} /> }}

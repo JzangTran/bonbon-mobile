@@ -47,5 +47,5 @@ export function Input({ label, error, style, onFocus, onBlur, ...props }: Props)
 const styles = StyleSheet.create({
   field: { gap: spacing.xs },
   label: { fontFamily: fonts.medium },
-  input: { minHeight: touchTarget.min, borderRadius: radius.sm, paddingHorizontal: spacing.md },
+  input: { minHeight: touchTarget.min, borderRadius: radius.media, paddingHorizontal: spacing.lg },
 })

@@ -31,8 +31,8 @@ export function Sheet({ visible, onClose, title, children }: Props) {
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' },
   sheet: {
-    borderTopLeftRadius: radius.sm,
-    borderTopRightRadius: radius.sm,
+    borderTopLeftRadius: radius.card,
+    borderTopRightRadius: radius.card,
     padding: spacing.lg,
     gap: spacing.md,
   },

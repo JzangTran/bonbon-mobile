@@ -2,12 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { Image } from 'expo-image'
 import { StyleSheet, View } from 'react-native'
 import { z } from 'zod'
 import { loadLastRole, useSession, type Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
-import { Button, Captcha, Card, Illustration, Input, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Captcha, Card, Input, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
 
 const schema = z.object({
   email: z.email('Email không hợp lệ'),
@@ -104,10 +105,7 @@ export default function LoginScreen() {
 
   return (
     <Screen>
-      <Illustration name="empty" width={120} />
-      <Text variant="brand" color={theme.primary}>
-        bonbon
-      </Text>
+      <Image source={require('../../../assets/brand/lockup-color.png')} accessibilityLabel="bonbon" style={styles.logo} contentFit="contain" />
       <Text variant="display" accessibilityRole="header" style={{ fontFamily: fonts.extrabold, letterSpacing: -0.6 }}>
         Đặt món từ quán <Text variant="display" color={theme.headlineSoft} style={{ fontFamily: fonts.extrabold, letterSpacing: -0.6 }}>ngay trong khu của bạn</Text>
       </Text>
@@ -147,5 +145,6 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  logo: { width: 152, height: 40 },
   links: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.xs },
 })

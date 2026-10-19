@@ -8,12 +8,11 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.jzangtran.bonbon"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0B3B24",
+        "backgroundColor": "#28A466",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"

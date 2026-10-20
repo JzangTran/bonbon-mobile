@@ -117,10 +117,11 @@ export type TypographyVariant = keyof typeof typography
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32 } as const
 
 /**
- * Only what is allowed to be round is round: pills (buttons, chips, badges, search, tab bars) 999; cards that carry a photo
- * 24 with the photo 18; every other box (cards, fields, notices, thumbnails) 12. `sm` is for tiny marks.
+ * One shape for the whole product (owner decision 2026-10-20), the same as the web: controls `md` 8 (buttons, fields, chips,
+ * tabs, badges, icon buttons); surfaces `lg` 12 (cards, notices, sheets, photos, the tab bar); `media` and `card` are 12 too.
+ * `pill` (999) only for what is truly round: progress tracks, the sheet handle, count bubbles. `sm` is for tiny marks.
  */
-export const radius = { sm: 4, md: 12, media: 18, card: 24, pill: 999 } as const
+export const radius = { sm: 4, md: 8, lg: 12, media: 12, card: 12, pill: 999 } as const
 
 /** ≥44pt iOS / 48dp Android; the seller's "next status" button uses `large`. */
 export const touchTarget = { min: 48, large: 56 } as const

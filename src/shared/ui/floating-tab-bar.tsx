@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   wrap: { paddingHorizontal: 24, paddingTop: 8 },
   bar: {
     height: BAR_HEIGHT,
-    borderRadius: radius.pill,
+    borderRadius: radius.lg,
     paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     elevation: 8,
   },
-  item: { width: 48, height: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  item: { width: 48, height: 48, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   pressed: { backgroundColor: 'rgba(255,255,255,0.12)' },
   badge: { position: 'absolute', top: 0, right: 0, minWidth: 18, height: 18, borderRadius: 9, paddingHorizontal: 5, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontFamily: fonts.bold, fontSize: 11, lineHeight: 14 },

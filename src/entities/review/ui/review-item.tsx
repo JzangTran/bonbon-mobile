@@ -49,6 +49,6 @@ export function ReviewItem({ review, footer }: { review: Review; footer?: ReactN
 const styles = StyleSheet.create({
   item: { gap: spacing.xs },
   head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap' },
-  tag: { borderRadius: radius.md, padding: spacing.sm },
-  reply: { borderRadius: radius.md, padding: spacing.sm, gap: 2 },
+  tag: { borderRadius: radius.lg, padding: spacing.sm },
+  reply: { borderRadius: radius.lg, padding: spacing.sm, gap: 2 },
 })

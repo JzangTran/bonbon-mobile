@@ -73,6 +73,6 @@ export function NoShowAnswerCard({ orderId }: { orderId: string }) {
 
 const styles = StyleSheet.create({
   photos: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  photo: { width: 96, height: 96, borderRadius: radius.md },
+  photo: { width: 96, height: 96, borderRadius: radius.lg },
   note: { minHeight: 96, textAlignVertical: 'top', paddingTop: spacing.sm },
 })

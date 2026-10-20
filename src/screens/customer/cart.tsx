@@ -218,6 +218,6 @@ const styles = StyleSheet.create({
   qty: { minWidth: 24, textAlign: 'center', fontVariant: ['tabular-nums'] },
   money: { fontVariant: ['tabular-nums'] },
   sum: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  address: { minHeight: touchTarget.min, padding: spacing.md, borderRadius: radius.md, borderWidth: 1, gap: 2 },
+  address: { minHeight: touchTarget.min, padding: spacing.md, borderRadius: radius.lg, borderWidth: 1, gap: 2 },
   bold: { fontFamily: fonts.semibold },
 })

@@ -154,7 +154,7 @@ function DishRow({ item, onPress }: { item: ShopDish; onPress: () => void }) {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  badge: { borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 2 },
+  badge: { borderRadius: radius.md, paddingHorizontal: spacing.sm, paddingVertical: 2 },
   dish: { flexDirection: 'row', gap: spacing.md, borderTopWidth: 1, paddingVertical: spacing.md, minHeight: touchTarget.min },
   soldOut: { opacity: 0.5 },
   photo: { width: 72, height: 72 },

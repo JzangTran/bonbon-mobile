@@ -66,5 +66,5 @@ export function NoShowCard({ orderId }: { orderId: string }) {
 
 const styles = StyleSheet.create({
   note: { minHeight: 96, textAlignVertical: 'top', paddingTop: spacing.sm },
-  photo: { width: 96, height: 96, borderRadius: radius.md },
+  photo: { width: 96, height: 96, borderRadius: radius.lg },
 })

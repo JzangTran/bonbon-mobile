@@ -192,10 +192,10 @@ const styles = StyleSheet.create({
   buttons: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
   multiline: { minHeight: 100, textAlignVertical: 'top' },
   messageRow: { gap: 2 },
-  message: { maxWidth: '90%', borderRadius: radius.md, padding: spacing.md, gap: spacing.xs },
-  photo: { width: 200, height: 150, borderRadius: radius.md },
+  message: { maxWidth: '90%', borderRadius: radius.lg, padding: spacing.md, gap: spacing.xs },
+  photo: { width: 200, height: 150, borderRadius: radius.lg },
   strip: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
-  thumb: { width: 64, height: 64, borderRadius: radius.md },
+  thumb: { width: 64, height: 64, borderRadius: radius.lg },
   remove: { position: 'absolute', top: -6, right: -6, width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   add: { width: 64, height: 64, borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },
 })

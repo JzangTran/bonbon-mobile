@@ -91,7 +91,7 @@ export default function LoginScreen() {
 
   if (roleChoice) {
     return (
-      <Screen>
+      <Screen backdrop>
         <Text variant="headline">Bạn muốn vào với vai trò nào?</Text>
         <Text muted>Có thể đổi lại bất cứ lúc nào trong phần Tài khoản. Lựa chọn được nhớ trên máy này.</Text>
         {roleChoice.roles.map((role) => (
@@ -104,7 +104,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <Screen>
+    <Screen backdrop>
       <Image source={require('../../../assets/brand/lockup-color.png')} accessibilityLabel="bonbon" style={styles.logo} contentFit="contain" />
       <Text variant="display" accessibilityRole="header" style={{ fontFamily: fonts.extrabold, letterSpacing: -0.6 }}>
         Đặt món từ quán <Text variant="display" color={theme.headlineSoft} style={{ fontFamily: fonts.extrabold, letterSpacing: -0.6 }}>ngay trong khu của bạn</Text>

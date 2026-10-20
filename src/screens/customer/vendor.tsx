@@ -9,6 +9,7 @@ import { deliveryText, formatDistance, useShopMenu, type ShopDish } from '@/enti
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
 import { confirm } from '@/shared/lib/confirm'
+import { mockPhoto } from '@/shared/lib/mock-photos'
 import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
 import { DishSheet } from './dish-sheet'
@@ -142,10 +143,15 @@ function DishRow({ item, onPress }: { item: ShopDish; onPress: () => void }) {
           </Text>
         ) : null}
       </View>
-      {item.photoUrl ? (
-        <Image source={{ uri: item.photoUrl }} style={[styles.photo, soldOut && styles.soldOut]} contentFit="cover" accessibilityIgnoresInvertColors />
+      {item.photoUrl || mockPhoto(item.id ?? '', item.name ?? '') ? (
+        <Image
+          source={item.photoUrl ? { uri: item.photoUrl } : mockPhoto(item.id ?? '', item.name ?? '')}
+          style={[styles.photo, styles.photoRound, soldOut && styles.soldOut]}
+          contentFit="cover"
+          accessibilityIgnoresInvertColors
+        />
       ) : (
-        <View style={[styles.photo, { backgroundColor: theme.imageSlot }, soldOut && styles.soldOut]} />
+        <View style={[styles.photo, styles.photoRound, { backgroundColor: theme.imageSlot }, soldOut && styles.soldOut]} />
       )}
     </Pressable>
   )
@@ -158,5 +164,6 @@ const styles = StyleSheet.create({
   dish: { flexDirection: 'row', gap: spacing.md, borderTopWidth: 1, paddingVertical: spacing.md, minHeight: touchTarget.min },
   soldOut: { opacity: 0.5 },
   photo: { width: 72, height: 72 },
+  photoRound: { borderRadius: radius.lg },
   money: { fontVariant: ['tabular-nums'] },
 })

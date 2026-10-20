@@ -28,7 +28,7 @@ export default function ForgotPasswordScreen() {
   }
 
   return (
-    <Screen>
+    <Screen backdrop>
       <Text variant="headline">Quên mật khẩu</Text>
       <Card>
         {sent ? (

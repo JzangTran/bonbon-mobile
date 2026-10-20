@@ -1,13 +1,16 @@
 import { useRouter } from 'expo-router'
 import { ArrowRight, MapPin, Search } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
+import { Image } from 'expo-image'
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native'
+import Animated, { FadeInDown, ReduceMotion } from 'react-native-reanimated'
 import { useAddresses } from '@/entities/address'
 import { useCategoryLeaves } from '@/entities/category'
 import { RatingSummary } from '@/entities/review'
 import { deliveryText, formatDistance, useShopsInArea, type Shop } from '@/entities/vendor'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
+import { mockPhoto } from '@/shared/lib/mock-photos'
 import { Button, Card, Notice, Screen, Text, fonts, radius, spacing, touchTarget, typography, useTheme } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
 import { NotificationBell } from '@/widgets/notification-bell'
@@ -82,8 +85,8 @@ export default function CustomerHomeScreen() {
               </Text>
             </Card>
           ) : null}
-          {list.map((shop) => (
-            <ShopCard key={shop.id} shop={shop} onPress={() => router.push({ pathname: '/customer/vendor', params: { id: shop.id } })} />
+          {list.map((shop, index) => (
+            <ShopCard key={shop.id} shop={shop} index={index} onPress={() => router.push({ pathname: '/customer/vendor', params: { id: shop.id } })} />
           ))}
         </>
       ) : null}
@@ -129,13 +132,17 @@ function Chip({ label, selected, onPress }: { label: string; selected: boolean; 
   )
 }
 
-function ShopCard({ shop, onPress }: { shop: Shop; onPress: () => void }) {
+function ShopCard({ shop, index, onPress }: { shop: Shop; index: number; onPress: () => void }) {
   const theme = useTheme()
   const distance = formatDistance(shop.distanceKm)
+  const photo = mockPhoto(shop.id ?? '', shop.name ?? '')
   return (
+    // The first cards fade up once as the list appears; the system's reduce-motion setting turns it off.
+    <Animated.View entering={FadeInDown.delay(Math.min(index, 5) * 60).duration(320).reduceMotion(ReduceMotion.System)}>
     <Pressable accessibilityRole="button" accessibilityLabel={`${shop.name}, ${shop.open ? 'đang mở' : 'đang đóng'}`} onPress={onPress}>
       <Card style={[styles.shop, !shop.open && styles.closed]}>
         <View style={[styles.cover, { backgroundColor: theme.imageSlot }]}>
+          {photo ? <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" accessibilityIgnoresInvertColors /> : null}
           {distance ? (
             <View style={[styles.pill, styles.pillLeft, { backgroundColor: theme.ink }]}>
               <Text variant="caption" color="#FFFFFF" style={styles.pillText}>
@@ -166,6 +173,7 @@ function ShopCard({ shop, onPress }: { shop: Shop; onPress: () => void }) {
         </View>
       </Card>
     </Pressable>
+    </Animated.View>
   )
 }
 
@@ -183,7 +191,7 @@ const styles = StyleSheet.create({
   chipLabel: { fontFamily: fonts.semibold },
   shop: { padding: 10, gap: 10, borderRadius: radius.card },
   closed: { opacity: 0.7 },
-  cover: { height: 150, borderRadius: radius.media },
+  cover: { height: 150, borderRadius: radius.media, overflow: 'hidden' },
   pill: { position: 'absolute', top: 10, borderRadius: radius.md, paddingHorizontal: 10, paddingVertical: 5 },
   pillLeft: { left: 10 },
   pillRight: { right: 10 },

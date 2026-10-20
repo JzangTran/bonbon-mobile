@@ -4188,6 +4188,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/ops/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tình trạng hệ thống
+         * @description Ping cơ sở dữ liệu và Redis, kèm thời gian chạy, bộ nhớ và số lõi của phiên bản đang trả lời. `status` là `DEGRADED` nếu có kiểm tra không đạt.
+         *
+         *     **Cần đăng nhập**, quyền `ops:read`.
+         */
+        get: operations["getOpsStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/merchants": {
         parameters: {
             query?: never;
@@ -8493,6 +8515,40 @@ export interface components {
             detail?: string;
             /** Format: date-time */
             at?: string;
+        };
+        OpsCheck: {
+            name?: string;
+            ok?: boolean;
+            /** Format: int64 */
+            latencyMs?: number;
+            detail?: string;
+        };
+        /** @description Tình trạng của phiên bản đang chạy và các thành phần nó dựa vào. */
+        OpsStatus: {
+            /** @description `UP` khi mọi kiểm tra đều đạt, ngược lại `DEGRADED`. */
+            status?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            checkedAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
+             */
+            startedAt?: string;
+            /** Format: int64 */
+            uptimeSeconds?: number;
+            /** @description Hồ sơ cấu hình đang dùng (dev, prod…). */
+            profiles?: string[];
+            javaVersion?: string;
+            /** Format: int32 */
+            processors?: number;
+            /** Format: int64 */
+            heapUsedMb?: number;
+            /** Format: int64 */
+            heapMaxMb?: number;
+            checks?: components["schemas"]["OpsCheck"][];
         };
         MerchantDirectoryPage: {
             items?: components["schemas"]["MerchantDirectoryRow"][];
@@ -24275,6 +24331,53 @@ export interface operations {
             };
             /** @description - `CASE_NOT_FOUND`: Không có khiếu nại với id này. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getOpsStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpsStatus"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `ops:read`. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

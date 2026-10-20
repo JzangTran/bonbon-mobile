@@ -22,5 +22,5 @@ export function Notice({ tone, message }: { tone: 'error' | 'success'; message: 
 }
 
 const styles = StyleSheet.create({
-  box: { borderRadius: radius.md, padding: spacing.md },
+  box: { borderRadius: radius.lg, padding: spacing.md },
 })

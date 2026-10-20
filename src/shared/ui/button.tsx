@@ -59,7 +59,7 @@ export function Button({ title, variant = 'primary', size = 'md', loading, fullW
 const styles = StyleSheet.create({
   base: {
     paddingHorizontal: spacing.xl,
-    borderRadius: radius.pill,
+    borderRadius: radius.md,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',

@@ -38,7 +38,7 @@ export function CartBar() {
 
 const styles = StyleSheet.create({
   wrap: { position: 'absolute', left: spacing.lg, right: spacing.lg, bottom: spacing.lg },
-  bar: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.large, paddingHorizontal: spacing.xl, borderRadius: radius.pill },
+  bar: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.large, paddingHorizontal: spacing.xl, borderRadius: radius.md },
   flex: { flex: 1 },
   money: { fontVariant: ['tabular-nums'] },
 })

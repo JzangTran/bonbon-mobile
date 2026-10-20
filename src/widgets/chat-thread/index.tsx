@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   bubbleRow: { gap: 2 },
   bubble: { maxWidth: '85%', borderRadius: radius.media, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.xs },
   quote: { opacity: 0.85 },
-  photo: { width: 200, height: 160, borderRadius: radius.md },
+  photo: { width: 200, height: 160, borderRadius: radius.lg },
   meta: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   replyButton: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   composer: { borderTopWidth: StyleSheet.hairlineWidth, padding: spacing.sm, gap: spacing.sm },
@@ -190,6 +190,6 @@ const styles = StyleSheet.create({
   input: { flex: 1, minHeight: touchTarget.min, maxHeight: 120, borderWidth: 1, borderRadius: radius.md, paddingHorizontal: spacing.md, fontFamily: fonts.regular },
   iconButton: { width: touchTarget.min, height: touchTarget.min, alignItems: 'center', justifyContent: 'center' },
   preview: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  thumb: { width: 56, height: 56, borderRadius: radius.md },
+  thumb: { width: 56, height: 56, borderRadius: radius.lg },
   chip: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.md, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
 })

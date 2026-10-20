@@ -81,5 +81,5 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: spacing.md },
   tabs: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  tab: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
+  tab: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.md, borderWidth: 1, justifyContent: 'center' },
 })

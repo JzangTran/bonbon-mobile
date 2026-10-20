@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   groupName: { fontFamily: fonts.semibold },
   option: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderTopWidth: 1, minHeight: touchTarget.min },
   mark: { width: 22, height: 22, borderWidth: 2 },
-  round: { borderRadius: radius.pill },
+  round: { borderRadius: radius.md },
   square: { borderRadius: radius.md },
   money: { fontVariant: ['tabular-nums'] },
   stepper: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.lg },

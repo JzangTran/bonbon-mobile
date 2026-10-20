@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
-    borderRadius: radius.pill,
+    borderRadius: radius.md,
   },
   label: { fontFamily: fonts.semibold },
 })

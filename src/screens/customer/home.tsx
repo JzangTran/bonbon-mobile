@@ -123,9 +123,9 @@ function Chip({ label, selected, onPress }: { label: string; selected: boolean; 
       accessibilityRole="radio"
       aria-checked={selected}
       onPress={onPress}
-      style={[styles.chip, { backgroundColor: selected ? theme.primary : theme.surfaceMuted }]}
+      style={[styles.chip, { backgroundColor: selected ? theme.surface : theme.surfaceMuted, borderColor: selected ? theme.primary : 'transparent' }]}
     >
-      <Text variant="bodySm" color={selected ? theme.onPrimary : theme.text} style={styles.chipLabel}>
+      <Text variant="bodySm" color={selected ? theme.primary : theme.textMuted} style={styles.chipLabel}>
         {label}
       </Text>
     </Pressable>
@@ -183,11 +183,11 @@ const styles = StyleSheet.create({
   address: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.min },
   addressText: { fontFamily: fonts.semibold },
   round: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
-  headline: { fontFamily: fonts.extrabold, letterSpacing: -0.6 },
+  headline: { fontFamily: fonts.semibold, letterSpacing: -0.6 },
   search: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.min, borderRadius: radius.pill, paddingHorizontal: spacing.lg },
   searchInput: { flex: 1, minHeight: touchTarget.min, paddingVertical: 0 },
   chips: { gap: spacing.sm },
-  chip: { minHeight: 44, paddingHorizontal: spacing.lg, borderRadius: radius.pill, justifyContent: 'center' },
+  chip: { minHeight: 44, paddingHorizontal: spacing.lg, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
   chipLabel: { fontFamily: fonts.semibold },
   shop: { padding: 10, gap: 10, borderRadius: radius.card },
   closed: { opacity: 0.7 },

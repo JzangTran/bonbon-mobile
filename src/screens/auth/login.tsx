@@ -106,8 +106,8 @@ export default function LoginScreen() {
   return (
     <Screen backdrop>
       <Image source={require('../../../assets/brand/lockup-color.png')} accessibilityLabel="bonbon" style={styles.logo} contentFit="contain" />
-      <Text variant="display" accessibilityRole="header" style={{ fontFamily: fonts.extrabold, letterSpacing: -0.6 }}>
-        Đặt món từ quán <Text variant="display" color={theme.headlineSoft} style={{ fontFamily: fonts.extrabold, letterSpacing: -0.6 }}>ngay trong khu của bạn</Text>
+      <Text variant="display" accessibilityRole="header" style={{ fontFamily: fonts.semibold, letterSpacing: -0.6 }}>
+        Đặt món từ quán <Text variant="display" color={theme.headlineSoft} style={{ fontFamily: fonts.semibold, letterSpacing: -0.6 }}>ngay trong khu của bạn</Text>
       </Text>
       <Card>
         <Text variant="title">Đăng nhập</Text>

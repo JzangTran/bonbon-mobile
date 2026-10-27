@@ -1,7 +1,8 @@
 /**
  * bonbon design tokens v4 (orange, quiet; owner decision 2026-10-27, after gitbook.com), the same values as the web.
  * White first, near-black text and two greys, hairlines only where needed, brand orange: #FE551B for large shapes and icons,
- * #CC3D0B for text and buttons with white text (4.95:1). Screens never use raw colors; they read these through useTheme().
+ * also for buttons, links and selected items, as GitBook does (3.22:1 on white: fine for large text and UI parts, below 4.5:1 for
+ * small text; palette.orange600 #CC3D0B is the accessible shade). Screens never use raw colors; they read these through useTheme().
  */
 
 export const palette = {
@@ -27,11 +28,11 @@ const light = {
   border: '#EDEDED',
   text: palette.ink,
   textMuted: '#6E6E6E',
-  primary: palette.orange600,
-  primaryPressed: palette.orange700,
+  primary: palette.orange500,
+  primaryPressed: '#EE4A12',
   onPrimary: palette.white,
   primarySubtle: palette.orange50,
-  onPrimarySubtle: palette.orange600,
+  onPrimarySubtle: palette.orange500,
   success: '#1F7A3F',
   successSubtle: '#EBF6EF',
   onSuccessSubtle: '#1F6B38',
@@ -92,13 +93,13 @@ const dark: ColorScheme = {
 
 export const colors = { light: light as ColorScheme, dark }
 
-/** Be Vietnam Pro (loaded in app-shell); 800 only for the wordmark and big headlines. */
+/** Inter, the font of app.gitbook.com (loaded in app-shell; it has the Vietnamese letters); 800 only for the wordmark and big headlines. */
 export const fonts = {
-  regular: 'BeVietnamPro_400Regular',
-  medium: 'BeVietnamPro_500Medium',
-  semibold: 'BeVietnamPro_600SemiBold',
-  bold: 'BeVietnamPro_700Bold',
-  extrabold: 'BeVietnamPro_800ExtraBold',
+  regular: 'Inter_400Regular',
+  medium: 'Inter_500Medium',
+  semibold: 'Inter_600SemiBold',
+  bold: 'Inter_700Bold',
+  extrabold: 'Inter_800ExtraBold',
 } as const
 
 export const typography = {

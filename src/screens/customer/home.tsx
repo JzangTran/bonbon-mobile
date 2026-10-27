@@ -167,8 +167,8 @@ function ShopCard({ shop, index, onPress }: { shop: Shop; index: number; onPress
               {shop.minOrderValue ? ` · tối thiểu ${formatVnd(shop.minOrderValue)}` : ''}
             </Text>
           </View>
-          <View style={[styles.go, { backgroundColor: theme.primary }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            <ArrowRight size={18} color={theme.onPrimary} strokeWidth={2} />
+          <View style={[styles.go, { backgroundColor: theme.text }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+            <ArrowRight size={18} color={theme.background} strokeWidth={2} />
           </View>
         </View>
       </Card>

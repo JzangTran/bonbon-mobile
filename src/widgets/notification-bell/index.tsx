@@ -29,6 +29,6 @@ export function NotificationBell({ href }: { href: Href }) {
 }
 
 const styles = StyleSheet.create({
-  button: { width: touchTarget.min, height: touchTarget.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  button: { width: touchTarget.min, height: touchTarget.min, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   badge: { position: 'absolute', top: 4, right: 2, minWidth: 18, height: 18, borderRadius: radius.pill, paddingHorizontal: 4, alignItems: 'center', justifyContent: 'center' },
 })

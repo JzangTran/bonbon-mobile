@@ -60,7 +60,7 @@ export default function SellerOrdersScreen() {
         </Pressable>
       ) : null}
 
-      <View style={[styles.tabs, { backgroundColor: theme.surface }]} accessibilityRole="tablist">
+      <View style={[styles.tabs, { backgroundColor: theme.surfaceMuted }]} accessibilityRole="tablist">
         {tabs.map((t) => (
           <Pressable
             key={t.id}
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   tab: { flex: 1, minHeight: 44, borderRadius: radius.pill, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
   tabLabel: { fontFamily: fonts.semibold },
   count: { minWidth: 20, height: 20, borderRadius: 10, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center' },
-  banner: { padding: spacing.lg, borderRadius: radius.md, gap: spacing.xs },
+  banner: { padding: spacing.lg, borderRadius: radius.lg, gap: spacing.xs },
   cardMain: { gap: spacing.xs, marginBottom: spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   flex: { flex: 1 },

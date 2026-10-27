@@ -20,8 +20,9 @@ export function Button({ title, variant = 'primary', size = 'md', loading, fullW
   const isDisabled = disabled || loading
 
   const palette: Record<Variant, { bg: string; bgPressed: string; fg: string; border?: string }> = {
-    primary: { bg: theme.primary, bgPressed: theme.primaryPressed, fg: theme.onPrimary },
-    outline: { bg: 'transparent', bgPressed: theme.surfaceMuted, fg: theme.text, border: theme.borderInput },
+    // after gitbook.com: the main action in ink (the text colour, so it flips in dark mode), the second one on a pale fill
+    primary: { bg: theme.text, bgPressed: theme.textMuted, fg: theme.background },
+    outline: { bg: theme.surfaceMuted, bgPressed: theme.border, fg: theme.text },
     ghost: { bg: 'transparent', bgPressed: theme.surfaceMuted, fg: theme.text },
     destructive: { bg: theme.danger, bgPressed: theme.danger, fg: theme.onDanger },
   }

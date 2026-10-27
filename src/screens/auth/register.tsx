@@ -85,7 +85,7 @@ export default function RegisterScreen() {
 
   if (done) {
     return (
-      <Screen>
+      <Screen backdrop>
         <Text variant="headline">{done.roleAdded ? 'Đã thêm vai trò' : 'Kiểm tra hộp thư của bạn'}</Text>
         <Notice
           tone="success"
@@ -103,7 +103,7 @@ export default function RegisterScreen() {
   }
 
   return (
-    <Screen>
+    <Screen backdrop>
       <Text variant="headline">Tạo tài khoản</Text>
       <Text muted>Đã có tài khoản? Đăng ký vai trò còn lại bằng cùng email và mật khẩu để dùng chung một tài khoản.</Text>
       <View style={styles.roles}>

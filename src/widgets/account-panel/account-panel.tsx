@@ -6,7 +6,8 @@ import { z } from 'zod'
 import { useSession, type Role } from '@/entities/session'
 import { unregisterPush } from '@/features/push'
 import { api, problemMessage, type components } from '@/shared/api'
-import { Button, Card, Input, Notice, Sheet, Text, useToast } from '@/shared/ui'
+import { Pressable, StyleSheet, View } from 'react-native'
+import { Button, Card, Input, Notice, Sheet, TEXT_SCALES, Text, radius, spacing, touchTarget, useTextScale, useTheme, useToast } from '@/shared/ui'
 import { DeleteAccountCard } from './delete-account-card'
 
 type Profile = components['schemas']['Profile']
@@ -41,6 +42,7 @@ export function AccountPanel() {
   return (
     <>
       <ProfileCard profile={profile.data} />
+      <TextSizeCard />
       <RoleCard />
       {profile.data?.hasPassword !== false ? <PasswordCard /> : null}
       <SessionCard hasPassword={profile.data?.hasPassword !== false} />
@@ -48,6 +50,44 @@ export function AccountPanel() {
     </>
   )
 }
+
+/** "Cỡ chữ": three sizes on top of the phone's own font size setting; saved on this device. */
+function TextSizeCard() {
+  const theme = useTheme()
+  const { id, setId } = useTextScale()
+  return (
+    <Card>
+      <Text variant="title">Cỡ chữ</Text>
+      <Text variant="bodySm" muted>
+        Chọn cỡ chữ dễ đọc với bạn. Cỡ chữ trong cài đặt của điện thoại vẫn được áp dụng thêm.
+      </Text>
+      <View style={sizeStyles.row} accessibilityRole="radiogroup">
+        {TEXT_SCALES.map((s) => {
+          const selected = s.id === id
+          return (
+            <Pressable
+              key={s.id}
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
+              accessibilityLabel={`Cỡ chữ ${s.label.toLowerCase()}`}
+              onPress={() => setId(s.id)}
+              style={[sizeStyles.option, { backgroundColor: selected ? theme.primary : theme.surfaceMuted }]}
+            >
+              <Text variant="bodySm" color={selected ? theme.onPrimary : theme.text} style={{ fontWeight: '600' }}>
+                {s.label}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </View>
+    </Card>
+  )
+}
+
+const sizeStyles = StyleSheet.create({
+  row: { flexDirection: 'row', gap: spacing.sm },
+  option: { flex: 1, minHeight: touchTarget.min, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+})
 
 function ProfileCard({ profile }: { profile: Profile | undefined }) {
   const queryClient = useQueryClient()

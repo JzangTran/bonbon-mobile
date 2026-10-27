@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Text } from './text'
 import { useTheme } from './theme'
-import { fonts, palette, radius } from './tokens'
+import { fonts, radius } from './tokens'
 
 type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0]
 
@@ -24,7 +24,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: TabBarProps) 
 
   return (
     <View style={[styles.wrap, { backgroundColor: theme.background, paddingBottom: Math.max(insets.bottom, 12) + 4 }]}>
-      <View accessibilityRole="tablist" style={[styles.bar, { backgroundColor: theme.ink }]}>
+      <View accessibilityRole="tablist" style={[styles.bar, { backgroundColor: theme.surface, borderColor: theme.border }]}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key]
           const href = (options as { href?: string | null }).href
@@ -44,9 +44,9 @@ export function FloatingTabBar({ state, descriptors, navigation }: TabBarProps) 
               accessibilityState={{ selected: focused }}
               onPress={onPress}
               onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
-              style={({ pressed }) => [styles.item, focused && { backgroundColor: palette.green600 }, pressed && !focused && styles.pressed]}
+              style={({ pressed }) => [styles.item, focused && { backgroundColor: theme.primarySubtle }, pressed && !focused && styles.pressed]}
             >
-              {options.tabBarIcon({ focused, color: palette.white, size: ICON })}
+              {options.tabBarIcon({ focused, color: focused ? theme.primary : theme.textMuted, size: ICON })}
               {badge !== undefined && badge !== '' ? (
                 <View style={[styles.badge, { backgroundColor: theme.danger }]}>
                   <Text variant="caption" color={theme.onDanger} style={styles.badgeText}>
@@ -66,19 +66,17 @@ const styles = StyleSheet.create({
   wrap: { paddingHorizontal: 24, paddingTop: 8 },
   bar: {
     height: BAR_HEIGHT,
-    borderRadius: radius.pill,
+    borderRadius: radius.lg,
     paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    shadowColor: '#14201A',
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
+    // flat: no cast shadow
+    borderWidth: 1,
+
   },
   item: { width: 48, height: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
-  pressed: { backgroundColor: 'rgba(255,255,255,0.12)' },
+  pressed: { opacity: 0.7 },
   badge: { position: 'absolute', top: 0, right: 0, minWidth: 18, height: 18, borderRadius: 9, paddingHorizontal: 5, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontFamily: fonts.bold, fontSize: 11, lineHeight: 14 },
 })

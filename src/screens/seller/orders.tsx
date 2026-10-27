@@ -67,9 +67,9 @@ export default function SellerOrdersScreen() {
             accessibilityRole="tab"
             accessibilityState={{ selected: tab === t.id }}
             onPress={() => setTab(t.id)}
-            style={[styles.tab, tab === t.id && { backgroundColor: theme.ink }]}
+            style={[styles.tab, tab === t.id && { backgroundColor: theme.surface }]}
           >
-            <Text variant="bodySm" color={tab === t.id ? '#FFFFFF' : theme.textMuted} style={styles.tabLabel}>
+            <Text variant="bodySm" color={tab === t.id ? theme.primary : theme.textMuted} style={styles.tabLabel}>
               {t.label}
               {t.count > 0 && t.id !== 'new' ? `  ${t.count}` : ''}
             </Text>
@@ -152,7 +152,7 @@ function OrderCard({ order }: { order: ShopOrderSummary }) {
 }
 
 const styles = StyleSheet.create({
-  title: { fontFamily: fonts.extrabold, letterSpacing: -0.4 },
+  title: { fontFamily: fonts.semibold, letterSpacing: -0.4 },
   tabs: { flexDirection: 'row', gap: 4, padding: 4, borderRadius: radius.pill },
   tab: { flex: 1, minHeight: 44, borderRadius: radius.pill, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
   tabLabel: { fontFamily: fonts.semibold },

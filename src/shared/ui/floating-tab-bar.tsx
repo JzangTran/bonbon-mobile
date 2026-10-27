@@ -44,7 +44,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: TabBarProps) 
               accessibilityState={{ selected: focused }}
               onPress={onPress}
               onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
-              style={({ pressed }) => [styles.item, focused && { backgroundColor: theme.primarySubtle }, pressed && !focused && styles.pressed]}
+              style={({ pressed }) => [styles.item, pressed && !focused && styles.pressed]}
             >
               {options.tabBarIcon({ focused, color: focused ? theme.primary : theme.textMuted, size: ICON })}
               {badge !== undefined && badge !== '' ? (
@@ -78,5 +78,5 @@ const styles = StyleSheet.create({
   item: { width: 48, height: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   pressed: { opacity: 0.7 },
   badge: { position: 'absolute', top: 0, right: 0, minWidth: 18, height: 18, borderRadius: 9, paddingHorizontal: 5, alignItems: 'center', justifyContent: 'center' },
-  badgeText: { fontFamily: fonts.bold, fontSize: 11, lineHeight: 14 },
+  badgeText: { fontFamily: fonts.semibold, fontSize: 11, lineHeight: 14 },
 })

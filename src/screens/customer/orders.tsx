@@ -96,7 +96,7 @@ function OrderCard({ order }: { order: OrderSummary }) {
 
 const styles = StyleSheet.create({
   tabs: { flexDirection: 'row', gap: spacing.sm },
-  tab: { flex: 1, minHeight: touchTarget.min, borderRadius: radius.md, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  tab: { flex: 1, minHeight: touchTarget.min, borderRadius: radius.pill, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   flex: { flex: 1 },
   money: { fontVariant: ['tabular-nums'] },

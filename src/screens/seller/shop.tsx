@@ -168,7 +168,7 @@ function Row({ title, value }: { title: string; value: string }) {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   logo: { width: 56, height: 56, borderRadius: radius.lg },
-  badge: { alignSelf: 'flex-start', borderRadius: radius.md, paddingHorizontal: spacing.sm, paddingVertical: 2, marginTop: 4 },
+  badge: { alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 2, marginTop: 4 },
   switchRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 52 },
   row: { gap: 2, paddingVertical: spacing.xs },
   flex: { flex: 1 },

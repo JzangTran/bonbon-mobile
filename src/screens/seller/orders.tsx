@@ -60,7 +60,7 @@ export default function SellerOrdersScreen() {
         </Pressable>
       ) : null}
 
-      <View style={[styles.tabs, { backgroundColor: theme.surface }]} accessibilityRole="tablist">
+      <View style={[styles.tabs, { backgroundColor: theme.surfaceMuted }]} accessibilityRole="tablist">
         {tabs.map((t) => (
           <Pressable
             key={t.id}
@@ -153,8 +153,8 @@ function OrderCard({ order }: { order: ShopOrderSummary }) {
 
 const styles = StyleSheet.create({
   title: { fontFamily: fonts.extrabold, letterSpacing: -0.4 },
-  tabs: { flexDirection: 'row', gap: 4, padding: 4, borderRadius: radius.md },
-  tab: { flex: 1, minHeight: 44, borderRadius: radius.md, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
+  tabs: { flexDirection: 'row', gap: 4, padding: 4, borderRadius: radius.pill },
+  tab: { flex: 1, minHeight: 44, borderRadius: radius.pill, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
   tabLabel: { fontFamily: fonts.semibold },
   count: { minWidth: 20, height: 20, borderRadius: 10, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center' },
   banner: { padding: spacing.lg, borderRadius: radius.lg, gap: spacing.xs },

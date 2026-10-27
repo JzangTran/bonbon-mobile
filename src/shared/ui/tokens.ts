@@ -19,11 +19,13 @@ export const palette = {
 } as const
 
 const light = {
-  background: '#F6F8F7',
+  background: '#FFFFFF',
   surface: '#FFFFFF',
   surfaceMuted: '#F3F6F4',
   divider: '#E3E8E5',
   borderInput: '#7C8A83',
+  /** hairline around cards and bars (decorative) */
+  border: '#E6E9E7',
   text: palette.ink,
   textMuted: '#4B5A52',
   primary: palette.green600,
@@ -61,6 +63,7 @@ const dark: ColorScheme = {
   surfaceMuted: '#1E2A24',
   divider: 'rgba(255,255,255,0.1)',
   borderInput: '#5E7066',
+  border: 'rgba(255,255,255,0.10)',
   text: '#E6EDE9',
   textMuted: '#9DB0A5',
   primary: '#3CC77A',
@@ -117,7 +120,8 @@ export type TypographyVariant = keyof typeof typography
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32 } as const
 
 /**
- * One shape for the whole product (owner decision 2026-10-20), the same as the web: controls `md` 8 (buttons, fields, chips,
+ * One shape for the whole product, the same as the web (owner decisions 2026-10-20 and 2026-10-27, after gitbook.com): buttons, chips,
+ * tabs, badges and search fields are pills (`pill`); fields and icon buttons `md` 8 (was: buttons, fields, chips,
  * tabs, badges, icon buttons); surfaces `lg` 12 (cards, notices, sheets, photos, the tab bar); `media` and `card` are 12 too.
  * `pill` (999) only for what is truly round: progress tracks, the sheet handle, count bubbles. `sm` is for tiny marks.
  */

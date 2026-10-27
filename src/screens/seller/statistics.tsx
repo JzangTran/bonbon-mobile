@@ -154,7 +154,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   chips: { flexDirection: 'row', gap: spacing.sm },
-  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.md, borderWidth: 1, justifyContent: 'center' },
+  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
   totals: { flexDirection: 'row', gap: spacing.md },
   bars: { flexDirection: 'row', alignItems: 'flex-end', gap: 2 },
   barSlot: { flex: 1, justifyContent: 'flex-end' },

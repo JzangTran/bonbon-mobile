@@ -144,7 +144,7 @@ function ReplyActions({ review, busy, onReply, onDelete }: { review: Review; bus
 const styles = StyleSheet.create({
   top: { alignItems: 'flex-start' },
   tabs: { flexDirection: 'row', gap: spacing.sm },
-  tab: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.md, borderWidth: 1, justifyContent: 'center' },
+  tab: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
   actions: { gap: spacing.xs },
   buttons: { flexDirection: 'row', gap: spacing.sm },
   reply: { minHeight: 96, textAlignVertical: 'top', paddingTop: spacing.sm },

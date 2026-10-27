@@ -162,5 +162,5 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
 const styles = StyleSheet.create({
   header: { alignItems: 'flex-start' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.md, borderWidth: 1, justifyContent: 'center' },
+  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
 })

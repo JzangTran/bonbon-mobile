@@ -185,7 +185,7 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
 
 const styles = StyleSheet.create({
   chips: { flexDirection: 'row', gap: spacing.sm },
-  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.md, borderWidth: 1, justifyContent: 'center' },
+  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
   picked: { flexDirection: 'row', gap: spacing.sm, alignItems: 'flex-start', padding: spacing.md, borderRadius: radius.lg },
   list: { borderWidth: 1, borderRadius: radius.lg, overflow: 'hidden' },
   row: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, minHeight: touchTarget.min, justifyContent: 'center' },

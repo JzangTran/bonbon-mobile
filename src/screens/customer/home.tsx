@@ -55,7 +55,7 @@ export default function CustomerHomeScreen() {
           <Text variant="display" style={styles.headline} accessibilityRole="header">
             Hôm nay bạn <Text variant="display" color={theme.headlineSoft} style={styles.headline}>muốn ăn gì?</Text>
           </Text>
-          <View style={[styles.search, { backgroundColor: theme.surface }]}>
+          <View style={[styles.search, { backgroundColor: theme.surfaceMuted }]}>
             <Search size={18} color={theme.textMuted} />
             <TextInput
               accessibilityLabel="Tìm quán hoặc món"
@@ -101,7 +101,7 @@ function AddressBar({ loading, label, text, onPress }: { loading: boolean; label
   if (loading) return null
   return (
     <Pressable accessibilityRole="button" accessibilityLabel="Đổi địa chỉ giao hàng" onPress={onPress} style={styles.address}>
-      <View style={[styles.round, { backgroundColor: theme.surface }]}>
+      <View style={[styles.round, { backgroundColor: theme.surfaceMuted }]}>
         <MapPin size={20} color={theme.primary} strokeWidth={1.75} />
       </View>
       <View style={styles.flex}>
@@ -123,7 +123,7 @@ function Chip({ label, selected, onPress }: { label: string; selected: boolean; 
       accessibilityRole="radio"
       aria-checked={selected}
       onPress={onPress}
-      style={[styles.chip, { backgroundColor: selected ? theme.primary : theme.surface }]}
+      style={[styles.chip, { backgroundColor: selected ? theme.primary : theme.surfaceMuted }]}
     >
       <Text variant="bodySm" color={selected ? theme.onPrimary : theme.text} style={styles.chipLabel}>
         {label}
@@ -184,15 +184,15 @@ const styles = StyleSheet.create({
   addressText: { fontFamily: fonts.semibold },
   round: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   headline: { fontFamily: fonts.extrabold, letterSpacing: -0.6 },
-  search: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.min, borderRadius: radius.md, paddingHorizontal: spacing.lg },
+  search: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.min, borderRadius: radius.pill, paddingHorizontal: spacing.lg },
   searchInput: { flex: 1, minHeight: touchTarget.min, paddingVertical: 0 },
   chips: { gap: spacing.sm },
-  chip: { minHeight: 44, paddingHorizontal: spacing.lg, borderRadius: radius.md, justifyContent: 'center' },
+  chip: { minHeight: 44, paddingHorizontal: spacing.lg, borderRadius: radius.pill, justifyContent: 'center' },
   chipLabel: { fontFamily: fonts.semibold },
   shop: { padding: 10, gap: 10, borderRadius: radius.card },
   closed: { opacity: 0.7 },
   cover: { height: 150, borderRadius: radius.media, overflow: 'hidden' },
-  pill: { position: 'absolute', top: 10, borderRadius: radius.md, paddingHorizontal: 10, paddingVertical: 5 },
+  pill: { position: 'absolute', top: 10, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 5 },
   pillLeft: { left: 10 },
   pillRight: { right: 10 },
   pillText: { fontFamily: fonts.semibold },

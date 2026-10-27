@@ -135,7 +135,7 @@ export default function ReportProblemScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.md, borderWidth: 1, justifyContent: 'center' },
+  chip: { minHeight: touchTarget.min, paddingHorizontal: spacing.md, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
   item: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   count: { minWidth: 24, textAlign: 'center' },

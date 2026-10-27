@@ -191,5 +191,5 @@ const styles = StyleSheet.create({
   iconButton: { width: touchTarget.min, height: touchTarget.min, alignItems: 'center', justifyContent: 'center' },
   preview: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   thumb: { width: 56, height: 56, borderRadius: radius.lg },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.md, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
 })

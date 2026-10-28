@@ -145,6 +145,6 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  logo: { width: 152, height: 40 },
+  logo: { width: 122, height: 40 },
   links: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.xs },
 })

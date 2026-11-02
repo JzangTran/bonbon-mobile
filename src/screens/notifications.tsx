@@ -33,7 +33,7 @@ export function NotificationsScreen({ audience }: { audience: 'customer' | 'sell
       </View>
       {list.isError ? <Notice tone="error" message={problemMessage(list.error)} /> : null}
       {list.data && items.length === 0 ? (
-        <EmptyState title="Chưa có thông báo nào" hint={audience === 'seller' ? 'Đơn mới và thay đổi của đơn hàng sẽ hiện ở đây.' : 'Cập nhật về đơn hàng của bạn sẽ hiện ở đây.'} />
+        <EmptyState mascot="empty-notifications" title="Chưa có thông báo nào" hint={audience === 'seller' ? 'Đơn mới và thay đổi của đơn hàng sẽ hiện ở đây.' : 'Cập nhật về đơn hàng của bạn sẽ hiện ở đây.'} />
       ) : null}
       {items.map((item) => {
         const unread = !item.acknowledgedAt

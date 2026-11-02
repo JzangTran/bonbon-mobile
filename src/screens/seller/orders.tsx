@@ -86,7 +86,7 @@ export default function SellerOrdersScreen() {
 
       {query.isError ? <Notice tone="error" message={problemMessage(query.error)} /> : null}
       {query.data && (query.data.items ?? []).length === 0 ? (
-        <EmptyState title={tab === 'new'
+        <EmptyState mascot="empty-orders" title={tab === 'new'
               ? 'Chưa có đơn mới. Đơn mới sẽ hiện ở đây ngay khi khách đặt.'
               : tab === 'progress'
                 ? 'Không có đơn nào đang làm.'

@@ -7,7 +7,7 @@ export default function NotFoundScreen() {
   const theme = useTheme()
   return (
     <Screen>
-      <EmptyState illustration="no-result" title="Không tìm thấy trang" hint="Đường dẫn này không có gì, hoặc đã được chuyển đi nơi khác." />
+      <EmptyState illustration="no-result" mascot="search" title="Không tìm thấy trang" hint="Đường dẫn này không có gì, hoặc đã được chuyển đi nơi khác." />
       <View style={{ alignItems: 'center' }}>
         <Link href="/">
           <Text color={theme.primary}>Về trang chủ</Text>

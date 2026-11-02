@@ -17,7 +17,7 @@ export function ConversationList({ side, live, onOpen }: { side: 'customer' | 's
     <View style={styles.list}>
       {conversations.isError ? <Notice tone="error" message={problemMessage(conversations.error, 'Không tải được tin nhắn lúc này.')} /> : null}
       {conversations.data && items.length === 0 ? (
-        <EmptyState title={side === 'customer' ? 'Chưa có cuộc trò chuyện nào' : 'Chưa có khách nào nhắn tin'} hint={side === 'customer' ? 'Mở một quán và chọn Nhắn tin để hỏi trực tiếp.' : undefined} />
+        <EmptyState mascot="empty-chat" title={side === 'customer' ? 'Chưa có cuộc trò chuyện nào' : 'Chưa có khách nào nhắn tin'} hint={side === 'customer' ? 'Mở một quán và chọn Nhắn tin để hỏi trực tiếp.' : undefined} />
       ) : null}
       {items.map((c) => (
         <Pressable key={c.id} accessibilityRole="button" accessibilityLabel={`Mở trò chuyện với ${side === 'customer' ? c.shopName : c.customerName}`} onPress={() => onOpen(c)}>

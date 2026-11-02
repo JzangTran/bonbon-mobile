@@ -148,6 +148,7 @@ function DishRow({ item, onPress }: { item: ShopDish; onPress: () => void }) {
           source={item.photoUrl ? { uri: item.photoUrl } : mockPhoto(item.id ?? '', item.name ?? '')}
           style={[styles.photo, styles.photoRound, soldOut && styles.soldOut]}
           contentFit="cover"
+          alt=""
           accessibilityIgnoresInvertColors
         />
       ) : (

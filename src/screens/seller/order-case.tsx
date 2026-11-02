@@ -69,7 +69,7 @@ export default function SellerOrderCaseScreen() {
               <Text variant="titleSm">Ảnh khách gửi</Text>
               <View style={styles.photos}>
                 {(c.photos ?? []).map((photo) => (
-                  <Image key={photo.key} source={{ uri: photo.url }} style={styles.photo} contentFit="cover" />
+                  <Image key={photo.key} source={{ uri: photo.url }} style={styles.photo} contentFit="cover" alt="Ảnh đính kèm" />
                 ))}
               </View>
             </Card>

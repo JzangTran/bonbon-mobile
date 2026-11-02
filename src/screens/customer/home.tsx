@@ -142,7 +142,10 @@ function ShopCard({ shop, index, onPress }: { shop: Shop; index: number; onPress
     <Pressable accessibilityRole="button" accessibilityLabel={`${shop.name}, ${shop.open ? 'đang mở' : 'đang đóng'}`} onPress={onPress}>
       <Card style={[styles.shop, !shop.open && styles.closed]}>
         <View style={[styles.cover, { backgroundColor: theme.imageSlot }]}>
-          {photo ? <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" accessibilityIgnoresInvertColors /> : null}
+          {/* the cover photo is decoration; the button's label names the shop */}
+          <View aria-hidden style={StyleSheet.absoluteFill}>
+            {photo ? <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" alt="" accessibilityIgnoresInvertColors /> : null}
+          </View>
           {distance ? (
             <View style={[styles.pill, styles.pillLeft, { backgroundColor: theme.ink }]}>
               <Text variant="caption" color="#FFFFFF" style={styles.pillText}>

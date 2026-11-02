@@ -68,7 +68,7 @@ function TextSizeCard() {
             <Pressable
               key={s.id}
               accessibilityRole="radio"
-              accessibilityState={{ selected }}
+              aria-checked={selected}
               accessibilityLabel={`Cỡ chữ ${s.label.toLowerCase()}`}
               onPress={() => setId(s.id)}
               style={[sizeStyles.option, { backgroundColor: selected ? theme.primary : theme.surfaceMuted }]}

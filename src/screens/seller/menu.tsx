@@ -83,7 +83,7 @@ function DishRow({ item }: { item: MenuItem }) {
         onPress={() => router.push({ pathname: '/seller/dish-form', params: { id: item.id } })}
       >
         {item.photoUrl ? (
-          <Image source={{ uri: item.photoUrl }} style={styles.thumb} contentFit="cover" accessibilityIgnoresInvertColors />
+          <Image source={{ uri: item.photoUrl }} style={styles.thumb} contentFit="cover" alt="" accessibilityIgnoresInvertColors />
         ) : (
           <View style={[styles.thumb, { backgroundColor: theme.imageSlot }]} />
         )}

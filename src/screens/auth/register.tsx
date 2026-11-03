@@ -3,13 +3,14 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Linking, StyleSheet, View } from 'react-native'
+import { CheckCircle2, ShoppingBag, Store } from 'lucide-react-native'
+import { Linking, Pressable, StyleSheet, View } from 'react-native'
 import { z } from 'zod'
 import type { Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
-import { Button, Captcha, Card, Checkbox, Input, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
+import { Button, Captcha, Card, Checkbox, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
 
 const schema = z
   .object({
@@ -104,14 +105,14 @@ export default function RegisterScreen() {
 
   return (
     <Screen backdrop>
-      <Text variant="headline">Tạo tài khoản</Text>
-      <Text muted>Đã có tài khoản? Đăng ký vai trò còn lại bằng cùng email và mật khẩu để dùng chung một tài khoản.</Text>
-      <View style={styles.roles}>
-        {(['CUSTOMER', 'SELLER'] as Role[]).map((r) => (
-          <Button key={r} title={r === 'CUSTOMER' ? 'Đặt món' : 'Bán hàng'} variant={role === r ? 'primary' : 'outline'}
-            style={styles.roleButton} onPress={() => { setRole(r); setAccepted(false) }} />
+      <Text variant="headline">{role === 'SELLER' ? 'Tạo tài khoản người bán' : 'Tạo tài khoản khách hàng'}</Text>
+      <Text variant="titleSm">Bạn dùng bonbon để</Text>
+      <View accessibilityRole="radiogroup" aria-label="Loại tài khoản" style={styles.roles}>
+        {ROLES.map((r) => (
+          <RoleCard key={r.role} {...r} selected={role === r.role} onPress={() => { setRole(r.role); setAccepted(false) }} />
         ))}
       </View>
+      <Text variant="bodySm" muted>Đã có tài khoản một loại? Đăng ký loại còn lại bằng cùng email và mật khẩu để dùng chung một tài khoản.</Text>
       <Card>
         {(['name', 'email', 'password', 'confirmPassword'] as const).map((name) => (
           <Controller key={name} control={form.control} name={name} render={({ field, fieldState }) => (
@@ -151,7 +152,34 @@ export default function RegisterScreen() {
   )
 }
 
+/** The two kinds of account, as cards: what each is for in a few words, so a shop owner sees at once where to sign up. */
+const ROLES = [
+  { role: 'CUSTOMER', title: 'Đặt món', hint: 'Gọi món từ các quán trong khu', Icon: ShoppingBag },
+  { role: 'SELLER', title: 'Bán hàng', hint: 'Mở quán, nhận đơn và giao trong khu', Icon: Store },
+] as const satisfies readonly { role: Role; title: string; hint: string; Icon: typeof Store }[]
+
+function RoleCard({ title, hint, Icon, selected, onPress }: (typeof ROLES)[number] & { selected: boolean; onPress: () => void }) {
+  const theme = useTheme()
+  return (
+    <Pressable
+      accessibilityRole="radio"
+      aria-checked={selected}
+      accessibilityLabel={`${title}: ${hint}`}
+      onPress={onPress}
+      style={[styles.role, { backgroundColor: selected ? theme.primarySubtle : theme.surface, borderColor: selected ? theme.primary : theme.border }]}
+    >
+      <View style={styles.roleTop}>
+        <Icon size={22} color={selected ? theme.primary : theme.text} strokeWidth={1.75} />
+        {selected ? <CheckCircle2 size={18} color={theme.primary} strokeWidth={2} /> : null}
+      </View>
+      <Text variant="titleSm">{title}</Text>
+      <Text variant="caption" muted>{hint}</Text>
+    </Pressable>
+  )
+}
+
 const styles = StyleSheet.create({
   roles: { flexDirection: 'row', gap: spacing.sm },
-  roleButton: { flex: 1 },
+  role: { flex: 1, minHeight: touchTarget.min * 2, gap: spacing.xs, padding: spacing.md, borderRadius: radius.md, borderWidth: 1.5 },
+  roleTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
 })

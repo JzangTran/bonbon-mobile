@@ -135,6 +135,11 @@ export default function LoginScreen() {
         </View>
       </Card>
       <GoogleSignIn />
+      <Link href="/register-seller">
+        <Text variant="bodySm" muted>
+          Bạn có quán? <Text variant="bodySm" color={theme.primary}>Đăng ký bán hàng</Text>
+        </Text>
+      </Link>
     </Screen>
   )
 }

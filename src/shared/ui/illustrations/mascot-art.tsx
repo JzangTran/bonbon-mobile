@@ -9,6 +9,7 @@ const PICTURES = {
   maintenance: { source: require('../../../../assets/mascot/maintenance.webp'), ratio: 1.5 },
   search: { source: require('../../../../assets/mascot/search.webp'), ratio: 1.2 },
   update: { source: require('../../../../assets/mascot/update.webp'), ratio: 1.5 },
+  error: { source: require('../../../../assets/mascot/error.webp'), ratio: 0.833 },
 } as const
 
 export type MascotPose = keyof typeof PICTURES

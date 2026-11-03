@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Image, type ImageSource } from 'expo-image'
 import { ArrowRight, BadgePercent, ChevronDown, ClipboardList, Heart, ScanLine, Search } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
-import { Pressable, StyleSheet, View } from 'react-native'
+import { AccessibilityInfo, Pressable, StyleSheet, View } from 'react-native'
 import Animated, { Easing, ReduceMotion, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Svg, { Path } from 'react-native-svg'
@@ -12,6 +12,8 @@ import { Text, fonts, radius, spacing, touchTarget, useTheme } from '@/shared/ui
 const DEAL_PICTURE: ImageSource | null = null
 
 const WHITE = '#FFFFFF'
+/** The search hint types itself out, rests, erases and moves to the next phrase. */
+const HINTS = ['Bạn đang thèm gì nào', 'Tìm món ăn']
 const motion = { reduceMotion: ReduceMotion.System }
 
 type Props = {
@@ -60,14 +62,12 @@ export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, o
         </View>
 
         <View style={styles.row}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Quét mã QR của quán" onPress={onScan} style={[styles.scan, { backgroundColor: WHITE }]}>
-            <ScanLine size={20} color={theme.primary} strokeWidth={2} />
+          <Pressable accessibilityRole="button" accessibilityLabel="Quét mã QR của quán" onPress={onScan} style={styles.scan}>
+            <ScanLine size={20} color={WHITE} strokeWidth={2} />
           </Pressable>
-          <Pressable accessibilityRole="search" accessibilityLabel="Tìm món: Bạn đang thèm gì nào" onPress={onSearch} style={[styles.search, { backgroundColor: WHITE }]}>
+          <Pressable accessibilityRole="search" accessibilityLabel="Tìm món ăn" onPress={onSearch} style={[styles.search, { backgroundColor: WHITE }]}>
             <Search size={18} color={theme.textMuted} />
-            <Text variant="bodySm" color={theme.textMuted}>
-              Bạn đang thèm gì nào
-            </Text>
+            <TypingHint phrases={HINTS} color={theme.textMuted} />
           </Pressable>
         </View>
 
@@ -144,6 +144,52 @@ function Shine({ width }: { width: number }) {
   )
 }
 
+/**
+ * A search hint that types itself: each phrase is typed letter by letter, stays a moment, is erased, then the next one comes.
+ * With "reduce motion" on, the phrases simply take turns. Screen readers get the button's own label, not the moving text.
+ */
+function TypingHint({ phrases, color }: { phrases: string[]; color: string }) {
+  const [text, setText] = useState(phrases[0])
+  useEffect(() => {
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const wait = (ms: number) => new Promise<void>((resolve) => (timer = setTimeout(resolve, ms)))
+    const run = async () => {
+      const reduce = await AccessibilityInfo.isReduceMotionEnabled().catch(() => false)
+      let index = 0
+      while (!cancelled) {
+        const phrase = phrases[index % phrases.length]
+        if (reduce) {
+          setText(phrase)
+          await wait(3000)
+        } else {
+          for (let n = 1; n <= phrase.length && !cancelled; n++) {
+            setText(phrase.slice(0, n))
+            await wait(70)
+          }
+          await wait(1800)
+          for (let n = phrase.length - 1; n >= 0 && !cancelled; n--) {
+            setText(phrase.slice(0, n))
+            await wait(35)
+          }
+          await wait(300)
+        }
+        index += 1
+      }
+    }
+    void run()
+    return () => {
+      cancelled = true
+      if (timer) clearTimeout(timer)
+    }
+  }, [phrases])
+  return (
+    <Text variant="bodySm" color={color} numberOfLines={1} accessibilityElementsHidden importantForAccessibility="no">
+      {text || ' '}
+    </Text>
+  )
+}
+
 /** Moves its child a little to the right and back, then rests: "this way". */
 function Nudge({ children }: { children: React.ReactNode }) {
   const dx = useSharedValue(0)
@@ -180,7 +226,7 @@ const styles = StyleSheet.create({
   flexShrink: { flexShrink: 1 },
   flex: { flex: 1 },
   round: { width: 40, height: 40, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.18)' },
-  scan: { width: touchTarget.min, height: touchTarget.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  scan: { width: touchTarget.min, height: touchTarget.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.22)' },
   search: { flex: 1, height: touchTarget.min, borderRadius: radius.pill, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.lg },
   deal: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderRadius: radius.lg, paddingVertical: spacing.sm, paddingLeft: spacing.lg, paddingRight: spacing.sm },
   hot: { fontFamily: fonts.bold, letterSpacing: 0.4, textTransform: 'uppercase' },

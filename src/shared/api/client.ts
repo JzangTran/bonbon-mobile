@@ -2,6 +2,7 @@ import Constants from 'expo-constants'
 import createClient, { type Middleware } from 'openapi-fetch'
 import { env } from '@/shared/config/env'
 import { reportLegalRequired, reportMaintenance, reportUpdateRequired } from './gate'
+import { isOffline } from './network'
 import type { paths } from './generated/schema'
 
 /** RFC 9457 body the backend returns for every error (see GlobalExceptionHandler). */
@@ -111,9 +112,58 @@ export function problemCode(error: unknown): string | undefined {
   return isApiProblem(error) ? error.code : undefined
 }
 
-/** The backend's Vietnamese message for a problem, or a generic one. */
-export function problemMessage(error: unknown, fallback = 'Có lỗi xảy ra, vui lòng thử lại.'): string {
-  return isApiProblem(error) && error.detail ? error.detail : fallback
+/**
+ * Whose problem a failed call is, so the message never leaves people guessing:
+ * - `offline`: the phone has no network (theirs to fix: turn on Wi-Fi or data);
+ * - `unreachable`: the phone is online but no answer came from bonbon (ours);
+ * - `server`: bonbon answered with a failure of its own, 5xx (ours);
+ * - `request`: bonbon refused what was sent, with a reason they can act on (wrong password, a field to fix...).
+ */
+export type ProblemKind = 'offline' | 'unreachable' | 'server' | 'request'
+
+export type ProblemDescription = { kind: ProblemKind; title: string; message: string }
+
+const SERVER_FAULT = 'Lỗi nằm ở phía bonbon, không phải do bạn. Vui lòng thử lại sau ít phút.'
+
+export function describeProblem(error: unknown): ProblemDescription {
+  if (isApiProblem(error)) {
+    if (error.status >= 500) {
+      // a specific 503 (maps, payment provider down) says what is down; anything else is a plain server fault
+      const specific = error.code !== 'INTERNAL_ERROR' && error.detail ? `${error.detail} ` : ''
+      return { kind: 'server', title: 'bonbon đang gặp sự cố', message: `${specific}${SERVER_FAULT}` }
+    }
+    return { kind: 'request', title: 'Chưa thực hiện được', message: error.detail ?? 'Yêu cầu chưa hợp lệ. Hãy kiểm tra lại thông tin rồi thử lại.' }
+  }
+  // no problem body: the request never got an answer (fetch failed), or a proxy answered with a page instead of bonbon
+  if (isOffline()) {
+    return {
+      kind: 'offline',
+      title: 'Không có kết nối mạng',
+      message: 'Điện thoại của bạn đang không có mạng. Hãy bật Wi-Fi hoặc dữ liệu di động rồi thử lại.',
+    }
+  }
+  if (typeof error === 'string' || error instanceof Response) {
+    return { kind: 'server', title: 'bonbon đang gặp sự cố', message: SERVER_FAULT }
+  }
+  return {
+    kind: 'unreachable',
+    title: 'Không kết nối được tới bonbon',
+    message: 'Mạng của bạn vẫn hoạt động nhưng máy chủ bonbon chưa phản hồi. Lỗi nằm ở phía bonbon, không phải do bạn. Vui lòng thử lại sau ít phút.',
+  }
+}
+
+/**
+ * One line for a failed call: the server's own reason when it gave one, otherwise whose problem it is and what to do.
+ * {@code context} is what the screen was doing ("Không tải được đánh giá lúc này."): kept in front of a network or server
+ * explanation when it says what failed, and used as the reason when the server refused without one.
+ */
+export function problemMessage(error: unknown, context?: string): string {
+  const problem = describeProblem(error)
+  if (problem.kind === 'request') {
+    return isApiProblem(error) && error.detail ? error.detail : (context ?? problem.message)
+  }
+  const what = context && /^Không (tải|gửi|tính|lưu) được/.test(context) ? context.replace(/( lúc này)?\.?( Hãy thử lại\.)?$/, '') : null
+  return what ? `${what}. ${problem.message}` : problem.message
 }
 
 /** Field-level messages of a VALIDATION_FAILED problem, keyed by field name. */

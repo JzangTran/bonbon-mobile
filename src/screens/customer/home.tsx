@@ -6,8 +6,7 @@ import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, View } 
 import { useDeliveryPoint } from '@/entities/address'
 import { streetOf, useDisplayCategories, useFavoriteShops, useGuestHiddenShops, useHomeFeed, type FeedCard } from '@/entities/feed'
 import { useSession } from '@/entities/session'
-import { problemMessage } from '@/shared/api'
-import { Button, Card, Notice, Text, fonts, radius, spacing, useTheme } from '@/shared/ui'
+import { Button, Card, ErrorState, Text, fonts, radius, spacing, useTheme } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
 import { HomeHeader } from '@/widgets/home-header'
 import { ShopFeedCard } from '@/widgets/shop-feed-card'
@@ -54,7 +53,6 @@ export default function CustomerHomeScreen() {
           <Button title="+ Thêm địa chỉ" fullWidth onPress={() => router.push('/customer/address-form')} />
         </Card>
       ) : null}
-      {feed.isError ? <Notice tone="error" message={problemMessage(feed.error)} /> : null}
     </View>
   )
 
@@ -68,7 +66,10 @@ export default function CustomerHomeScreen() {
         ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: theme.divider }]} />}
         ListHeaderComponent={header}
         ListEmptyComponent={
-          feed.isPending ? (
+          feed.isError || feed.isPaused ? (
+            // paused: the query waits for the phone to be back online, so say that rather than spin
+            <ErrorState error={feed.error ?? new Error('offline')} retrying={feed.isRefetching} onRetry={() => void feed.refetch()} />
+          ) : feed.isPending ? (
             <ActivityIndicator style={styles.loading} color={theme.primary} />
           ) : feed.data ? (
             <Card style={styles.inset}>

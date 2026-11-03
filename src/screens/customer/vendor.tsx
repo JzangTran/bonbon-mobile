@@ -2,7 +2,8 @@ import { Image } from 'expo-image'
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { useLayoutEffect, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
-import { useAddresses } from '@/entities/address'
+import { useDeliveryPoint } from '@/entities/address'
+import { useSession } from '@/entities/session'
 import { useCart, type CartShop } from '@/entities/cart'
 import { RatingSummary } from '@/entities/review'
 import { deliveryText, formatDistance, useShopMenu, type ShopDish } from '@/entities/vendor'
@@ -21,9 +22,8 @@ export default function VendorScreen() {
   const navigation = useNavigation()
   const router = useRouter()
   const theme = useTheme()
-  const addresses = useAddresses()
-  const address = addresses.data?.find((a) => a.isDefault) ?? addresses.data?.[0]
-  const position = address?.lat !== undefined && address?.lng !== undefined ? { lat: address.lat, lng: address.lng } : null
+  const { session } = useSession()
+  const { position } = useDeliveryPoint(!!session)
   const menu = useShopMenu(id, position)
   const [dish, setDish] = useState<ShopDish | null>(null)
   const shop = menu.data?.shop
@@ -93,7 +93,7 @@ export default function VendorScreen() {
               Quán đang đóng cửa, bạn vẫn xem được thực đơn.
             </Text>
           ) : null}
-          <Button title="Nhắn tin cho quán" variant="outline" onPress={() => router.push({ pathname: '/customer/chat', params: { vendorId: shop.id } })} />
+          <Button title="Nhắn tin cho quán" variant="outline" onPress={() => (session ? router.push({ pathname: '/customer/chat', params: { vendorId: shop.id } }) : router.push('/login'))} />
         </Card>
       ) : null}
       {menu.data && (menu.data.sections ?? []).length === 0 ? (

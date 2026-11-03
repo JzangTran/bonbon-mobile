@@ -105,7 +105,7 @@ function RegisterForm({ role }: { role: Role }) {
               : `Chúng tôi đã gửi liên kết xác thực tới ${done.email}. Mở liên kết, rồi quay lại đây để đăng nhập.`
           }
         />
-        <Link href="/" asChild>
+        <Link href="/login" asChild>
           <Button title="Về đăng nhập" variant="outline" />
         </Link>
       </Screen>
@@ -152,7 +152,7 @@ function RegisterForm({ role }: { role: Role }) {
           loading={form.formState.isSubmitting} disabled={terms.isLoading || privacy.isLoading} onPress={() => void onSubmit()} />
       </Card>
       <GoogleSignIn role={role} />
-      <Link href="/">
+      <Link href="/login">
         <Text variant="bodySm" color={theme.primary}>Đã có tài khoản? Đăng nhập</Text>
       </Link>
       <Link href={seller ? '/register' : '/register-seller'}>

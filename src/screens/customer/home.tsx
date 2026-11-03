@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 import { Image } from 'expo-image'
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import Animated, { FadeInDown, ReduceMotion } from 'react-native-reanimated'
-import { useAddresses } from '@/entities/address'
+import { useDeliveryPoint } from '@/entities/address'
 import { useCategoryLeaves } from '@/entities/category'
 import { RatingSummary } from '@/entities/review'
+import { useSession } from '@/entities/session'
 import { deliveryText, formatDistance, useShopsInArea, type Shop } from '@/entities/vendor'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
@@ -15,14 +16,19 @@ import { Button, Card, Notice, Screen, Text, fonts, radius, spacing, touchTarget
 import { CartBar } from '@/widgets/cart-bar'
 import { NotificationBell } from '@/widgets/notification-bell'
 
-/** Shops that deliver to the default address: search, category filter, open shops first (browse-vendors-in-area.md). */
+/**
+ * The first screen of the app, signed in or not: shops that deliver to the default address (or, for a guest, to the place they
+ * typed), search, category filter, open shops first (browse-vendors-in-area.md).
+ */
 export default function CustomerHomeScreen() {
   const router = useRouter()
   const theme = useTheme()
-  const addresses = useAddresses()
+  const { session } = useSession()
+  const guest = !session
+  const point = useDeliveryPoint(!guest)
   const leaves = useCategoryLeaves()
-  const address = addresses.data?.find((a) => a.isDefault) ?? addresses.data?.[0]
-  const position = address?.lat !== undefined && address?.lng !== undefined ? { lat: address.lat, lng: address.lng } : null
+  const position = point.position
+  const pickAddress = () => router.push(guest ? '/customer/pick-location' : '/customer/addresses')
 
   const [query, setQuery] = useState('')
   const [debounced, setDebounced] = useState('')
@@ -39,18 +45,28 @@ export default function CustomerHomeScreen() {
     <Screen>
       <View style={styles.top}>
         <View style={styles.flex}>
-          <AddressBar loading={addresses.isPending} label={address?.label} text={address?.formattedAddress} onPress={() => router.push('/customer/addresses')} />
+          <AddressBar loading={point.loading} label={point.label} text={point.text} onPress={pickAddress} />
         </View>
-        <NotificationBell href="/customer/notifications" />
+        {guest ? (
+          <Button title="Đăng nhập" variant="outline" onPress={() => router.push('/login')} />
+        ) : (
+          <NotificationBell href="/customer/notifications" />
+        )}
       </View>
-      {addresses.data && !address ? (
+      {point.missing ? (
         <Card>
           <Text variant="titleSm">Bạn muốn nhận món ở đâu?</Text>
-          <Text muted>Thêm địa chỉ giao hàng để xem các quán giao tới nơi bạn ở.</Text>
-          <Button title="+ Thêm địa chỉ" fullWidth onPress={() => router.push('/customer/address-form')} />
+          <Text muted>
+            {guest ? 'Nhập địa chỉ của bạn để xem các quán giao tới. Chưa cần tài khoản.' : 'Thêm địa chỉ giao hàng để xem các quán giao tới nơi bạn ở.'}
+          </Text>
+          <Button
+            title={guest ? 'Nhập địa chỉ' : '+ Thêm địa chỉ'}
+            fullWidth
+            onPress={() => router.push(guest ? '/customer/pick-location' : '/customer/address-form')}
+          />
         </Card>
       ) : null}
-      {address ? (
+      {position ? (
         <>
           <Text variant="display" style={styles.headline} accessibilityRole="header">
             Hôm nay bạn <Text variant="display" color={theme.headlineSoft} style={styles.headline}>muốn ăn gì?</Text>
@@ -109,7 +125,7 @@ function AddressBar({ loading, label, text, onPress }: { loading: boolean; label
           Giao tới
         </Text>
         <Text variant="bodySm" style={styles.addressText} numberOfLines={1}>
-          {text ? `${label}: ${text} ▾` : 'Chưa chọn địa chỉ ▾'}
+          {text ? `${label ? `${label}: ` : ''}${text} ▾` : 'Chưa chọn địa chỉ ▾'}
         </Text>
       </View>
     </Pressable>

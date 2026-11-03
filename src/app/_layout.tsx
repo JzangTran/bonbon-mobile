@@ -12,7 +12,10 @@ export default function RootLayout() {
   )
 }
 
-/** Each role sees only its own route group; the active role decides (one role per session). */
+/**
+ * Each role sees only its own route group; the active role decides (one role per session). A guest gets the customer group to
+ * browse shops, and the sign-in screens to come in through.
+ */
 function RootNavigator() {
   const { session, restoring } = useSession()
   // Keep the splash up until the stored session is read, so a signed-in user never flashes the login screen.
@@ -39,10 +42,11 @@ function PushBootstrap() {
 function RoleStack({ session }: { session: ReturnType<typeof useSession>['session'] }) {
   return (
     <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
-      <Stack.Protected guard={session?.role === 'CUSTOMER'}>
+      <Stack.Protected guard={!session || session.role === 'CUSTOMER'}>
         <Stack.Screen name="customer" />
       </Stack.Protected>
       <Stack.Protected guard={session?.role === 'SELLER'}>

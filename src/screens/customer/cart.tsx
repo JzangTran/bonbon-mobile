@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { lineTotal, unitPrice, useCart } from '@/entities/cart'
+import { useSession } from '@/entities/session'
 import { canPayOnline, newIdempotencyKey, openMomo, usePlaceOrder } from '@/entities/order'
 import { registerForPush } from '@/features/push'
 import { problemMessage } from '@/shared/api'
@@ -13,13 +14,16 @@ import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touc
 /**
  * The cart and checkout (place-order.md): the customer reviews the lines, picks one of their addresses, adds a
  * delivery note, chooses cash on delivery or MoMo and places the order. Prices shown here are a preview; the server prices the order.
+ * A guest fills the cart too; placing the order is where they sign in (the cart stays on the phone meanwhile).
  */
 export default function CartScreen() {
   const router = useRouter()
   const theme = useTheme()
   const toast = useToast()
   const cart = useCart()
-  const addresses = useAddresses()
+  const { session } = useSession()
+  const guest = !session
+  const addresses = useAddresses({ enabled: !guest })
   const place = usePlaceOrder()
   const [note, setNote] = useState('')
   const [chosenAddress, setChosenAddress] = useState<string | null>(null)
@@ -122,7 +126,8 @@ export default function CartScreen() {
 
       <Card>
         <Text variant="titleSm">Giao đến</Text>
-        {list.length === 0 && !addresses.isPending ? (
+        {guest ? <Text muted>Đăng nhập để chọn địa chỉ giao hàng của bạn.</Text> : null}
+        {!guest && list.length === 0 && !addresses.isPending ? (
           <>
             <Text muted>Bạn chưa có địa chỉ giao hàng.</Text>
             <Button title="+ Thêm địa chỉ" fullWidth onPress={() => router.push('/customer/address-form')} />
@@ -205,7 +210,11 @@ export default function CartScreen() {
           <Notice tone="error" message={`Đơn tối thiểu của quán là ${formatVnd(shop.minOrderValue)}. Hãy thêm món.`} />
         ) : null}
         {place.isError ? <Notice tone="error" message={problemMessage(place.error)} /> : null}
-        <Button title={`${payMethod === 'ONLINE' ? 'Thanh toán MoMo' : 'Đặt đơn'} · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
+        {guest ? (
+          <Button title="Đăng nhập để đặt món" size="lg" fullWidth onPress={() => router.push('/login')} />
+        ) : (
+          <Button title={`${payMethod === 'ONLINE' ? 'Thanh toán MoMo' : 'Đặt đơn'} · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
+        )}
       </Card>
     </Screen>
   )

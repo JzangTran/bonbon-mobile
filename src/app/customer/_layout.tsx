@@ -3,7 +3,7 @@ import { CartProvider } from '@/entities/cart'
 import { CustomerLiveProvider } from '@/entities/order'
 import { fonts, useTheme } from '@/shared/ui'
 
-/** Customer tabs, plus screens that open on top of them (addresses). */
+/** Customer tabs, plus screens that open on top of them (addresses). Guests browse here too, before signing in. */
 export default function CustomerLayout() {
   const theme = useTheme()
   return (
@@ -20,6 +20,7 @@ export default function CustomerLayout() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="addresses" options={{ title: 'Địa chỉ giao hàng' }} />
       <Stack.Screen name="address-form" options={{ title: 'Địa chỉ' }} />
+      <Stack.Screen name="pick-location" options={{ title: 'Nhập địa chỉ' }} />
       <Stack.Screen name="vendor" options={{ title: 'Quán' }} />
       <Stack.Screen name="cart" options={{ title: 'Giỏ hàng' }} />
       <Stack.Screen name="order" options={{ title: 'Đơn hàng' }} />

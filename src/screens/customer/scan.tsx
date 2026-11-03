@@ -1,8 +1,10 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRouter } from 'expo-router'
-import { useRef, useState } from 'react'
-import { Linking, StyleSheet, View } from 'react-native'
-import { Button, Notice, Screen, Text, radius, spacing } from '@/shared/ui'
+import { X } from 'lucide-react-native'
+import { useEffect, useRef, useState } from 'react'
+import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Notice, Text, radius, spacing } from '@/shared/ui'
 
 const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
 
@@ -19,45 +21,60 @@ export function shopIdFromCode(data: string): string | null {
   return null
 }
 
-/** Scans a shop's QR code (on its counter or bag) and opens that shop's menu. */
+/**
+ * Scans a shop's QR code (on its counter or bag) and opens that shop's menu. The camera fills the screen at once; without
+ * permission the system asks first, and saying no goes back to where the customer came from. When the phone will not ask again
+ * (refused for good), a short dialog offers the settings instead.
+ */
 export default function ScanScreen() {
   const router = useRouter()
+  const insets = useSafeAreaInsets()
   const [permission, requestPermission] = useCameraPermissions()
   const [problem, setProblem] = useState<string | null>(null)
   const handled = useRef(false)
+  const asked = useRef(false)
 
-  if (!permission) return <Screen>{null}</Screen>
-  if (!permission.granted) {
-    return (
-      <Screen>
-        <Text variant="headline">Quét mã QR của quán</Text>
-        <Text muted>bonbon cần dùng máy ảnh để đọc mã QR dán ở quầy hoặc trên túi đồ ăn của quán.</Text>
-        {permission.canAskAgain ? (
-          <Button title="Cho phép dùng máy ảnh" size="lg" fullWidth onPress={() => void requestPermission()} />
-        ) : (
-          <Button title="Mở cài đặt" size="lg" fullWidth onPress={() => void Linking.openSettings()} />
-        )}
-      </Screen>
-    )
-  }
+  useEffect(() => {
+    if (!permission || permission.granted || asked.current) return
+    asked.current = true
+    const leave = () => (router.canGoBack() ? router.back() : router.replace('/customer'))
+    if (permission.canAskAgain) {
+      void requestPermission().then((answer) => {
+        if (!answer.granted) leave()
+      })
+      return
+    }
+    Alert.alert('Cho phép dùng máy ảnh', 'bonbon cần máy ảnh để quét mã QR của quán. Bạn có thể bật quyền này trong Cài đặt.', [
+      { text: 'Để sau', style: 'cancel', onPress: leave },
+      {
+        text: 'Mở cài đặt',
+        onPress: () => {
+          void Linking.openSettings()
+          leave()
+        },
+      },
+    ])
+  }, [permission, requestPermission, router])
 
   return (
-    <View style={styles.flex}>
-      <CameraView
-        style={StyleSheet.absoluteFill}
-        facing="back"
-        barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-        onBarcodeScanned={({ data }) => {
-          if (handled.current) return
-          const id = shopIdFromCode(data)
-          if (!id) {
-            setProblem('Mã này không phải mã quán trên bonbon.')
-            return
-          }
-          handled.current = true
-          router.replace({ pathname: '/customer/vendor', params: { id } })
-        }}
-      />
+    <View style={styles.root}>
+      {permission?.granted ? (
+        <CameraView
+          style={StyleSheet.absoluteFill}
+          facing="back"
+          barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+          onBarcodeScanned={({ data }) => {
+            if (handled.current) return
+            const id = shopIdFromCode(data)
+            if (!id) {
+              setProblem('Mã này không phải mã quán trên bonbon.')
+              return
+            }
+            handled.current = true
+            router.replace({ pathname: '/customer/vendor', params: { id } })
+          }}
+        />
+      ) : null}
       <View style={styles.overlay} pointerEvents="box-none">
         <View style={styles.frame} />
         <Text variant="body" color="#FFFFFF" style={styles.hint}>
@@ -65,13 +82,32 @@ export default function ScanScreen() {
         </Text>
         {problem ? <Notice tone="error" message={problem} /> : null}
       </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Đóng"
+        hitSlop={8}
+        onPress={() => (router.canGoBack() ? router.back() : router.replace('/customer'))}
+        style={[styles.close, { top: insets.top + spacing.sm }]}
+      >
+        <X size={24} color="#FFFFFF" />
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: '#000' },
-  overlay: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.lg, padding: spacing.lg },
+  root: { flex: 1, backgroundColor: '#000' },
+  overlay: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, alignItems: 'center', justifyContent: 'center', gap: spacing.lg, padding: spacing.lg },
   frame: { width: 240, height: 240, borderRadius: radius.card, borderWidth: 3, borderColor: '#FFFFFF' },
   hint: { textAlign: 'center' },
+  close: {
+    position: 'absolute',
+    left: spacing.lg,
+    width: 44,
+    height: 44,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.45)',
+  },
 })

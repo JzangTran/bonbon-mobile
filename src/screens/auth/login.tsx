@@ -133,11 +133,6 @@ export default function LoginScreen() {
             <Text variant="bodySm" color={theme.primary}>Tạo tài khoản</Text>
           </Link>
         </View>
-        {__DEV__ ? (
-          <Link href="/dev-ui">
-            <Text variant="caption" muted>Xem UI kit (dev)</Text>
-          </Link>
-        ) : null}
       </Card>
       <GoogleSignIn />
     </Screen>

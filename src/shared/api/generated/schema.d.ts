@@ -7641,6 +7641,8 @@ export interface components {
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
             placedAt?: string;
+            paymentMethod?: string;
+            paymentStatus?: string;
         };
         NotificationItem: {
             /**

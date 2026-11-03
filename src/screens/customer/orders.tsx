@@ -21,7 +21,7 @@ export default function CustomerOrdersScreen() {
 
   return (
     <Screen>
-      <Text variant="headline">Đơn hàng</Text>
+      <Text variant="headline">Hoạt động</Text>
       <View style={styles.tabs} accessibilityRole="tablist">
         {(
           [

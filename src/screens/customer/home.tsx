@@ -2,7 +2,7 @@ import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useMemo, useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native'
 import { useDeliveryPoint } from '@/entities/address'
 import { streetOf, useDisplayCategories, useFavoriteShops, useGuestHiddenShops, useHomeFeed, type FeedCard } from '@/entities/feed'
 import { useSession } from '@/entities/session'
@@ -34,6 +34,8 @@ export default function CustomerHomeScreen() {
 
   const header = (
     <View>
+      {/* orange above the header, so pulling down to refresh shows orange, never a white gap */}
+      <View pointerEvents="none" style={[styles.overscroll, { backgroundColor: theme.primary }]} />
       <HomeHeader
         street={streetOf(point.text)}
         onAddress={() => router.push(guest ? '/customer/pick-location' : '/customer/addresses')}
@@ -80,8 +82,15 @@ export default function CustomerHomeScreen() {
           if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
         }}
         onEndReachedThreshold={0.6}
-        refreshing={feed.isRefetching && !feed.isFetchingNextPage}
-        onRefresh={() => void feed.refetch()}
+        refreshControl={
+          <RefreshControl
+            refreshing={feed.isRefetching && !feed.isFetchingNextPage}
+            onRefresh={() => void feed.refetch()}
+            tintColor="#FFFFFF"
+            colors={[theme.primary]}
+            progressBackgroundColor="#FFFFFF"
+          />
+        }
       />
       <CartBar />
     </View>
@@ -115,6 +124,7 @@ function CategoryStrip({ selected, onSelect }: { selected: string | null; onSele
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  overscroll: { position: 'absolute', left: 0, right: 0, top: -1000, height: 1000 },
   inset: { marginHorizontal: spacing.lg, marginBottom: spacing.md },
   separator: { height: 8 },
   loading: { marginVertical: spacing.xl },

@@ -21,6 +21,10 @@ export default function CustomerLayout() {
       <Stack.Screen name="addresses" options={{ title: 'Địa chỉ giao hàng' }} />
       <Stack.Screen name="address-form" options={{ title: 'Địa chỉ' }} />
       <Stack.Screen name="pick-location" options={{ title: 'Nhập địa chỉ' }} />
+      <Stack.Screen name="favorites" options={{ title: 'Quán yêu thích' }} />
+      <Stack.Screen name="deals" options={{ title: 'Deal HOT' }} />
+      <Stack.Screen name="search" options={{ title: 'Tìm món' }} />
+      <Stack.Screen name="scan" options={{ title: 'Quét mã QR' }} />
       <Stack.Screen name="vendor" options={{ title: 'Quán' }} />
       <Stack.Screen name="cart" options={{ title: 'Giỏ hàng' }} />
       <Stack.Screen name="order" options={{ title: 'Đơn hàng' }} />

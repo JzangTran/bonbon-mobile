@@ -37,6 +37,13 @@
       "expo-secure-store",
       "expo-notifications",
       [
+        "expo-camera",
+        {
+          "cameraPermission": "bonbon cần dùng máy ảnh để quét mã QR của quán.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "bonbon cần xem thư viện ảnh để bạn gửi ảnh kèm báo cáo về đơn hàng."

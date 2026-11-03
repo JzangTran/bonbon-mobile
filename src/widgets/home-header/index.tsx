@@ -36,9 +36,9 @@ export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, o
   const insets = useSafeAreaInsets()
   const [width, setWidth] = useState(0)
   return (
-    <View>
-      <View style={[styles.orange, { backgroundColor: theme.primary, paddingTop: insets.top + spacing.sm }]} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-        <Shine width={width} />
+    // The light sweeps over the orange and its wavy edge alike; below the wave it is white on white, so it does not show.
+    <View style={styles.clip} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+      <View style={[styles.orange, { backgroundColor: theme.primary, paddingTop: insets.top + spacing.sm }]}>
         <View style={styles.row}>
           <Pressable accessibilityRole="button" accessibilityLabel={`Giao ngay tới ${street ?? 'địa chỉ chưa chọn'}. Đổi địa chỉ`} onPress={onAddress} style={styles.address}>
             <Text variant="caption" color="rgba(255,255,255,0.85)">
@@ -102,6 +102,7 @@ export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, o
         ) : null}
       </View>
       <Wave color={theme.primary} />
+      <Shine width={width} />
     </View>
   )
 }
@@ -160,17 +161,18 @@ function Nudge({ children }: { children: React.ReactNode }) {
   return <Animated.View style={style}>{children}</Animated.View>
 }
 
-/** The wavy lower edge of the orange header. */
+/** The wavy lower edge of the orange header: one dip, then one rise, from left to right. */
 function Wave({ color }: { color: string }) {
   return (
     <Svg width="100%" height={22} viewBox="0 0 400 22" preserveAspectRatio="none" style={styles.wave}>
-      <Path d="M0 0 H400 V8 C352 24 304 24 256 12 C208 0 160 0 112 12 C72 22 34 22 0 10 Z" fill={color} />
+      <Path d="M0 0 H400 V4 C330 -2 270 -2 200 11 C130 24 70 24 0 8 Z" fill={color} />
     </Svg>
   )
 }
 
 const styles = StyleSheet.create({
-  orange: { paddingHorizontal: spacing.lg, paddingBottom: spacing.md, gap: spacing.md, overflow: 'hidden' },
+  clip: { overflow: 'hidden' },
+  orange: { paddingHorizontal: spacing.lg, paddingBottom: spacing.md, gap: spacing.md },
   shine: { position: 'absolute', top: -40, bottom: -40, width: 120 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   address: { flex: 1, minHeight: touchTarget.min, justifyContent: 'center' },

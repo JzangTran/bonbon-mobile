@@ -2,7 +2,7 @@ import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useMemo, useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useDeliveryPoint } from '@/entities/address'
 import { streetOf, useDisplayCategories, useFavoriteShops, useGuestHiddenShops, useHomeFeed, type FeedCard } from '@/entities/feed'
 import { useSession } from '@/entities/session'
@@ -34,7 +34,7 @@ export default function CustomerHomeScreen() {
 
   const header = (
     <View>
-      {/* orange above the header, so pulling down to refresh shows orange, never a white gap */}
+      {/* orange above the header, so the bounce at the top of the list shows orange, never a white gap */}
       <View pointerEvents="none" style={[styles.overscroll, { backgroundColor: theme.primary }]} />
       <HomeHeader
         street={streetOf(point.text)}
@@ -82,15 +82,6 @@ export default function CustomerHomeScreen() {
           if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
         }}
         onEndReachedThreshold={0.6}
-        refreshControl={
-          <RefreshControl
-            refreshing={feed.isRefetching && !feed.isFetchingNextPage}
-            onRefresh={() => void feed.refetch()}
-            tintColor="#FFFFFF"
-            colors={[theme.primary]}
-            progressBackgroundColor="#FFFFFF"
-          />
-        }
       />
       <CartBar />
     </View>

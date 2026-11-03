@@ -141,7 +141,7 @@ export default function RegisterScreen() {
         <Captcha token={captchaToken} onToken={setCaptchaToken} />
         <Notice tone="error" message={error} />
         <Button title={form.formState.isSubmitting ? 'Đang tạo tài khoản…' : 'Đăng ký'} size="lg" fullWidth
-          loading={form.formState.isSubmitting} disabled={terms.isLoading || privacy.isLoading} onPress={onSubmit} />
+          loading={form.formState.isSubmitting} disabled={terms.isLoading || privacy.isLoading} onPress={() => void onSubmit()} />
       </Card>
       <GoogleSignIn role={role} />
       <Link href="/">

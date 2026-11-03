@@ -82,7 +82,7 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
           ListFooterComponent={
             thread.hasNextPage ? (
               <Button title="Tải tin cũ hơn" variant="ghost" loading={thread.isFetchingNextPage} onPress={() => void thread.fetchNextPage()} />
-            ) : null
+            ) : undefined
           }
           renderItem={({ item }) => <Bubble message={item} onReply={() => setReplyTo(item)} />}
         />

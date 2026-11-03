@@ -124,7 +124,7 @@ export default function LoginScreen() {
         {unverifiedEmail && !resent ? <Button title="Gửi lại email xác thực" variant="outline" onPress={resend} /> : null}
         <Notice tone="success" message={resent ? 'Nếu tài khoản cần xác thực, chúng tôi đã gửi lại liên kết.' : null} />
         <Button title={form.formState.isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'} size="lg" fullWidth
-          loading={form.formState.isSubmitting} onPress={onSubmit} />
+          loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
         <View style={styles.links}>
           <Link href="/forgot-password">
             <Text variant="bodySm" color={theme.primary}>Quên mật khẩu?</Text>

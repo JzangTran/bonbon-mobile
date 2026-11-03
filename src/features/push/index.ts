@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
 import * as Notifications from 'expo-notifications'
+import { AndroidImportance } from 'expo-notifications'
 import { useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
@@ -29,11 +30,11 @@ async function ensureChannels() {
   if (Platform.OS !== 'android') return
   await Notifications.setNotificationChannelAsync('orders_urgent', {
     name: 'Đơn hàng',
-    importance: Notifications.AndroidImportance.HIGH,
+    importance: AndroidImportance.HIGH,
     vibrationPattern: [0, 400, 200, 400],
     sound: 'default',
   })
-  await Notifications.setNotificationChannelAsync('general', { name: 'Thông báo khác', importance: Notifications.AndroidImportance.DEFAULT })
+  await Notifications.setNotificationChannelAsync('general', { name: 'Thông báo khác', importance: AndroidImportance.DEFAULT })
 }
 
 /**

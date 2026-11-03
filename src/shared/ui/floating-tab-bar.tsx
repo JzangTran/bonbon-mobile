@@ -16,7 +16,7 @@ const ICON = 22
  * It sits in the layout (not over the content), so screens need no extra bottom padding. A screen hides it the usual way,
  * with `tabBarStyle: { display: 'none' }`, and a tab with `href: null` is not a tab.
  */
-export function FloatingTabBar({ state, descriptors, navigation }: TabBarProps) {
+export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: TabBarProps) {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
   const focusedStyle = StyleSheet.flatten(descriptors[state.routes[state.index].key]?.options.tabBarStyle) as ViewStyle | undefined
@@ -33,8 +33,8 @@ export function FloatingTabBar({ state, descriptors, navigation }: TabBarProps) 
           const label = options.tabBarAccessibilityLabel ?? (typeof options.title === 'string' ? options.title : route.name)
           const badge = options.tabBarBadge
           const onPress = () => {
-            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true })
-            if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params)
+            const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true })
+            if (!focused && !event.defaultPrevented) navigateToTab(route.key)
           }
           return (
             <Pressable
@@ -43,7 +43,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: TabBarProps) 
               accessibilityLabel={label}
               accessibilityState={{ selected: focused }}
               onPress={onPress}
-              onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
+              onLongPress={() => emitter.emit({ type: 'tabLongPress', target: route.key })}
               style={({ pressed }) => [styles.item, pressed && !focused && styles.pressed]}
             >
               {options.tabBarIcon({ focused, color: focused ? theme.primary : theme.textMuted, size: ICON })}

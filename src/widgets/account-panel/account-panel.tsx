@@ -126,7 +126,7 @@ function ProfileCard({ profile }: { profile: Profile | undefined }) {
       )} />
       <Notice tone="error" message={save.isError ? problemMessage(save.error) : null} />
       <Button title="Lưu thay đổi" loading={save.isPending} disabled={!profile}
-        onPress={form.handleSubmit((values) => save.mutate(values))} />
+        onPress={() => void form.handleSubmit((values) => save.mutate(values))()} />
     </Card>
   )
 }
@@ -206,7 +206,7 @@ function PasswordCard() {
         )} />
       ))}
       <Notice tone="error" message={error} />
-      <Button title="Đổi mật khẩu" loading={form.formState.isSubmitting} onPress={onSubmit} />
+      <Button title="Đổi mật khẩu" loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
     </Card>
   )
 }

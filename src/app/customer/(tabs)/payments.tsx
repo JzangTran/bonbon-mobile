@@ -1,9 +1,10 @@
+import { Redirect } from 'expo-router'
 import { useSession } from '@/entities/session'
 import PaymentsScreen from '@/screens/customer/payments'
-import { SignInPrompt } from '@/widgets/sign-in-prompt'
 
+/** Belongs to an account: the tab bar opens the sign-in sheet for a guest, and a link that lands here does the same. */
 export default function PaymentsTab() {
   const { session } = useSession()
-  if (!session) return <SignInPrompt mascot="all-clear" title="Thanh toán" text="Đăng nhập để xem các khoản bạn đã trả cho đơn hàng và cách thanh toán trên bonbon." />
+  if (!session) return <Redirect href="/login" />
   return <PaymentsScreen />
 }

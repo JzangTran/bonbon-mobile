@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
+import { formatDateTime, formatVnd } from '@/shared/lib/format'
 import { api, type components } from '@/shared/api'
-import { formatVnd } from '@/shared/lib/format'
 
 export type Shop = components['schemas']['Shop']
 export type ShopMenu = components['schemas']['ShopMenu']
@@ -54,4 +54,35 @@ export function formatDistance(km: number | undefined): string | null {
 export function deliveryText(shop: Shop): string {
   const fee = shop.deliveryFee ? `Phí giao ${formatVnd(shop.deliveryFee)}` : 'Miễn phí giao'
   return shop.deliveryFee && shop.freeDeliveryThreshold ? `${fee} · miễn phí từ ${formatVnd(shop.freeDeliveryThreshold)}` : fee
+}
+
+export type ShopVoucher = components['schemas']['Offer']
+
+/** The shop's vouchers a customer can use now, soonest ending first. */
+export function useShopVouchers(id: string) {
+  return useQuery({
+    queryKey: ['vendors', id, 'vouchers'],
+    enabled: !!id,
+    queryFn: async () => {
+      const { data, error } = await api.GET('/api/vendors/{id}/vouchers', { params: { path: { id } } })
+      if (error || !data) throw error
+      return data
+    },
+  })
+}
+
+/** "Giảm 20%" or "Giảm 15.000 ₫". */
+export function voucherTitle(v: ShopVoucher): string {
+  return v.discountType === 'PERCENT' ? `Giảm ${v.discountValue}%` : `Giảm ${formatVnd(v.discountValue ?? 0)}`
+}
+
+/** "Đơn từ 50.000 ₫, giảm tối đa 20.000 ₫". */
+export function voucherCondition(v: ShopVoucher): string {
+  const parts = [v.minOrderValue ? `Đơn từ ${formatVnd(v.minOrderValue)}` : 'Mọi đơn hàng']
+  if (v.maxDiscount) parts.push(`giảm tối đa ${formatVnd(v.maxDiscount)}`)
+  return parts.join(', ')
+}
+
+export function voucherEnds(v: ShopVoucher): string {
+  return v.validTo ? `Hết hạn ${formatDateTime(v.validTo)}` : ''
 }

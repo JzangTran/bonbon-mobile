@@ -29,7 +29,7 @@ export const ShopFeedCard = memo(function ShopFeedCard({ card, favorite = false 
         <Pressable accessibilityRole="button" accessibilityLabel={`${shop.name}${shop.open === false ? ', đang đóng' : ''}`} onPress={open} style={styles.identity}>
           <View style={[styles.logo, { backgroundColor: theme.surfaceMuted }]}>
             {shop.logoUrl ? (
-              <Image source={{ uri: shop.logoUrl }} alt="" contentFit="cover" style={StyleSheet.absoluteFill} />
+              <Image source={{ uri: shop.logoUrl }} accessibilityLabel="" contentFit="cover" style={StyleSheet.absoluteFill} />
             ) : (
               <Store size={24} color={theme.textMuted} strokeWidth={1.5} />
             )}
@@ -86,7 +86,7 @@ function DishTile({ dish, onPress }: { dish: FeedDish; onPress: () => void }) {
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={`${dish.name}, ${formatVnd(dish.price)}${discounted ? `, giảm ${dish.discountPercent}%` : ''}`} onPress={onPress} style={styles.tile}>
       <View style={[styles.photo, { backgroundColor: theme.surfaceMuted }]}>
-        {photo ? <Image source={photo} alt="" contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+        {photo ? <Image source={photo} accessibilityLabel="" contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
         {discounted ? (
           <View style={[styles.badge, { backgroundColor: theme.primary }]}>
             <Text variant="caption" color="#FFFFFF" style={styles.badgeText}>

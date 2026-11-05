@@ -6,7 +6,7 @@ import { lineTotal, unitPrice, useCart } from '@/entities/cart'
 import { useSession } from '@/entities/session'
 import { canPayOnline, newIdempotencyKey, openMomo, usePlaceOrder } from '@/entities/order'
 import { registerForPush } from '@/features/push'
-import { problemMessage } from '@/shared/api'
+import { problemCode, problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
 import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
@@ -62,6 +62,7 @@ export default function CartScreen() {
           addressId: address.id,
           paymentMethod: payMethod,
           ...(note.trim() ? { note: note.trim() } : {}),
+          ...(totals.voucherCode ? { voucherCode: totals.voucherCode } : {}),
           items: cart.lines.map((l) => ({
             menuItemId: l.menuItemId,
             quantity: l.quantity,
@@ -81,7 +82,11 @@ export default function CartScreen() {
           if (payMethod === 'ONLINE') void openMomo(order.payment)
         },
         // The cart or the shop may change before the next try, and then it is a different order.
-        onError: () => setKey(newIdempotencyKey()),
+        onError: (problem) => {
+          setKey(newIdempotencyKey())
+          // a voucher that no longer applies comes off, so the next try shows the real total
+          if (problemCode(problem)?.startsWith('VOUCHER_')) cart.setVoucher(null)
+        },
       },
     )
   }
@@ -196,6 +201,27 @@ export default function CartScreen() {
           <Text muted>Tiền món</Text>
           <Text style={styles.money}>{formatVnd(totals.itemsTotal)}</Text>
         </View>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => (shop ? router.push({ pathname: '/customer/offers', params: { vendorId: shop.id } }) : undefined)}
+          style={styles.sum}
+        >
+          <Text muted>Ưu đãi</Text>
+          <Text color={theme.primary} style={styles.money}>
+            {totals.voucherCode ? `${totals.voucherCode} · Đổi` : 'Chọn ưu đãi'}
+          </Text>
+        </Pressable>
+        {totals.discount > 0 ? (
+          <View style={styles.sum}>
+            <Text muted>Giảm giá</Text>
+            <Text color={theme.primary} style={styles.money}>−{formatVnd(totals.discount)}</Text>
+          </View>
+        ) : null}
+        {totals.voucherMinimum !== null ? (
+          <Text variant="bodySm" color={theme.onWarningSubtle}>
+            Ưu đãi đã chọn áp dụng cho đơn từ {formatVnd(totals.voucherMinimum)}. Hãy thêm món.
+          </Text>
+        ) : null}
         <View style={styles.sum}>
           <Text muted>Phí giao</Text>
           <Text style={styles.money}>{totals.deliveryFee === 0 ? 'Miễn phí' : formatVnd(totals.deliveryFee)}</Text>

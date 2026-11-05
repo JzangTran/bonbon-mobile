@@ -26,7 +26,9 @@ export default function CustomerLayout() {
       <Stack.Screen name="deals" options={{ title: 'Deal HOT' }} />
       <Stack.Screen name="search" options={{ title: 'Tìm món' }} />
       <Stack.Screen name="scan" options={{ title: 'Quét mã QR', headerShown: false, presentation: 'fullScreenModal', animation: 'fade' }} />
-      <Stack.Screen name="vendor" options={{ title: 'Quán' }} />
+      <Stack.Screen name="vendor" options={{ title: 'Quán', headerShown: false }} />
+      <Stack.Screen name="offers" options={{ title: 'Ưu đãi', headerShown: false, presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="offer" options={{ title: 'Chi tiết ưu đãi' }} />
       <Stack.Screen name="cart" options={{ title: 'Giỏ hàng' }} />
       <Stack.Screen name="order" options={{ title: 'Đơn hàng' }} />
       <Stack.Screen name="report-problem" options={{ title: 'Báo vấn đề' }} />

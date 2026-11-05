@@ -164,7 +164,7 @@ export default function CustomerOrderScreen() {
             ))}
             <View style={styles.totals}>
               <Text variant="bodySm" muted>
-                Tiền món {formatVnd(data.totals?.itemsTotal)} · Phí giao {formatVnd(data.totals?.deliveryFee)}
+                Tiền món {formatVnd(data.totals?.itemsTotal)}{data.totals?.discount ? ` · Giảm ${formatVnd(data.totals.discount)}` : ''} · Phí giao {formatVnd(data.totals?.deliveryFee)}
               </Text>
               <Text variant="titleSm" style={styles.money}>
                 Tổng cộng {formatVnd(data.totals?.grandTotal)}

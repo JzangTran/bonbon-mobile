@@ -23,7 +23,17 @@ export type CartLine = {
   note?: string
 }
 
-type CartState = { shop: CartShop | null; lines: CartLine[] }
+/** The voucher chosen for this shop's cart; the rule mirrors the server's, which has the last word when the order is placed. */
+export type CartVoucher = {
+  vendorId: string
+  code: string
+  discountType: string
+  discountValue: number
+  maxDiscount?: number | null
+  minOrderValue?: number | null
+}
+
+type CartState = { shop: CartShop | null; lines: CartLine[]; voucher?: CartVoucher | null }
 
 const EMPTY: CartState = { shop: null, lines: [] }
 const STORAGE_KEY = 'bonbon.cart'
@@ -37,15 +47,23 @@ export function lineKey(menuItemId: string, optionIds: string[], note: string | 
 export const unitPrice = (line: CartLine) => line.basePrice + line.options.reduce((sum, o) => sum + o.priceDelta, 0)
 export const lineTotal = (line: CartLine) => unitPrice(line) * line.quantity
 
+function discountOf(voucher: CartVoucher, itemsTotal: number): number {
+  const off = voucher.discountType === 'PERCENT' ? Math.floor((itemsTotal * voucher.discountValue) / 100) : voucher.discountValue
+  return Math.min(typeof voucher.maxDiscount === 'number' ? Math.min(off, voucher.maxDiscount) : off, itemsTotal)
+}
+
 export function cartTotals(cart: CartState) {
   const itemsTotal = cart.lines.reduce((sum, l) => sum + lineTotal(l), 0)
   const shop = cart.shop
+  const voucher = cart.voucher && cart.voucher.vendorId === shop?.id ? cart.voucher : null
+  const voucherMinimum = typeof voucher?.minOrderValue === 'number' && itemsTotal < voucher.minOrderValue ? voucher.minOrderValue : null
+  const discount = voucher && voucherMinimum === null ? discountOf(voucher, itemsTotal) : 0
   // The API sends null for a missing threshold or minimum, so test for a number rather than for undefined.
   const threshold = shop?.freeDeliveryThreshold
-  const deliveryFee = !shop ? 0 : typeof threshold === 'number' && itemsTotal >= threshold ? 0 : shop.deliveryFee
+  const deliveryFee = !shop ? 0 : typeof threshold === 'number' && itemsTotal - discount >= threshold ? 0 : shop.deliveryFee
   const count = cart.lines.reduce((sum, l) => sum + l.quantity, 0)
   const belowMinimum = typeof shop?.minOrderValue === 'number' && itemsTotal < shop.minOrderValue
-  return { itemsTotal, deliveryFee, grandTotal: itemsTotal + deliveryFee, count, belowMinimum }
+  return { itemsTotal, discount, voucherCode: discount > 0 ? voucher?.code : undefined, voucherMinimum, deliveryFee, grandTotal: itemsTotal - discount + deliveryFee, count, belowMinimum }
 }
 
 type CartApi = CartState & {
@@ -59,6 +77,8 @@ type CartApi = CartState & {
   /** Replaces the whole cart with these lines of one shop (reorder). */
   replaceAll: (shop: CartShop, lines: Omit<CartLine, 'key'>[]) => void
   setQuantity: (key: string, quantity: number) => void
+  /** Chooses or removes the voucher; it applies while the cart holds this voucher's shop. */
+  setVoucher: (voucher: CartVoucher | null) => void
   clear: () => void
 }
 
@@ -70,7 +90,7 @@ function addTo(state: CartState, shop: CartShop, line: Omit<CartLine, 'key'>): C
   const lines = existing
     ? state.lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(MAX_LINE_QUANTITY, l.quantity + line.quantity) } : l))
     : [...state.lines, { ...line, key }]
-  return { shop, lines }
+  return { ...state, shop, lines }
 }
 
 /** The cart lives on the device (view-vendor-menu.md): one shop per cart, kept across app restarts. */
@@ -114,11 +134,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return lines.length === 0 ? EMPTY : { ...current, lines }
     })
   }, [])
+  const setVoucher = useCallback((voucher: CartVoucher | null) => setState((current) => ({ ...current, voucher })), [])
   const clear = useCallback(() => setState(EMPTY), [])
 
   const value = useMemo<CartApi>(
-    () => ({ ...state, ready, totals: cartTotals(state), add, replaceWith, replaceAll, setQuantity, clear }),
-    [state, ready, add, replaceWith, replaceAll, setQuantity, clear],
+    () => ({ ...state, ready, totals: cartTotals(state), add, replaceWith, replaceAll, setQuantity, setVoucher, clear }),
+    [state, ready, add, replaceWith, replaceAll, setQuantity, setVoucher, clear],
   )
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

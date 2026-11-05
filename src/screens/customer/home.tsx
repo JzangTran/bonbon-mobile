@@ -6,6 +6,7 @@ import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, View } 
 import { useDeliveryPoint } from '@/entities/address'
 import { streetOf, useDisplayCategories, useFavoriteShops, useGuestHiddenShops, useHomeFeed, type FeedCard } from '@/entities/feed'
 import { useSession } from '@/entities/session'
+import { afterSignIn } from '@/features/after-sign-in'
 import { Button, Card, ErrorState, Text, fonts, radius, spacing, useTheme } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
 import { HomeHeader } from '@/widgets/home-header'
@@ -36,7 +37,10 @@ export default function CustomerHomeScreen() {
       <View pointerEvents="none" style={[styles.overscroll, { backgroundColor: theme.primary }]} />
       <HomeHeader
         guest={guest}
-        onSignIn={() => router.push('/login')}
+        onSignIn={() => {
+          afterSignIn(null)
+          router.push('/login')
+        }}
         street={streetOf(point.text)}
         onAddress={() => router.push('/customer/addresses')}
         onFavorites={() => router.push('/customer/favorites')}
@@ -101,9 +105,9 @@ function CategoryStrip({ selected, onSelect }: { selected: string | null; onSele
       {list.map((c) => {
         const on = c.id === selected
         return (
-          <Pressable key={c.id} accessibilityRole="button" aria-selected={on} accessibilityLabel={c.name} onPress={() => onSelect(c.id)} style={styles.category}>
+          <Pressable key={c.id} accessibilityRole="button" aria-pressed={on} accessibilityLabel={c.name} onPress={() => onSelect(c.id)} style={styles.category}>
             <View style={[styles.categoryPicture, { backgroundColor: theme.surfaceMuted, borderColor: on ? theme.primary : 'transparent' }]}>
-              {c.imageUrl ? <Image source={{ uri: c.imageUrl }} alt="" contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+              {c.imageUrl ? <Image source={{ uri: c.imageUrl }} accessibilityLabel="" contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
             </View>
             <Text variant="caption" numberOfLines={1} color={on ? theme.primary : theme.text} style={on ? styles.categoryOn : undefined}>
               {c.name}

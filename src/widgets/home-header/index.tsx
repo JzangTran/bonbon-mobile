@@ -76,26 +76,26 @@ export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, o
             accessibilityRole="button"
             accessibilityLabel={`Deal HOT: các quán ăn giảm đến ${dealMaxPercent}%`}
             onPress={onDeals}
-            style={[styles.deal, { backgroundColor: WHITE }]}
+            style={styles.deal}
           >
             <View style={styles.flex}>
-              <Text variant="caption" color={theme.primary} style={styles.hot}>
+              <Text variant="caption" color={WHITE} style={styles.hot}>
                 Deal HOT
               </Text>
               <View style={styles.dealLine}>
-                <Text variant="bodySm" style={styles.dealText}>
+                <Text variant="bodySm" color={WHITE} style={styles.dealText}>
                   Các quán ăn Giảm đến {dealMaxPercent}%
                 </Text>
                 <Nudge>
-                  <ArrowRight size={18} color={theme.primary} strokeWidth={2.25} />
+                  <ArrowRight size={18} color={WHITE} strokeWidth={2.25} />
                 </Nudge>
               </View>
             </View>
-            <View style={[styles.dealPicture, { backgroundColor: theme.primarySubtle }]}>
+            <View style={styles.dealPicture}>
               {DEAL_PICTURE ? (
                 <Image source={DEAL_PICTURE} alt="" contentFit="cover" style={StyleSheet.absoluteFill} />
               ) : (
-                <BadgePercent size={28} color={theme.primary} strokeWidth={1.75} />
+                <BadgePercent size={28} color={WHITE} strokeWidth={1.75} />
               )}
             </View>
           </Pressable>
@@ -228,10 +228,10 @@ const styles = StyleSheet.create({
   round: { width: 40, height: 40, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.18)' },
   scan: { width: touchTarget.min, height: touchTarget.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.22)' },
   search: { flex: 1, height: touchTarget.min, borderRadius: radius.pill, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.lg },
-  deal: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderRadius: radius.lg, paddingVertical: spacing.sm, paddingLeft: spacing.lg, paddingRight: spacing.sm },
+  deal: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   hot: { fontFamily: fonts.bold, letterSpacing: 0.4, textTransform: 'uppercase' },
   dealLine: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   dealText: { fontFamily: fonts.semibold },
-  dealPicture: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  dealPicture: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.22)' },
   wave: { marginTop: -1 },
 })

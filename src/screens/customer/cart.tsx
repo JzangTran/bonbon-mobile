@@ -46,7 +46,7 @@ export default function CartScreen() {
         <Card>
           <Text variant="titleSm">Giỏ hàng trống</Text>
           <Text muted>Chọn quán và thêm món bạn muốn đặt.</Text>
-          <Button title="Xem các quán" fullWidth onPress={() => router.replace('/customer')} />
+          <Button title="Xem các quán" fullWidth onPress={() => router.dismissTo('/customer')} />
         </Card>
       </Screen>
     )

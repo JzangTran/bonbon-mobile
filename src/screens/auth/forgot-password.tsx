@@ -41,7 +41,7 @@ export default function ForgotPasswordScreen() {
           </>
         )}
       </Card>
-      <Link href="/login">
+      <Link dismissTo href="/login">
         <Text variant="bodySm" color={theme.primary}>Về đăng nhập</Text>
       </Link>
     </Screen>

@@ -9,7 +9,7 @@ export default function NotFoundScreen() {
     <Screen>
       <EmptyState illustration="no-result" mascot="search" title="Không tìm thấy trang" hint="Đường dẫn này không có gì, hoặc đã được chuyển đi nơi khác." />
       <View style={{ alignItems: 'center' }}>
-        <Link href="/">
+        <Link replace href="/">
           <Text color={theme.primary}>Về trang chủ</Text>
         </Link>
       </View>

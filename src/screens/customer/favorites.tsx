@@ -26,7 +26,7 @@ export default function FavoritesScreen() {
         ) : (
           <View>
             <EmptyState mascot="all-clear" title="Chưa có quán yêu thích" hint="Bấm ⋮ cạnh tên quán ở trang chủ rồi chọn Thêm vào mục yêu thích." />
-            <Button title="Xem các quán" variant="outline" onPress={() => router.replace('/customer')} />
+            <Button title="Xem các quán" variant="outline" onPress={() => router.dismissTo('/customer')} />
           </View>
         )
       }

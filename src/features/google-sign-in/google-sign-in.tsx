@@ -4,6 +4,7 @@ import { Linking, StyleSheet, View } from 'react-native'
 import { loadLastRole, useSession, type Role } from '@/entities/session'
 import { api, isApiProblem, problemCode, problemMessage, type components } from '@/shared/api'
 import { env } from '@/shared/config/env'
+import { useTx } from '@/shared/i18n'
 import { Button, Captcha, Card, Checkbox, Input, Notice, Text, spacing, useTheme } from '@/shared/ui'
 import { GoogleButton } from './google-button'
 
@@ -14,8 +15,6 @@ type Step =
   | { kind: 'signup'; email?: string; role: Role }
   | { kind: 'password'; captcha: boolean }
   | { kind: 'pickRole'; roleToken: string; roles: Role[] }
-
-const ROLE_LABEL: Record<Role, string> = { CUSTOMER: 'Đặt món', SELLER: 'Bán hàng' }
 
 function useDocument(type: 'CUSTOMER_TERMS' | 'SELLER_TERMS' | 'PRIVACY_POLICY', enabled: boolean) {
   return useQuery({
@@ -36,6 +35,7 @@ function useDocument(type: 'CUSTOMER_TERMS' | 'SELLER_TERMS' | 'PRIVACY_POLICY',
  */
 export function GoogleSignIn({ role, icon = false, remember = true }: { role?: Role; icon?: boolean; remember?: boolean }) {
   const theme = useTheme()
+  const tx = useTx()
   const { signIn } = useSession()
   const [idToken, setIdToken] = useState<string | null>(null)
   const [step, setStep] = useState<Step>({ kind: 'idle' })
@@ -123,13 +123,13 @@ export function GoogleSignIn({ role, icon = false, remember = true }: { role?: R
 
       {step.kind === 'signup' && idToken ? (
         <Card>
-          <Text variant="titleSm">{step.email ? `Tạo tài khoản cho ${step.email}` : 'Thêm vai trò cho tài khoản Google này'}</Text>
+          <Text variant="titleSm">{step.email ? tx(`Tạo tài khoản cho ${step.email}`, `Create an account for ${step.email}`) : tx('Thêm vai trò cho tài khoản Google này', 'Add a role to this Google account')}</Text>
           {!role ? (
             <View style={styles.roles}>
               {(['CUSTOMER', 'SELLER'] as Role[]).map((r) => (
                 <Button
                   key={r}
-                  title={ROLE_LABEL[r]}
+                  title={r === 'CUSTOMER' ? tx('Đặt món', 'Order food') : tx('Bán hàng', 'Sell')}
                   variant={step.role === r ? 'primary' : 'outline'}
                   style={styles.flex}
                   onPress={() => {
@@ -141,25 +141,25 @@ export function GoogleSignIn({ role, icon = false, remember = true }: { role?: R
             </View>
           ) : null}
           <Checkbox checked={accepted} onChange={setAccepted}>
-            Tôi đồng ý với{' '}
+            {tx('Tôi đồng ý với', 'I agree to the')}{' '}
             <Text
               variant="bodySm"
               color={theme.primary}
               onPress={() => Linking.openURL(`${env.webUrl}/legal/${step.role === 'SELLER' ? 'SELLER_TERMS' : 'CUSTOMER_TERMS'}`)}
             >
-              {terms.data?.title ?? 'Điều khoản sử dụng'}
+              {terms.data?.title ?? tx('Điều khoản sử dụng', 'Terms of use')}
             </Text>{' '}
-            và đã đọc{' '}
+            {tx('và đã đọc', 'and have read the')}{' '}
             <Text variant="bodySm" color={theme.primary} onPress={() => Linking.openURL(`${env.webUrl}/legal/PRIVACY_POLICY`)}>
-              {privacy.data?.title ?? 'Chính sách quyền riêng tư'}
+              {privacy.data?.title ?? tx('Chính sách quyền riêng tư', 'Privacy policy')}
             </Text>
             .
           </Checkbox>
           <Checkbox checked={marketing} onChange={setMarketing} muted>
-            Nhận tin khuyến mãi qua email (không bắt buộc).
+            {tx('Nhận tin khuyến mãi qua email (không bắt buộc).', 'Get offers by email (optional).')}
           </Checkbox>
           <Button
-            title="Tiếp tục"
+            title={tx('Tiếp tục', 'Continue')}
             size="lg"
             fullWidth
             loading={busy}
@@ -177,11 +177,11 @@ export function GoogleSignIn({ role, icon = false, remember = true }: { role?: R
 
       {step.kind === 'password' && idToken ? (
         <Card>
-          <Text variant="bodySm">Email này đã có tài khoản bonbon. Nhập mật khẩu của tài khoản đó để liên kết với Google.</Text>
-          <Input label="Mật khẩu bonbon" secureTextEntry value={password} onChangeText={setPassword} autoComplete="current-password" />
+          <Text variant="bodySm">{tx('Email này đã có tài khoản bonbon. Nhập mật khẩu của tài khoản đó để liên kết với Google.', 'This email already has a bonbon account. Enter its password to link it with Google.')}</Text>
+          <Input label={tx('Mật khẩu bonbon', 'bonbon password')} secureTextEntry value={password} onChangeText={setPassword} autoComplete="current-password" />
           {step.captcha ? <Captcha token={captchaToken} onToken={setCaptchaToken} /> : null}
           <Button
-            title="Liên kết và đăng nhập"
+            title={tx('Liên kết và đăng nhập', 'Link and sign in')}
             size="lg"
             fullWidth
             loading={busy}
@@ -193,11 +193,11 @@ export function GoogleSignIn({ role, icon = false, remember = true }: { role?: R
 
       {step.kind === 'pickRole' ? (
         <Card>
-          <Text variant="titleSm">Bạn muốn vào với vai trò nào?</Text>
+          <Text variant="titleSm">{tx('Bạn muốn vào với vai trò nào?', 'Which role do you want?')}</Text>
           {step.roles.map((r) => (
             <Button
               key={r}
-              title={r === 'CUSTOMER' ? 'Khách hàng — đặt món' : 'Người bán — quản lý quán'}
+              title={r === 'CUSTOMER' ? tx('Khách hàng — đặt món', 'Customer — order food') : tx('Người bán — quản lý quán', 'Seller — run the shop')}
               variant={r === 'CUSTOMER' ? 'primary' : 'outline'}
               fullWidth
               onPress={() => chooseRole(step.roleToken, r)}

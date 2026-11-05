@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Linking } from 'react-native'
 import { z } from 'zod'
-import type { Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
@@ -22,7 +21,7 @@ const schemaFor = (tx: Tx) =>
     })
     .refine((v) => v.password === v.confirmPassword, { path: ['confirmPassword'], message: tx('Mật khẩu nhập lại không khớp', 'The passwords do not match') })
 type Values = z.infer<ReturnType<typeof schemaFor>>
-type DocType = 'CUSTOMER_TERMS' | 'SELLER_TERMS' | 'PRIVACY_POLICY'
+type DocType = 'CUSTOMER_TERMS' | 'PRIVACY_POLICY'
 
 function useCurrentDocument(type: DocType) {
   return useQuery({
@@ -35,22 +34,12 @@ function useCurrentDocument(type: DocType) {
   })
 }
 
-/** Sign-up in the app is for customers; a shop owner signs up on its own screen (register-seller). */
+/** Sign-up in the app makes a customer account; selling is added to it later from the account page, with the same email and password. */
 export default function RegisterScreen() {
-  return <RegisterForm role="CUSTOMER" />
-}
-
-/** Seller sign-up: the same account, with the seller terms; the shop itself is set up after signing in. */
-export function SellerRegisterScreen() {
-  return <RegisterForm role="SELLER" />
-}
-
-function RegisterForm({ role }: { role: Role }) {
   const theme = useTheme()
   const tx = useTx()
   const locale = useLocale()
-  const seller = role === 'SELLER'
-  const terms = useCurrentDocument(seller ? 'SELLER_TERMS' : 'CUSTOMER_TERMS')
+  const terms = useCurrentDocument('CUSTOMER_TERMS')
   const privacy = useCurrentDocument('PRIVACY_POLICY')
   const [accepted, setAccepted] = useState(false)
   const [marketing, setMarketing] = useState(false)
@@ -82,7 +71,7 @@ function RegisterForm({ role }: { role: Role }) {
         email: values.email,
         password: values.password,
         name: values.name,
-        role,
+        role: 'CUSTOMER',
         acceptedDocumentIds: [terms.data.id, privacy.data.id],
         marketingConsent: marketing,
         captchaToken,
@@ -111,9 +100,7 @@ function RegisterForm({ role }: { role: Role }) {
           tone="success"
           message={
             done.roleAdded
-              ? seller
-                ? tx(`Tài khoản ${done.email} giờ có thêm vai trò người bán. Đăng nhập để chọn vai trò sử dụng.`, `${done.email} now also has the seller role. Sign in to choose the role to use.`)
-                : tx(`Tài khoản ${done.email} giờ có thêm vai trò khách hàng. Đăng nhập để chọn vai trò sử dụng.`, `${done.email} now also has the customer role. Sign in to choose the role to use.`)
+              ? tx(`Tài khoản ${done.email} giờ có thêm vai trò khách hàng. Đăng nhập để chọn vai trò sử dụng.`, `${done.email} now also has the customer role. Sign in to choose the role to use.`)
               : tx(`Chúng tôi đã gửi liên kết xác thực tới ${done.email}. Mở liên kết, rồi quay lại đây để đăng nhập.`, `We sent a verification link to ${done.email}. Open it, then come back here to sign in.`)
           }
         />
@@ -123,12 +110,8 @@ function RegisterForm({ role }: { role: Role }) {
 
   return (
     <AuthSheet
-      title={seller ? tx('Đăng ký bán hàng', 'Sell on bonbon') : tx('Tạo tài khoản', 'Create account')}
-      intro={
-        seller
-          ? tx('Tạo tài khoản người bán, rồi đăng nhập để mở quán. Đã có tài khoản đặt món? Dùng cùng email và mật khẩu.', 'Create a seller account, then sign in to open your shop. Already order on bonbon? Use the same email and password.')
-          : tx('Đặt món từ các quán ngay trong khu của bạn.', 'Order from the shops right in your area.')
-      }
+      title={tx('Tạo tài khoản', 'Create account')}
+      intro={tx('Đặt món từ các quán ngay trong khu của bạn.', 'Order from the shops right in your area.')}
       footer={signInLink}
     >
       {(['name', 'email', 'password', 'confirmPassword'] as const).map((name) => (
@@ -144,7 +127,7 @@ function RegisterForm({ role }: { role: Role }) {
       ))}
       <Checkbox checked={accepted} onChange={setAccepted}>
         {tx('Tôi đồng ý với', 'I agree to the')}{' '}
-        <Text variant="bodySm" color={theme.primary} onPress={() => openDocument(seller ? 'SELLER_TERMS' : 'CUSTOMER_TERMS')}>
+        <Text variant="bodySm" color={theme.primary} onPress={() => openDocument('CUSTOMER_TERMS')}>
           {terms.data?.title ?? tx('Điều khoản sử dụng', 'Terms of use')}
         </Text>{' '}
         {tx('và đã đọc', 'and have read the')}{' '}
@@ -161,7 +144,7 @@ function RegisterForm({ role }: { role: Role }) {
       <Button title={form.formState.isSubmitting ? tx('Đang tạo tài khoản…', 'Creating account…') : tx('Đăng ký', 'Sign up')} size="lg" fullWidth
         loading={form.formState.isSubmitting} disabled={terms.isLoading || privacy.isLoading} onPress={() => void onSubmit()} />
       <OrDivider />
-      <GoogleSignIn role={role} icon />
+      <GoogleSignIn role="CUSTOMER" icon />
     </AuthSheet>
   )
 }

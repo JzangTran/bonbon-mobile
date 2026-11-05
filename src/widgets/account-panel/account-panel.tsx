@@ -158,7 +158,7 @@ function RoleCard() {
       <Text variant="title">Vai trò</Text>
       <Text variant="bodySm" muted>
         Đang dùng với vai trò {ROLE_NAME[session.role].toLowerCase()}.
-        {holdsOther ? '' : ` Muốn ${other === 'SELLER' ? 'mở quán' : 'đặt món'}? Đăng xuất rồi đăng ký vai trò ${ROLE_NAME[other].toLowerCase()} bằng cùng email.`}
+        {holdsOther || other === 'SELLER' ? '' : ' Muốn đặt món? Đăng xuất rồi tạo tài khoản bằng cùng email và mật khẩu.'}
       </Text>
       {holdsOther ? (
         <Button title={`Chuyển sang ${ROLE_NAME[other]}`} variant="outline" loading={switching} onPress={switchRole} />

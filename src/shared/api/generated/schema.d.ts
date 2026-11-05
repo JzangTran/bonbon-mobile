@@ -1878,6 +1878,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/email-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Email này đã có tài khoản chưa
+         * @description Bước đầu của đăng ký người bán. `NEW`: chưa có tài khoản, nhập thông tin để tạo. `ACCOUNT`: đã có tài khoản khách, nhập mật khẩu của tài khoản đó để thêm vai trò người bán. `SELLER`: đã là người bán, đăng nhập. `EXTERNAL_ONLY`: tài khoản không có mật khẩu (Google), thêm vai trò trong ứng dụng. Giới hạn số lần theo IP.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["getEmailStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/support/tickets/{id}/reply": {
         parameters: {
             query?: never;
@@ -6465,6 +6487,7 @@ export interface components {
             acceptedDocumentIds?: string[];
             marketingConsent?: boolean;
             captchaToken?: string;
+            alsoCustomer?: boolean;
         };
         RegisterResponse: {
             /** @enum {string} */
@@ -6495,6 +6518,14 @@ export interface components {
             marketingConsent?: boolean;
             password?: string;
             captchaToken?: string;
+        };
+        EmailStatusRequest: {
+            /** Format: email */
+            email: string;
+        };
+        EmailStatusResponse: {
+            /** @enum {string} */
+            status?: "NEW" | "ACCOUNT" | "SELLER" | "EXTERNAL_ONLY";
         };
         AdminTicketReplyRequest: {
             /** @description Câu trả lời, tối đa 2.000 ký tự. */
@@ -17014,6 +17045,60 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StatusResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getEmailStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmailStatusResponse"];
                 };
             };
             /**

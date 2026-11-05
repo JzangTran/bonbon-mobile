@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router'
-import { Bell, ChevronRight, LifeBuoy, MapPin } from 'lucide-react-native'
+import { Bell, ChevronRight, LifeBuoy, MapPin, Store } from 'lucide-react-native'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
+import { useSession } from '@/entities/session'
 import { Card, Screen, Text, spacing, touchTarget, useTheme } from '@/shared/ui'
 import { AccountPanel } from '@/widgets/account-panel'
 
@@ -9,10 +10,25 @@ export default function CustomerAccountScreen() {
   const theme = useTheme()
   const router = useRouter()
   const addresses = useAddresses()
+  const { session } = useSession()
   const defaultAddress = addresses.data?.find((a) => a.isDefault)
   return (
     <Screen>
       <Text variant="headline">Tài khoản</Text>
+      {session && !session.availableRoles.includes('SELLER') ? (
+        <Card>
+          <Pressable accessibilityRole="button" style={styles.row} onPress={() => router.push('/customer/become-seller')}>
+            <Store size={20} color={theme.primary} />
+            <View style={styles.flex}>
+              <Text variant="body">Đăng ký trở thành người bán hàng</Text>
+              <Text variant="caption" muted>
+                Mở quán bằng chính tài khoản này
+              </Text>
+            </View>
+            <ChevronRight size={20} color={theme.textMuted} />
+          </Pressable>
+        </Card>
+      ) : null}
       <Card>
         <Pressable accessibilityRole="button" style={styles.row} onPress={() => router.push('/customer/addresses')}>
           <MapPin size={20} color={theme.primary} />

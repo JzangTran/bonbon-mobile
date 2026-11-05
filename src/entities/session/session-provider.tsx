@@ -52,7 +52,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(
     async (input: SignInInput, options?: { remember?: boolean }) => {
-      remember.current = options?.remember ?? true
+      if (options?.remember !== undefined) remember.current = options.remember
       await saveLastRole(input.role)
       await update(toSession(input))
     },

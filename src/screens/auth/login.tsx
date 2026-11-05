@@ -2,13 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Image } from 'expo-image'
 import { StyleSheet, View } from 'react-native'
 import { z } from 'zod'
 import { loadLastRole, useSession, type Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
-import { Button, Captcha, Card, Input, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Captcha, Checkbox, Input, Notice, Screen, Text, spacing, useTheme, useToast } from '@/shared/ui'
 
 const schema = z.object({
   email: z.email('Email không hợp lệ'),
@@ -29,6 +28,7 @@ export default function LoginScreen() {
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
   const [resent, setResent] = useState(false)
   const [roleChoice, setRoleChoice] = useState<{ roleToken: string; roles: Role[] } | null>(null)
+  const [remember, setRemember] = useState(true)
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: '', password: '' } })
 
   const finish = async (data: LoginResponse) => {
@@ -44,7 +44,7 @@ export default function LoginScreen() {
       availableRoles: ((user.availableRoles ?? [role]) as Role[]).filter((r) => r !== ('ADMIN' as Role)),
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-    })
+    }, { remember })
   }
 
   const chooseRole = async (roleToken: string, role: Role) => {
@@ -91,7 +91,7 @@ export default function LoginScreen() {
 
   if (roleChoice) {
     return (
-      <Screen backdrop>
+      <Screen>
         <Text variant="headline">Bạn muốn vào với vai trò nào?</Text>
         <Text muted>Có thể đổi lại bất cứ lúc nào trong phần Tài khoản. Lựa chọn được nhớ trên máy này.</Text>
         {roleChoice.roles.map((role) => (
@@ -104,40 +104,36 @@ export default function LoginScreen() {
   }
 
   return (
-    <Screen backdrop>
-      <Image source={require('../../../assets/brand/lockup-color.png')} accessibilityLabel="bonbon" style={styles.logo} contentFit="contain" />
-      <Text variant="display" accessibilityRole="header" style={{ fontFamily: fonts.semibold, letterSpacing: -0.6 }}>
-        Đặt món từ quán <Text variant="display" color={theme.headlineSoft} style={{ fontFamily: fonts.semibold, letterSpacing: -0.6 }}>ngay trong khu của bạn</Text>
+    <Screen>
+      <Text variant="headline" accessibilityRole="header">
+        Đăng nhập
       </Text>
-      <Card>
-        <Text variant="title">Đăng nhập</Text>
-        <Controller control={form.control} name="email" render={({ field, fieldState }) => (
-          <Input label="Email" keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress"
-            value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
-        )} />
-        <Controller control={form.control} name="password" render={({ field, fieldState }) => (
-          <Input label="Mật khẩu" secureTextEntry autoComplete="current-password" textContentType="password"
-            value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
-        )} />
-        {needsCaptcha ? <Captcha token={captchaToken} onToken={setCaptchaToken} /> : null}
-        <Notice tone="error" message={error} />
-        {unverifiedEmail && !resent ? <Button title="Gửi lại email xác thực" variant="outline" onPress={resend} /> : null}
-        <Notice tone="success" message={resent ? 'Nếu tài khoản cần xác thực, chúng tôi đã gửi lại liên kết.' : null} />
-        <Button title={form.formState.isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'} size="lg" fullWidth
-          loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
-        <View style={styles.links}>
-          <Link href="/forgot-password">
-            <Text variant="bodySm" color={theme.primary}>Quên mật khẩu?</Text>
-          </Link>
-          <Link href="/register">
-            <Text variant="bodySm" color={theme.primary}>Tạo tài khoản</Text>
-          </Link>
+      <Controller control={form.control} name="email" render={({ field, fieldState }) => (
+        <Input label="Email" keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress"
+          value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
+      )} />
+      <Controller control={form.control} name="password" render={({ field, fieldState }) => (
+        <Input label="Mật khẩu" secureTextEntry autoComplete="current-password" textContentType="password"
+          value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
+      )} />
+      <View style={styles.options}>
+        <View style={styles.flex}>
+          <Checkbox checked={remember} onChange={setRemember}>Ghi nhớ đăng nhập</Checkbox>
         </View>
-      </Card>
-      <GoogleSignIn />
-      <Link href="/register-seller">
+        <Link href="/forgot-password">
+          <Text variant="bodySm" color={theme.primary}>Quên mật khẩu?</Text>
+        </Link>
+      </View>
+      {needsCaptcha ? <Captcha token={captchaToken} onToken={setCaptchaToken} /> : null}
+      <Notice tone="error" message={error} />
+      {unverifiedEmail && !resent ? <Button title="Gửi lại email xác thực" variant="outline" onPress={resend} /> : null}
+      <Notice tone="success" message={resent ? 'Nếu tài khoản cần xác thực, chúng tôi đã gửi lại liên kết.' : null} />
+      <Button title={form.formState.isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'} size="lg" fullWidth
+        loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
+      <GoogleSignIn icon remember={remember} />
+      <Link href="/register" style={styles.signUp}>
         <Text variant="bodySm" muted>
-          Bạn có quán? <Text variant="bodySm" color={theme.primary}>Đăng ký bán hàng</Text>
+          Bạn chưa có tài khoản? <Text variant="bodySm" color={theme.primary}>Tạo tài khoản ngay</Text>
         </Text>
       </Link>
     </Screen>
@@ -145,6 +141,7 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  logo: { width: 122, height: 40 },
-  links: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.xs },
+  flex: { flex: 1 },
+  options: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  signUp: { textAlign: 'center' },
 })

@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Platform } from 'react-native'
+import { Platform, Pressable } from 'react-native'
 import { env } from '@/shared/config/env'
 import { Button } from '@/shared/ui'
+import { GoogleMark, googleIconStyle } from './google-mark'
 
 type GoogleSigninModule = typeof import('@react-native-google-signin/google-signin')
 
@@ -24,9 +25,22 @@ let configured = false
 const available = !!google && (Platform.OS !== 'ios' || !!env.googleIosClientId)
 
 /** Opens the Google account chooser and hands the ID token over. Android tokens carry the web client ID. */
-export function GoogleButton({ onIdToken, onError }: { onIdToken: (idToken: string) => void; onError: (message: string) => void }) {
+export function GoogleButton({ icon = false, onIdToken, onError }: { icon?: boolean; onIdToken: (idToken: string) => void; onError: (message: string) => void }) {
   const [busy, setBusy] = useState(false)
-  if (!available || !google) return null
+  if (!available || !google) {
+    if (!icon) return null
+    // Expo Go has no Google module: the sign-in sheet keeps its button and says why it cannot work here
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Đăng nhập bằng Google"
+        onPress={() => onError('Đăng nhập Google cần bản cài đặt của app, chưa dùng được trong Expo Go.')}
+        style={googleIconStyle}
+      >
+        <GoogleMark />
+      </Pressable>
+    )
+  }
   const { GoogleSignin, isErrorWithCode, statusCodes } = google
 
   const signIn = async () => {
@@ -55,5 +69,12 @@ export function GoogleButton({ onIdToken, onError }: { onIdToken: (idToken: stri
     }
   }
 
+  if (icon) {
+    return (
+      <Pressable accessibilityRole="button" accessibilityLabel="Đăng nhập bằng Google" disabled={busy} onPress={signIn} style={googleIconStyle}>
+        <GoogleMark />
+      </Pressable>
+    )
+  }
   return <Button title="Tiếp tục với Google" variant="outline" size="lg" fullWidth loading={busy} onPress={signIn} />
 }

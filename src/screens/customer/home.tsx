@@ -29,16 +29,17 @@ export default function CustomerHomeScreen() {
   const favoriteIds = useMemo(() => new Set((favorites.data ?? []).map((c) => c.shop.id)), [favorites.data])
   const cards = useMemo(() => feed.data?.pages.flatMap((p) => p.items) ?? [], [feed.data])
   const dealMax = feed.data?.pages[0]?.dealMaxPercent ?? 0
-  const signInFirst = (path: '/customer/favorites') => router.push(guest ? '/login' : path)
 
   const header = (
     <View>
       {/* orange above the header, so the bounce at the top of the list shows orange, never a white gap */}
       <View pointerEvents="none" style={[styles.overscroll, { backgroundColor: theme.primary }]} />
       <HomeHeader
+        guest={guest}
+        onSignIn={() => router.push('/login')}
         street={streetOf(point.text)}
-        onAddress={() => router.push(guest ? '/customer/pick-location' : '/customer/addresses')}
-        onFavorites={() => signInFirst('/customer/favorites')}
+        onAddress={() => router.push('/customer/addresses')}
+        onFavorites={() => router.push('/customer/favorites')}
         onOrders={() => router.push('/customer/orders')}
         onScan={() => router.push('/customer/scan')}
         onSearch={() => router.push('/customer/search')}

@@ -17,6 +17,9 @@ const HINTS = ['Bạn đang thèm gì nào', 'Tìm món ăn']
 const motion = { reduceMotion: ReduceMotion.System }
 
 type Props = {
+  /** Not signed in: the top row is only the sign-in button. */
+  guest: boolean
+  onSignIn: () => void
   /** The street of the delivery address ("130 Điện Biên Phủ"); empty asks to pick one. */
   street?: string
   onAddress: () => void
@@ -33,7 +36,7 @@ type Props = {
  * The top of the home page: orange, with a wavy lower edge and a soft light sweeping across it from time to time. The address
  * and the shortcuts (favourite shops, orders), the scan button and the search, then the Deal HOT strip.
  */
-export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, onSearch, dealMaxPercent, onDeals }: Props) {
+export function HomeHeader({ guest, onSignIn, street, onAddress, onFavorites, onOrders, onScan, onSearch, dealMaxPercent, onDeals }: Props) {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
   const [width, setWidth] = useState(0)
@@ -41,6 +44,15 @@ export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, o
     // The light sweeps over the orange and its wavy edge alike; below the wave it is white on white, so it does not show.
     <View style={styles.clip} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       <View style={[styles.orange, { backgroundColor: theme.primary, paddingTop: insets.top + spacing.sm }]}>
+        {guest ? (
+          <View style={styles.guestRow}>
+            <Pressable accessibilityRole="button" onPress={onSignIn} style={styles.signIn}>
+              <Text variant="bodySm" color={WHITE} style={styles.signInText}>
+                Đăng nhập
+              </Text>
+            </Pressable>
+          </View>
+        ) : (
         <View style={styles.row}>
           <Pressable accessibilityRole="button" accessibilityLabel={`Giao ngay tới ${street ?? 'địa chỉ chưa chọn'}. Đổi địa chỉ`} onPress={onAddress} style={styles.address}>
             <Text variant="caption" color="rgba(255,255,255,0.85)">
@@ -60,6 +72,7 @@ export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, o
             <ClipboardList size={20} color={WHITE} strokeWidth={2} />
           </RoundIcon>
         </View>
+        )}
 
         <View style={styles.row}>
           <Pressable accessibilityRole="button" accessibilityLabel="Quét mã QR của quán" onPress={onScan} style={styles.scan}>
@@ -79,7 +92,7 @@ export function HomeHeader({ street, onAddress, onFavorites, onOrders, onScan, o
             style={styles.deal}
           >
             <View style={styles.flex}>
-              <Text variant="caption" color={WHITE} style={styles.hot}>
+              <Text variant="title" color={WHITE} style={styles.hot}>
                 Deal HOT
               </Text>
               <View style={styles.dealLine}>
@@ -229,7 +242,10 @@ const styles = StyleSheet.create({
   scan: { width: touchTarget.min, height: touchTarget.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.22)' },
   search: { flex: 1, height: touchTarget.min, borderRadius: radius.pill, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.lg },
   deal: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  hot: { fontFamily: fonts.bold, letterSpacing: 0.4, textTransform: 'uppercase' },
+  hot: { fontFamily: fonts.extrabold, letterSpacing: 0.4, textTransform: 'uppercase' },
+  guestRow: { flexDirection: 'row', justifyContent: 'flex-end' },
+  signIn: { height: 40, paddingHorizontal: spacing.lg, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.22)' },
+  signInText: { fontFamily: fonts.semibold },
   dealLine: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   dealText: { fontFamily: fonts.semibold },
   dealPicture: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.22)' },

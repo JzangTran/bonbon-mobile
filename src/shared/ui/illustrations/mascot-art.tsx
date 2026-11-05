@@ -14,8 +14,11 @@ const PICTURES = {
 
 export type MascotPose = keyof typeof PICTURES
 
-/** The bear picture for `pose` (transparent background). Decorative, so it is hidden from screen readers; the text beside it speaks. */
-export function MascotArt({ pose, width = 160 }: { pose: MascotPose; width?: number }) {
+/**
+ * The bear picture for `pose` (transparent background). Decorative, so it is hidden from screen readers; the text beside it speaks.
+ * `height` fixes the box, so pictures of different shapes take the same room; without it the height follows the picture.
+ */
+export function MascotArt({ pose, width = 160, height }: { pose: MascotPose; width?: number; height?: number }) {
   const { source, ratio } = PICTURES[pose]
-  return <Image source={source} alt="" aria-hidden accessible={false} contentFit="contain" style={{ width, aspectRatio: ratio }} />
+  return <Image source={source} alt="" aria-hidden accessible={false} contentFit="contain" style={height ? { width, height } : { width, aspectRatio: ratio }} />
 }

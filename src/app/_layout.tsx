@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router'
 import { useEffect } from 'react'
+import { Platform } from 'react-native'
 import { AppShell } from '@/app-shell'
 import { useSession } from '@/entities/session'
 import { registerForPush, useNotificationTaps } from '@/features/push'
@@ -44,7 +45,11 @@ function RoleStack({ session }: { session: ReturnType<typeof useSession>['sessio
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Protected guard={!session}>
-        <Stack.Screen name="(auth)" />
+        {/* A sheet rising over the app, a gap at the top with the app darkened behind it: iOS's page sheet; Android gets the same from a form sheet. */}
+        <Stack.Screen
+          name="(auth)"
+          options={Platform.OS === 'android' ? { presentation: 'formSheet', sheetAllowedDetents: [0.93], sheetCornerRadius: 16, sheetGrabberVisible: true } : { presentation: 'modal' }}
+        />
       </Stack.Protected>
       <Stack.Protected guard={!session || session.role === 'CUSTOMER'}>
         <Stack.Screen name="customer" />

@@ -4,18 +4,19 @@ import { Button, MascotArt, Screen, Text, spacing, type MascotPose } from '@/sha
 
 /**
  * What a tab that belongs to an account shows a guest (orders, messages, account): why to sign in, and the two ways in.
- * The guest keeps browsing shops on the home tab without it.
+ * The guest keeps browsing shops on the home tab without it. The picture and the text have a fixed height, so the buttons stay
+ * in the same place from tab to tab.
  */
 export function SignInPrompt({ title, text, mascot }: { title: string; text: string; mascot: MascotPose }) {
   const router = useRouter()
   return (
     <Screen>
       <View style={styles.box}>
-        <MascotArt pose={mascot} width={170} />
-        <Text variant="headline" style={styles.center}>
+        <MascotArt pose={mascot} width={190} height={190} />
+        <Text variant="headline" numberOfLines={1} style={styles.center}>
           {title}
         </Text>
-        <Text muted style={styles.center}>
+        <Text muted style={[styles.center, styles.text]}>
           {text}
         </Text>
         <View style={styles.actions}>
@@ -30,5 +31,6 @@ export function SignInPrompt({ title, text, mascot }: { title: string; text: str
 const styles = StyleSheet.create({
   box: { alignItems: 'center', gap: spacing.md, paddingTop: spacing.xxxl },
   center: { textAlign: 'center' },
+  text: { minHeight: 72 },
   actions: { alignSelf: 'stretch', gap: spacing.sm, marginTop: spacing.md },
 })

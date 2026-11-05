@@ -34,7 +34,7 @@ function useDocument(type: 'CUSTOMER_TERMS' | 'SELLER_TERMS' | 'PRIVACY_POLICY',
  * on the login screen it is left out, so an existing identity signs in with its roles, while a new one is asked
  * for a role and consent first, and an existing email/password account is linked with its password.
  */
-export function GoogleSignIn({ role }: { role?: Role }) {
+export function GoogleSignIn({ role, icon = false, remember = true }: { role?: Role; icon?: boolean; remember?: boolean }) {
   const theme = useTheme()
   const { signIn } = useSession()
   const [idToken, setIdToken] = useState<string | null>(null)
@@ -61,7 +61,7 @@ export function GoogleSignIn({ role }: { role?: Role }) {
       availableRoles: ((user.availableRoles ?? [active]) as string[]).filter((r): r is Role => r === 'CUSTOMER' || r === 'SELLER'),
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-    })
+    }, { remember })
   }
 
   const chooseRole = async (roleToken: string, picked: Role) => {
@@ -112,6 +112,7 @@ export function GoogleSignIn({ role }: { role?: Role }) {
   return (
     <View style={styles.wrap}>
       <GoogleButton
+        icon={icon}
         onIdToken={(token) => {
           setIdToken(token)
           setStep({ kind: 'idle' })

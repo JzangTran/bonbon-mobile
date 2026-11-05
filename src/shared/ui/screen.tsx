@@ -11,7 +11,7 @@ export function Screen({ children, backdrop }: { children: ReactNode; backdrop?:
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: theme.background }]} edges={['top']}>
       {backdrop ? <WaveBackdrop /> : null}
-      <ScrollView contentContainerStyle={styles.content}>{children}</ScrollView>
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">{children}</ScrollView>
     </SafeAreaView>
   )
 }

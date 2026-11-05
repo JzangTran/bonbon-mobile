@@ -7,6 +7,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [restoring, setRestoring] = useState(true)
   const current = useRef<Session | null>(null)
+  const remember = useRef(true)
   const queryClient = useQueryClient()
 
   const update = useCallback(
@@ -19,7 +20,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         queryClient.clear()
       }
       setSession(next)
-      await saveSession(next)
+      await saveSession(remember.current ? next : null)
     },
     [queryClient],
   )
@@ -50,7 +51,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [update])
 
   const signIn = useCallback(
-    async (input: SignInInput) => {
+    async (input: SignInInput, options?: { remember?: boolean }) => {
+      remember.current = options?.remember ?? true
       await saveLastRole(input.role)
       await update(toSession(input))
     },
@@ -63,6 +65,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       await api.POST('/api/auth/logout', { body: { refreshToken: active.refreshToken } }).catch(() => undefined)
     }
     await update(null)
+    remember.current = true
   }, [update])
 
   const value = useMemo(() => ({ session, restoring, signIn, signOut }), [session, restoring, signIn, signOut])

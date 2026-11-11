@@ -27,6 +27,12 @@
     "plugins": [
       "expo-router",
       [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "bonbon dùng vị trí hiện tại của bạn để tìm các quán giao tới chỗ bạn."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#FE551B",

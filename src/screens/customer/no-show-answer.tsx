@@ -31,7 +31,7 @@ export function NoShowAnswerCard({ orderId }: { orderId: string }) {
       {(c.photos ?? []).length > 0 ? (
         <View style={styles.photos}>
           {(c.photos ?? []).map((p) => (
-            <Image key={p.key} source={{ uri: p.url }} style={styles.photo} contentFit="cover" />
+            <Image key={p.key} source={{ uri: p.url }} style={styles.photo} contentFit="cover" alt="Ảnh quán gửi kèm" />
           ))}
         </View>
       ) : null}

@@ -1,26 +1,28 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Image } from 'expo-image'
 import { StyleSheet, View } from 'react-native'
 import { z } from 'zod'
 import { loadLastRole, useSession, type Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
-import { Button, Captcha, Card, Input, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { useLocale, useTx, type Tx } from '@/shared/i18n'
+import { Button, Captcha, Checkbox, Input, Notice, Text, spacing, useTheme, useToast } from '@/shared/ui'
+import { AuthLink, AuthSheet, OrDivider } from '@/widgets/auth-sheet'
 
-const schema = z.object({
-  email: z.email('Email không hợp lệ'),
-  password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
-})
-type Values = z.infer<typeof schema>
+const schemaFor = (tx: Tx) =>
+  z.object({
+    email: z.email(tx('Email không hợp lệ', 'Invalid email')),
+    password: z.string().min(1, tx('Vui lòng nhập mật khẩu', 'Enter your password')),
+  })
+type Values = z.infer<ReturnType<typeof schemaFor>>
 type LoginResponse = components['schemas']['LoginResponse']
-
-const ROLE_LABEL: Record<Role, string> = { CUSTOMER: 'Khách hàng — đặt món', SELLER: 'Người bán — quản lý quán' }
 
 export default function LoginScreen() {
   const theme = useTheme()
+  const tx = useTx()
+  const locale = useLocale()
   const { signIn } = useSession()
   const toast = useToast()
   const [error, setError] = useState<string | null>(null)
@@ -29,10 +31,13 @@ export default function LoginScreen() {
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
   const [resent, setResent] = useState(false)
   const [roleChoice, setRoleChoice] = useState<{ roleToken: string; roles: Role[] } | null>(null)
-  const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: '', password: '' } })
+  const [remember, setRemember] = useState(true)
+  const form = useForm<Values>({ resolver: zodResolver(schemaFor(tx)), defaultValues: { email: '', password: '' } })
+  // a message left from the other language would not change with the rest of the screen
+  useEffect(() => form.clearErrors(), [form, locale])
 
   const finish = async (data: LoginResponse) => {
-    if (data.deletionCancelled) toast.show('Việc xoá tài khoản đã được huỷ vì bạn đăng nhập lại.')
+    if (data.deletionCancelled) toast.show(tx('Việc xoá tài khoản đã được huỷ vì bạn đăng nhập lại.', 'Your account deletion was cancelled because you signed in again.'))
     const { tokens, user } = data
     const role = (user?.activeRole ?? tokens?.role) as Role | undefined
     if (!tokens?.accessToken || !tokens.refreshToken || !user?.id || !role) return
@@ -44,7 +49,7 @@ export default function LoginScreen() {
       availableRoles: ((user.availableRoles ?? [role]) as Role[]).filter((r) => r !== ('ADMIN' as Role)),
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-    })
+    }, { remember })
   }
 
   const chooseRole = async (roleToken: string, role: Role) => {
@@ -91,60 +96,53 @@ export default function LoginScreen() {
 
   if (roleChoice) {
     return (
-      <Screen backdrop>
-        <Text variant="headline">Bạn muốn vào với vai trò nào?</Text>
-        <Text muted>Có thể đổi lại bất cứ lúc nào trong phần Tài khoản. Lựa chọn được nhớ trên máy này.</Text>
+      <AuthSheet
+        title={tx('Bạn muốn vào với vai trò nào?', 'Which role do you want?')}
+        intro={tx('Có thể đổi lại bất cứ lúc nào trong phần Tài khoản. Lựa chọn được nhớ trên máy này.', 'You can change it any time in Account. The choice is remembered on this device.')}
+      >
         {roleChoice.roles.map((role) => (
-          <Button key={role} title={ROLE_LABEL[role]} size="lg" fullWidth variant={role === 'CUSTOMER' ? 'primary' : 'outline'}
+          <Button key={role} title={role === 'CUSTOMER' ? tx('Khách hàng — đặt món', 'Customer — order food') : tx('Người bán — quản lý quán', 'Seller — run the shop')} size="lg" fullWidth variant={role === 'CUSTOMER' ? 'primary' : 'outline'}
             onPress={() => chooseRole(roleChoice.roleToken, role)} />
         ))}
         <Notice tone="error" message={error} />
-      </Screen>
+      </AuthSheet>
     )
   }
 
   return (
-    <Screen backdrop>
-      <Image source={require('../../../assets/brand/lockup-color.png')} accessibilityLabel="bonbon" style={styles.logo} contentFit="contain" />
-      <Text variant="display" accessibilityRole="header" style={{ fontFamily: fonts.semibold, letterSpacing: -0.6 }}>
-        Đặt món từ quán <Text variant="display" color={theme.headlineSoft} style={{ fontFamily: fonts.semibold, letterSpacing: -0.6 }}>ngay trong khu của bạn</Text>
-      </Text>
-      <Card>
-        <Text variant="title">Đăng nhập</Text>
-        <Controller control={form.control} name="email" render={({ field, fieldState }) => (
-          <Input label="Email" keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress"
-            value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
-        )} />
-        <Controller control={form.control} name="password" render={({ field, fieldState }) => (
-          <Input label="Mật khẩu" secureTextEntry autoComplete="current-password" textContentType="password"
-            value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
-        )} />
-        {needsCaptcha ? <Captcha token={captchaToken} onToken={setCaptchaToken} /> : null}
-        <Notice tone="error" message={error} />
-        {unverifiedEmail && !resent ? <Button title="Gửi lại email xác thực" variant="outline" onPress={resend} /> : null}
-        <Notice tone="success" message={resent ? 'Nếu tài khoản cần xác thực, chúng tôi đã gửi lại liên kết.' : null} />
-        <Button title={form.formState.isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'} size="lg" fullWidth
-          loading={form.formState.isSubmitting} onPress={onSubmit} />
-        <View style={styles.links}>
-          <Link href="/forgot-password">
-            <Text variant="bodySm" color={theme.primary}>Quên mật khẩu?</Text>
-          </Link>
-          <Link href="/register">
-            <Text variant="bodySm" color={theme.primary}>Tạo tài khoản</Text>
-          </Link>
+    <AuthSheet
+      title={tx('Đăng nhập', 'Sign in')}
+      footer={<AuthLink text={tx('Bạn chưa có tài khoản?', "Don't have an account?")} action={tx('Tạo tài khoản ngay', 'Create one now')} href="/register" />}
+    >
+      <Controller control={form.control} name="email" render={({ field, fieldState }) => (
+        <Input label="Email" keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress"
+          value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
+      )} />
+      <Controller control={form.control} name="password" render={({ field, fieldState }) => (
+        <Input label={tx('Mật khẩu', 'Password')} secureTextEntry autoComplete="current-password" textContentType="password"
+          value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
+      )} />
+      <View style={styles.options}>
+        <View style={styles.flex}>
+          <Checkbox checked={remember} onChange={setRemember}>{tx('Ghi nhớ đăng nhập', 'Remember me')}</Checkbox>
         </View>
-        {__DEV__ ? (
-          <Link href="/dev-ui">
-            <Text variant="caption" muted>Xem UI kit (dev)</Text>
-          </Link>
-        ) : null}
-      </Card>
-      <GoogleSignIn />
-    </Screen>
+        <Link href="/forgot-password">
+          <Text variant="bodySm" color={theme.primary}>{tx('Quên mật khẩu?', 'Forgot password?')}</Text>
+        </Link>
+      </View>
+      {needsCaptcha ? <Captcha token={captchaToken} onToken={setCaptchaToken} /> : null}
+      <Notice tone="error" message={error} />
+      {unverifiedEmail && !resent ? <Button title={tx('Gửi lại email xác thực', 'Resend verification email')} variant="outline" onPress={resend} /> : null}
+      <Notice tone="success" message={resent ? tx('Nếu tài khoản cần xác thực, chúng tôi đã gửi lại liên kết.', 'If the account needs verifying, we have sent the link again.') : null} />
+      <Button title={form.formState.isSubmitting ? tx('Đang đăng nhập…', 'Signing in…') : tx('Đăng nhập', 'Sign in')} size="lg" fullWidth
+        loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
+      <OrDivider />
+      <GoogleSignIn icon remember={remember} />
+    </AuthSheet>
   )
 }
 
 const styles = StyleSheet.create({
-  logo: { width: 152, height: 40 },
-  links: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.xs },
+  flex: { flex: 1 },
+  options: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
 })

@@ -27,7 +27,7 @@ function loadScript(): Promise<void> {
 }
 
 /** Expo web: the official Google Identity Services button, as on bonbon-web. */
-export function GoogleButton({ onIdToken, onError }: { onIdToken: (idToken: string) => void; onError: (message: string) => void }) {
+export function GoogleButton({ icon = false, onIdToken, onError }: { icon?: boolean; onIdToken: (idToken: string) => void; onError: (message: string) => void }) {
   const [box, setBox] = useState<HTMLDivElement | null>(null)
   const handlers = useRef({ onIdToken, onError })
   useEffect(() => {
@@ -48,20 +48,18 @@ export function GoogleButton({ onIdToken, onError }: { onIdToken: (idToken: stri
           callback: (response) => handlers.current.onIdToken(response.credential),
         })
         target.replaceChildren()
-        google.accounts.id.renderButton(target, {
-          type: 'standard',
-          theme: 'outline',
-          size: 'large',
-          text: 'continue_with',
-          width: Math.min(400, target.clientWidth || 320),
-          locale: 'vi',
-        })
+        google.accounts.id.renderButton(
+          target,
+          icon
+            ? { type: 'icon', shape: 'circle', theme: 'outline', size: 'large' }
+            : { type: 'standard', theme: 'outline', size: 'large', text: 'continue_with', width: Math.min(400, target.clientWidth || 320), locale: 'vi' },
+        )
       })
       .catch(() => handlers.current.onError('Không tải được nút đăng nhập Google.'))
     return () => {
       cancelled = true
     }
-  }, [box])
+  }, [box, icon])
 
   if (!env.googleWebClientId) return null
   return <div ref={setBox} style={{ display: 'flex', justifyContent: 'center', minHeight: 44 }} />

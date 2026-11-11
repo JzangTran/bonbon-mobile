@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { Platform } from 'react-native'
+import { Platform, Pressable } from 'react-native'
 import { env } from '@/shared/config/env'
+import { useTx } from '@/shared/i18n'
 import { Button } from '@/shared/ui'
+import { GoogleMark, googleIconStyle } from './google-mark'
 
 type GoogleSigninModule = typeof import('@react-native-google-signin/google-signin')
 
@@ -24,9 +26,23 @@ let configured = false
 const available = !!google && (Platform.OS !== 'ios' || !!env.googleIosClientId)
 
 /** Opens the Google account chooser and hands the ID token over. Android tokens carry the web client ID. */
-export function GoogleButton({ onIdToken, onError }: { onIdToken: (idToken: string) => void; onError: (message: string) => void }) {
+export function GoogleButton({ icon = false, onIdToken, onError }: { icon?: boolean; onIdToken: (idToken: string) => void; onError: (message: string) => void }) {
   const [busy, setBusy] = useState(false)
-  if (!available || !google) return null
+  const tx = useTx()
+  if (!available || !google) {
+    if (!icon) return null
+    // Expo Go has no Google module: the sign-in sheet keeps its button and says why it cannot work here
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={tx('Đăng nhập bằng Google', 'Sign in with Google')}
+        onPress={() => onError(tx('Đăng nhập Google cần bản cài đặt của app, chưa dùng được trong Expo Go.', 'Google sign-in needs the installed app; it does not work in Expo Go.'))}
+        style={googleIconStyle}
+      >
+        <GoogleMark />
+      </Pressable>
+    )
+  }
   const { GoogleSignin, isErrorWithCode, statusCodes } = google
 
   const signIn = async () => {
@@ -42,18 +58,25 @@ export function GoogleButton({ onIdToken, onError }: { onIdToken: (idToken: stri
       // bonbon keeps its own session; forgetting the Google one lets the next sign-in pick another account.
       await GoogleSignin.signOut().catch(() => undefined)
       if (response.data.idToken) onIdToken(response.data.idToken)
-      else onError('Google không trả về thông tin đăng nhập. Vui lòng thử lại.')
+      else onError(tx('Google không trả về thông tin đăng nhập. Vui lòng thử lại.', 'Google returned no sign-in details. Please try again.'))
     } catch (e) {
       if (isErrorWithCode(e) && e.code === statusCodes.IN_PROGRESS) return
       if (isErrorWithCode(e) && e.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        onError('Thiết bị cần Google Play Services để đăng nhập bằng Google.')
+        onError(tx('Thiết bị cần Google Play Services để đăng nhập bằng Google.', 'This device needs Google Play Services to sign in with Google.'))
         return
       }
-      onError('Không đăng nhập được bằng Google. Vui lòng thử lại.')
+      onError(tx('Không đăng nhập được bằng Google. Vui lòng thử lại.', 'Could not sign in with Google. Please try again.'))
     } finally {
       setBusy(false)
     }
   }
 
-  return <Button title="Tiếp tục với Google" variant="outline" size="lg" fullWidth loading={busy} onPress={signIn} />
+  if (icon) {
+    return (
+      <Pressable accessibilityRole="button" accessibilityLabel={tx('Đăng nhập bằng Google', 'Sign in with Google')} disabled={busy} onPress={signIn} style={googleIconStyle}>
+        <GoogleMark />
+      </Pressable>
+    )
+  }
+  return <Button title={tx('Tiếp tục với Google', 'Continue with Google')} variant="outline" size="lg" fullWidth loading={busy} onPress={signIn} />
 }

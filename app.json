@@ -12,7 +12,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#28A466",
+        "backgroundColor": "#FE551B",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -27,15 +27,28 @@
     "plugins": [
       "expo-router",
       [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "bonbon dùng vị trí hiện tại của bạn để tìm các quán giao tới chỗ bạn."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0B3B24",
+          "backgroundColor": "#FE551B",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
       ],
       "expo-secure-store",
       "expo-notifications",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "bonbon cần dùng máy ảnh để quét mã QR của quán.",
+          "recordAudioAndroid": false
+        }
+      ],
       [
         "expo-image-picker",
         {

@@ -1,12 +1,12 @@
 import { CornerUpLeft, ImagePlus, Send, X } from 'lucide-react-native'
 import { useEffect, useState, type ReactNode } from 'react'
-import { ActivityIndicator, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native'
+import { FlatList, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMarkRead, useSendMessage, useShopConversation, useThread, type ChatMessage, type PickedImage } from '@/entities/chat'
 import { problemMessage } from '@/shared/api'
 import { formatDateTime } from '@/shared/lib/format'
 import { pickImages } from '@/shared/lib/pick-image'
-import { Button, Notice, Text, fonts, radius, spacing, touchTarget, typography, useTheme, useToast } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Button, Notice, Text, fonts, radius, spacing, touchTarget, typography, useTheme, useToast } from '@/shared/ui'
 
 type Props = {
   /** An existing conversation; a customer opening a shop's chat for the first time passes {@code vendorId} instead. */
@@ -65,7 +65,6 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
       {header}
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
         {thread.isError ? <Notice tone="error" message={problemMessage(thread.error, 'Không tải được tin nhắn lúc này.')} /> : null}
-        {conversationId && thread.isPending ? <ActivityIndicator style={styles.loading} color={theme.primary} /> : null}
         {!conversationId && !existing.isPending ? (
           <View style={styles.empty}>
             <Text muted style={styles.center}>
@@ -79,10 +78,12 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
           data={messages}
           keyExtractor={(m) => m.id ?? ''}
           contentContainerStyle={styles.list}
+          // the header of an inverted list sits next to the composer, where the newest messages will
+          ListHeaderComponent={conversationId && thread.isPending ? <ThreadSkeleton /> : undefined}
           ListFooterComponent={
             thread.hasNextPage ? (
               <Button title="Tải tin cũ hơn" variant="ghost" loading={thread.isFetchingNextPage} onPress={() => void thread.fetchNextPage()} />
-            ) : null
+            ) : undefined
           }
           renderItem={({ item }) => <Bubble message={item} onReply={() => setReplyTo(item)} />}
         />
@@ -172,10 +173,21 @@ function Chip({ label, onClear }: { label: string; onClear: () => void }) {
   )
 }
 
+/** Messages on their way: bubbles from either side, as a conversation looks. */
+function ThreadSkeleton() {
+  return (
+    <SkeletonGroup style={styles.skeleton}>
+      {([['flex-start', 200, 44], ['flex-end', 150, 44], ['flex-start', 240, 64], ['flex-end', 180, 44], ['flex-start', 130, 44]] as const).map(([side, width, height], i) => (
+        <Skeleton key={i} width={width} height={height} radius={radius.lg} style={{ alignSelf: side }} />
+      ))}
+    </SkeletonGroup>
+  )
+}
+
 const styles = StyleSheet.create({
+  skeleton: { gap: spacing.md },
   root: { flex: 1 },
   flex: { flex: 1 },
-  loading: { marginTop: spacing.lg },
   empty: { padding: spacing.lg },
   center: { textAlign: 'center' },
   list: { padding: spacing.md, gap: spacing.md },

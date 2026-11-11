@@ -68,7 +68,7 @@ function TextSizeCard() {
             <Pressable
               key={s.id}
               accessibilityRole="radio"
-              accessibilityState={{ selected }}
+              aria-checked={selected}
               accessibilityLabel={`Cỡ chữ ${s.label.toLowerCase()}`}
               onPress={() => setId(s.id)}
               style={[sizeStyles.option, { backgroundColor: selected ? theme.primary : theme.surfaceMuted }]}
@@ -126,7 +126,7 @@ function ProfileCard({ profile }: { profile: Profile | undefined }) {
       )} />
       <Notice tone="error" message={save.isError ? problemMessage(save.error) : null} />
       <Button title="Lưu thay đổi" loading={save.isPending} disabled={!profile}
-        onPress={form.handleSubmit((values) => save.mutate(values))} />
+        onPress={() => void form.handleSubmit((values) => save.mutate(values))()} />
     </Card>
   )
 }
@@ -158,7 +158,7 @@ function RoleCard() {
       <Text variant="title">Vai trò</Text>
       <Text variant="bodySm" muted>
         Đang dùng với vai trò {ROLE_NAME[session.role].toLowerCase()}.
-        {holdsOther ? '' : ` Muốn ${other === 'SELLER' ? 'mở quán' : 'đặt món'}? Đăng xuất rồi đăng ký vai trò ${ROLE_NAME[other].toLowerCase()} bằng cùng email.`}
+        {holdsOther || other === 'SELLER' ? '' : ' Muốn đặt món? Đăng xuất rồi tạo tài khoản bằng cùng email và mật khẩu.'}
       </Text>
       {holdsOther ? (
         <Button title={`Chuyển sang ${ROLE_NAME[other]}`} variant="outline" loading={switching} onPress={switchRole} />
@@ -206,7 +206,7 @@ function PasswordCard() {
         )} />
       ))}
       <Notice tone="error" message={error} />
-      <Button title="Đổi mật khẩu" loading={form.formState.isSubmitting} onPress={onSubmit} />
+      <Button title="Đổi mật khẩu" loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
     </Card>
   )
 }

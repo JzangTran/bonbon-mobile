@@ -1,7 +1,6 @@
-import { Linking, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { shopStatus, useShop } from '@/entities/shop'
 import { problemMessage } from '@/shared/api'
-import { env } from '@/shared/config/env'
 import { Button, Card, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
 import { AccountPanel } from '@/widgets/account-panel'
 
@@ -15,7 +14,6 @@ export default function ShopStatusScreen() {
   const theme = useTheme()
   const shop = useShop()
   const status = shopStatus(shop.data)
-  const openWeb = () => Linking.openURL(`${env.webUrl}/seller/open-shop`)
 
   return (
     <Screen>
@@ -29,15 +27,14 @@ export default function ShopStatusScreen() {
       {status === 'NONE' ? (
         <Card>
           <Text variant="titleSm">Bạn chưa mở cửa hàng</Text>
-          <Text muted>Điền hồ sơ 5 bước (thông tin quán, giao hàng, thuế, định danh) rồi gửi duyệt. Làm trên máy tính sẽ thuận tiện hơn.</Text>
-          <Button title="Mở cửa hàng trên web" size="lg" fullWidth onPress={openWeb} />
+          <Text muted>Hồ sơ mở quán được điền trên máy tính. Vào trang người bán của bonbon, đăng nhập bằng email và mật khẩu này, rồi điền hồ sơ và gửi duyệt.</Text>
         </Card>
       ) : null}
       {status === 'DRAFT' ? (
         <Card>
           <Text variant="titleSm">Hồ sơ đang điền dở</Text>
           <StepList shop={shop.data} />
-          <Button title="Tiếp tục hồ sơ trên web" size="lg" fullWidth onPress={openWeb} />
+          <Text muted>Vào trang người bán của bonbon trên máy tính, đăng nhập bằng email và mật khẩu này để điền tiếp.</Text>
         </Card>
       ) : null}
       {status === 'PENDING' ? (
@@ -56,9 +53,8 @@ export default function ShopStatusScreen() {
           </Text>
           <Text variant="bodySm">Lý do: {shop.data?.rejectionReason}</Text>
           <Text variant="caption" muted>
-            Sửa thông tin rồi gửi lại, hồ sơ sẽ quay về trạng thái chờ duyệt.
+            Vào trang người bán của bonbon trên máy tính để sửa thông tin rồi gửi lại, hồ sơ sẽ quay về trạng thái chờ duyệt.
           </Text>
-          <Button title="Sửa và gửi lại trên web" size="lg" fullWidth onPress={openWeb} />
         </Card>
       ) : null}
       {status === 'CLOSED' ? (

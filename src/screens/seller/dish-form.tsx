@@ -52,6 +52,7 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
   const [name, setName] = useState(item?.name ?? '')
   const [description, setDescription] = useState(item?.description ?? '')
   const [price, setPrice] = useState(item?.price === undefined ? '' : String(item.price))
+  const [original, setOriginal] = useState(item?.originalPrice ? String(item.originalPrice) : '')
   const [stock, setStock] = useState(item?.stockQuantity === undefined || item?.stockQuantity === null ? '' : String(item.stockQuantity))
   const [section, setSection] = useState(item?.sectionId ?? defaultSectionId ?? sections[0]?.id ?? '')
   const [categoryId, setCategoryId] = useState(item?.categoryId ?? '')
@@ -60,6 +61,7 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
   const save = useMenuMutation(async () => {
     const priceValue = parseInteger(price)
     const stockValue = parseInteger(stock)
+    const originalValue = parseInteger(original)
     if (item) {
       return api.PATCH('/api/merchant/menu-items/{id}', {
         params: { path: { id: item.id! } },
@@ -70,6 +72,7 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
           ...(section !== item.sectionId ? { sectionId: section } : {}),
           ...(description.trim() ? { description: description.trim() } : { clearDescription: true }),
           ...(stockValue !== undefined ? { stockQuantity: stockValue } : { clearStock: true }),
+          ...(originalValue !== undefined ? { originalPrice: originalValue } : { clearOriginalPrice: true }),
         },
       })
     }
@@ -81,6 +84,7 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
         price: priceValue!,
         ...(description.trim() ? { description: description.trim() } : {}),
         ...(stockValue !== undefined ? { stockQuantity: stockValue } : {}),
+        ...(originalValue !== undefined ? { originalPrice: originalValue } : {}),
       },
     })
   }, item ? 'Đã lưu món.' : 'Đã thêm món.')
@@ -95,6 +99,8 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
   function submit() {
     if (parseInteger(price) === undefined) return setLocalError('Giá món phải là số nguyên, ví dụ 45000.')
     if (stock.trim() !== '' && parseInteger(stock) === undefined) return setLocalError('Số phần còn lại phải là số nguyên.')
+    const o = parseInteger(original)
+    if (original.trim() !== '' && (o === undefined || o <= parseInteger(price)!)) return setLocalError('Giá gốc phải là số nguyên và cao hơn giá bán, ví dụ 55000.')
     if (!categoryId) return setLocalError('Hãy chọn ngành hàng cho món.')
     setLocalError(null)
     save.mutate(undefined, { onSuccess: () => router.replace('/seller/menu') })
@@ -110,6 +116,14 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
         <Input label="Tên món" value={name} onChangeText={setName} maxLength={100} error={fieldErrors.name} />
         <Input label="Mô tả (không bắt buộc)" value={description} onChangeText={setDescription} maxLength={500} multiline />
         <Input label="Giá (₫)" keyboardType="number-pad" value={price} onChangeText={setPrice} error={fieldErrors.price} />
+        <Input
+          label="Giá gốc khi giảm giá (₫, không bắt buộc)"
+          keyboardType="number-pad"
+          placeholder="Không giảm giá"
+          value={original}
+          onChangeText={setOriginal}
+          error={fieldErrors.originalPrice}
+        />
         <Input
           label="Số phần còn lại"
           placeholder="Để trống = không giới hạn"

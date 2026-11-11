@@ -51,7 +51,7 @@ export default function SellerOrderCasesScreen() {
 
       {cases.isError ? <Notice tone="error" message={problemMessage(cases.error, 'Không tải được khiếu nại lúc này.')} /> : null}
       {cases.data && items.length === 0 ? (
-        <EmptyState title="Không có khiếu nại nào ở mục này" />
+        <EmptyState mascot="all-clear" title="Không có khiếu nại nào ở mục này" />
       ) : null}
       {items.map((item) => {
         const hoursLeft = item.status === 'AWAITING_SHOP' && item.shopResponseDueAt ? Math.max(0, Math.ceil((new Date(item.shopResponseDueAt).getTime() - now) / 3_600_000)) : null

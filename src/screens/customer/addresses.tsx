@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import { StyleSheet, View } from 'react-native'
-import { ADDRESSES_QUERY_KEY, MAX_ADDRESSES, useAddresses, type DeliveryAddress } from '@/entities/address'
+import { ADDRESSES_QUERY_KEY, MAX_ADDRESSES, clearCurrentLocation, useAddresses, type DeliveryAddress } from '@/entities/address'
 import { api, problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { Button, Card, Notice, Screen, Text, radius, spacing, useTheme, useToast } from '@/shared/ui'
@@ -48,7 +48,10 @@ function AddressCard({ address }: { address: DeliveryAddress }) {
       const { error } = await api.PATCH('/api/account/addresses/{id}/default', { params: { path: { id } } })
       if (error) throw error
     },
-    onSuccess: refresh,
+    onSuccess: () => {
+      clearCurrentLocation()
+      return refresh()
+    },
     onError: (e) => toast.show(problemMessage(e), 'error'),
   })
   const remove = useMutation({

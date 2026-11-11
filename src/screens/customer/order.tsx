@@ -6,7 +6,7 @@ import { OrderStatusBadge, useCustomerLive, useCustomerOrderAction, useMyOrder, 
 import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
-import { Button, Card, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { radius, SkeletonGroup, Skeleton, Button, Card, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
 import { NoShowAnswerCard } from './no-show-answer'
 import { OrderCaseCard } from './order-case'
 import { PaymentCard, RefundCard } from './order-payment'
@@ -90,6 +90,7 @@ export default function CustomerOrderScreen() {
   return (
     <Screen>
       {order.isError ? <Notice tone="error" message={problemMessage(order.error, 'Không tìm thấy đơn hàng này.')} /> : null}
+      {order.isLoading ? <OrderSkeleton /> : null}
       {data && status ? (
         <>
           <Text variant="headline">Đơn #{data.number}</Text>
@@ -164,7 +165,7 @@ export default function CustomerOrderScreen() {
             ))}
             <View style={styles.totals}>
               <Text variant="bodySm" muted>
-                Tiền món {formatVnd(data.totals?.itemsTotal)} · Phí giao {formatVnd(data.totals?.deliveryFee)}
+                Tiền món {formatVnd(data.totals?.itemsTotal)}{data.totals?.discount ? ` · Giảm ${formatVnd(data.totals.discount)}` : ''} · Phí giao {formatVnd(data.totals?.deliveryFee)}
               </Text>
               <Text variant="titleSm" style={styles.money}>
                 Tổng cộng {formatVnd(data.totals?.grandTotal)}
@@ -197,7 +198,47 @@ export default function CustomerOrderScreen() {
   )
 }
 
+/** The order on its way: number, shop and status, then the progress, the dishes and the address. */
+function OrderSkeleton() {
+  return (
+    <SkeletonGroup style={styles.skeleton}>
+      <Skeleton width={190} height={32} />
+      <Skeleton width={140} height={18} />
+      <View style={styles.row}>
+        <Skeleton width={88} height={24} radius={radius.pill} />
+        <Skeleton width={150} height={14} />
+      </View>
+      <Card>
+        <Skeleton width={100} height={20} />
+        {['65%', '50%', '58%'].map((width, step) => (
+          <View key={step} style={styles.row}>
+            <Skeleton width={12} height={12} radius={radius.pill} />
+            <Skeleton width={width as `${number}%`} height={14} />
+          </View>
+        ))}
+      </Card>
+      <Card>
+        <Skeleton width={120} height={20} />
+        {[0, 1].map((dish) => (
+          <View key={dish} style={styles.row}>
+            <Skeleton width="60%" height={14} />
+            <View style={styles.skeletonSpace} />
+            <Skeleton width={64} height={14} />
+          </View>
+        ))}
+      </Card>
+      <Card>
+        <Skeleton width={90} height={20} />
+        <Skeleton height={14} />
+        <Skeleton width="55%" height={14} />
+      </Card>
+    </SkeletonGroup>
+  )
+}
+
 const styles = StyleSheet.create({
+  skeleton: { gap: spacing.md },
+  skeletonSpace: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: spacing.sm },
   flex: { flex: 1 },
   step: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },

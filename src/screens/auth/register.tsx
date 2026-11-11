@@ -1,26 +1,27 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
-import { Link } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Linking, StyleSheet, View } from 'react-native'
+import { Linking } from 'react-native'
 import { z } from 'zod'
-import type { Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
-import { Button, Captcha, Card, Checkbox, Input, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
+import { useLocale, useTx, type Tx } from '@/shared/i18n'
+import { Button, Captcha, Checkbox, Input, Notice, Text, useTheme } from '@/shared/ui'
+import { AuthLink, AuthSheet, OrDivider } from '@/widgets/auth-sheet'
 
-const schema = z
-  .object({
-    name: z.string().trim().min(1, 'Vui lòng nhập họ tên').max(100, 'Tối đa 100 ký tự'),
-    email: z.email('Email không hợp lệ').max(255),
-    password: z.string().min(8, 'Mật khẩu tối thiểu 8 ký tự').max(100, 'Tối đa 100 ký tự'),
-    confirmPassword: z.string(),
-  })
-  .refine((v) => v.password === v.confirmPassword, { path: ['confirmPassword'], message: 'Mật khẩu nhập lại không khớp' })
-type Values = z.infer<typeof schema>
-type DocType = 'CUSTOMER_TERMS' | 'SELLER_TERMS' | 'PRIVACY_POLICY'
+const schemaFor = (tx: Tx) =>
+  z
+    .object({
+      name: z.string().trim().min(1, tx('Vui lòng nhập họ tên', 'Enter your name')).max(100, tx('Tối đa 100 ký tự', 'At most 100 characters')),
+      email: z.email(tx('Email không hợp lệ', 'Invalid email')).max(255),
+      password: z.string().min(8, tx('Mật khẩu tối thiểu 8 ký tự', 'At least 8 characters')).max(100, tx('Tối đa 100 ký tự', 'At most 100 characters')),
+      confirmPassword: z.string(),
+    })
+    .refine((v) => v.password === v.confirmPassword, { path: ['confirmPassword'], message: tx('Mật khẩu nhập lại không khớp', 'The passwords do not match') })
+type Values = z.infer<ReturnType<typeof schemaFor>>
+type DocType = 'CUSTOMER_TERMS' | 'PRIVACY_POLICY'
 
 function useCurrentDocument(type: DocType) {
   return useQuery({
@@ -33,10 +34,12 @@ function useCurrentDocument(type: DocType) {
   })
 }
 
+/** Sign-up in the app makes a customer account; selling is added to it later from the account page, with the same email and password. */
 export default function RegisterScreen() {
   const theme = useTheme()
-  const [role, setRole] = useState<Role>('CUSTOMER')
-  const terms = useCurrentDocument(role === 'SELLER' ? 'SELLER_TERMS' : 'CUSTOMER_TERMS')
+  const tx = useTx()
+  const locale = useLocale()
+  const terms = useCurrentDocument('CUSTOMER_TERMS')
   const privacy = useCurrentDocument('PRIVACY_POLICY')
   const [accepted, setAccepted] = useState(false)
   const [marketing, setMarketing] = useState(false)
@@ -44,20 +47,22 @@ export default function RegisterScreen() {
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState<{ email: string; roleAdded: boolean } | null>(null)
   const form = useForm<Values>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schemaFor(tx)),
     defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   })
+  // a message left from the other language would not change with the rest of the screen
+  useEffect(() => form.clearErrors(), [form, locale])
 
   const openDocument = (type: DocType) => Linking.openURL(`${env.webUrl}/legal/${type}`)
 
   const onSubmit = form.handleSubmit(async (values) => {
     setError(null)
     if (!accepted) {
-      setError('Bạn cần đồng ý với điều khoản và chính sách quyền riêng tư.')
+      setError(tx('Bạn cần đồng ý với điều khoản và chính sách quyền riêng tư.', 'Please agree to the terms and the privacy policy.'))
       return
     }
     if (!captchaToken) {
-      setError('Vui lòng xác nhận bạn không phải robot.')
+      setError(tx('Vui lòng xác nhận bạn không phải robot.', 'Please confirm you are not a robot.'))
       return
     }
     if (!terms.data?.id || !privacy.data?.id) return
@@ -66,7 +71,7 @@ export default function RegisterScreen() {
         email: values.email,
         password: values.password,
         name: values.name,
-        role,
+        role: 'CUSTOMER',
         acceptedDocumentIds: [terms.data.id, privacy.data.id],
         marketingConsent: marketing,
         captchaToken,
@@ -83,75 +88,63 @@ export default function RegisterScreen() {
     setDone({ email: values.email, roleAdded: data?.status === 'ROLE_ADDED' })
   })
 
+  const signInLink = <AuthLink text={tx('Đã có tài khoản?', 'Already have an account?')} action={tx('Đăng nhập ngay', 'Sign in now')} href="/login" dismiss />
+
   if (done) {
     return (
-      <Screen backdrop>
-        <Text variant="headline">{done.roleAdded ? 'Đã thêm vai trò' : 'Kiểm tra hộp thư của bạn'}</Text>
+      <AuthSheet
+        title={done.roleAdded ? tx('Đã thêm vai trò', 'Role added') : tx('Kiểm tra hộp thư của bạn', 'Check your inbox')}
+        footer={<AuthLink action={tx('Về đăng nhập', 'Back to sign in')} href="/login" dismiss />}
+      >
         <Notice
           tone="success"
           message={
             done.roleAdded
-              ? `Tài khoản ${done.email} giờ có thêm vai trò ${role === 'SELLER' ? 'người bán' : 'khách hàng'}. Đăng nhập để chọn vai trò sử dụng.`
-              : `Chúng tôi đã gửi liên kết xác thực tới ${done.email}. Mở liên kết, rồi quay lại đây để đăng nhập.`
+              ? tx(`Tài khoản ${done.email} giờ có thêm vai trò khách hàng. Đăng nhập để chọn vai trò sử dụng.`, `${done.email} now also has the customer role. Sign in to choose the role to use.`)
+              : tx(`Chúng tôi đã gửi liên kết xác thực tới ${done.email}. Mở liên kết, rồi quay lại đây để đăng nhập.`, `We sent a verification link to ${done.email}. Open it, then come back here to sign in.`)
           }
         />
-        <Link href="/" asChild>
-          <Button title="Về đăng nhập" variant="outline" />
-        </Link>
-      </Screen>
+      </AuthSheet>
     )
   }
 
   return (
-    <Screen backdrop>
-      <Text variant="headline">Tạo tài khoản</Text>
-      <Text muted>Đã có tài khoản? Đăng ký vai trò còn lại bằng cùng email và mật khẩu để dùng chung một tài khoản.</Text>
-      <View style={styles.roles}>
-        {(['CUSTOMER', 'SELLER'] as Role[]).map((r) => (
-          <Button key={r} title={r === 'CUSTOMER' ? 'Đặt món' : 'Bán hàng'} variant={role === r ? 'primary' : 'outline'}
-            style={styles.roleButton} onPress={() => { setRole(r); setAccepted(false) }} />
-        ))}
-      </View>
-      <Card>
-        {(['name', 'email', 'password', 'confirmPassword'] as const).map((name) => (
-          <Controller key={name} control={form.control} name={name} render={({ field, fieldState }) => (
-            <Input
-              label={{ name: 'Họ tên', email: 'Email', password: 'Mật khẩu', confirmPassword: 'Nhập lại mật khẩu' }[name]}
-              secureTextEntry={name === 'password' || name === 'confirmPassword'}
-              keyboardType={name === 'email' ? 'email-address' : 'default'}
-              autoCapitalize={name === 'name' ? 'words' : 'none'}
-              value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message}
-            />
-          )} />
-        ))}
-        <Checkbox checked={accepted} onChange={setAccepted}>
-          Tôi đồng ý với{' '}
-          <Text variant="bodySm" color={theme.primary} onPress={() => openDocument(role === 'SELLER' ? 'SELLER_TERMS' : 'CUSTOMER_TERMS')}>
-            {terms.data?.title ?? 'Điều khoản sử dụng'}
-          </Text>{' '}
-          và đã đọc{' '}
-          <Text variant="bodySm" color={theme.primary} onPress={() => openDocument('PRIVACY_POLICY')}>
-            {privacy.data?.title ?? 'Chính sách quyền riêng tư'}
-          </Text>
-          .
-        </Checkbox>
-        <Checkbox checked={marketing} onChange={setMarketing} muted>
-          Nhận tin khuyến mãi qua email (không bắt buộc).
-        </Checkbox>
-        <Captcha token={captchaToken} onToken={setCaptchaToken} />
-        <Notice tone="error" message={error} />
-        <Button title={form.formState.isSubmitting ? 'Đang tạo tài khoản…' : 'Đăng ký'} size="lg" fullWidth
-          loading={form.formState.isSubmitting} disabled={terms.isLoading || privacy.isLoading} onPress={onSubmit} />
-      </Card>
-      <GoogleSignIn role={role} />
-      <Link href="/">
-        <Text variant="bodySm" color={theme.primary}>Đã có tài khoản? Đăng nhập</Text>
-      </Link>
-    </Screen>
+    <AuthSheet
+      title={tx('Tạo tài khoản', 'Create account')}
+      intro={tx('Đặt món từ các quán ngay trong khu của bạn.', 'Order from the shops right in your area.')}
+      footer={signInLink}
+    >
+      {(['name', 'email', 'password', 'confirmPassword'] as const).map((name) => (
+        <Controller key={name} control={form.control} name={name} render={({ field, fieldState }) => (
+          <Input
+            label={{ name: tx('Họ tên', 'Full name'), email: 'Email', password: tx('Mật khẩu', 'Password'), confirmPassword: tx('Nhập lại mật khẩu', 'Repeat password') }[name]}
+            secureTextEntry={name === 'password' || name === 'confirmPassword'}
+            keyboardType={name === 'email' ? 'email-address' : 'default'}
+            autoCapitalize={name === 'name' ? 'words' : 'none'}
+            value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message}
+          />
+        )} />
+      ))}
+      <Checkbox checked={accepted} onChange={setAccepted}>
+        {tx('Tôi đồng ý với', 'I agree to the')}{' '}
+        <Text variant="bodySm" color={theme.primary} onPress={() => openDocument('CUSTOMER_TERMS')}>
+          {terms.data?.title ?? tx('Điều khoản sử dụng', 'Terms of use')}
+        </Text>{' '}
+        {tx('và đã đọc', 'and have read the')}{' '}
+        <Text variant="bodySm" color={theme.primary} onPress={() => openDocument('PRIVACY_POLICY')}>
+          {privacy.data?.title ?? tx('Chính sách quyền riêng tư', 'Privacy policy')}
+        </Text>
+        .
+      </Checkbox>
+      <Checkbox checked={marketing} onChange={setMarketing} muted>
+        {tx('Nhận tin khuyến mãi qua email (không bắt buộc).', 'Get offers by email (optional).')}
+      </Checkbox>
+      <Captcha token={captchaToken} onToken={setCaptchaToken} />
+      <Notice tone="error" message={error} />
+      <Button title={form.formState.isSubmitting ? tx('Đang tạo tài khoản…', 'Creating account…') : tx('Đăng ký', 'Sign up')} size="lg" fullWidth
+        loading={form.formState.isSubmitting} disabled={terms.isLoading || privacy.isLoading} onPress={() => void onSubmit()} />
+      <OrDivider />
+      <GoogleSignIn role="CUSTOMER" icon />
+    </AuthSheet>
   )
 }
-
-const styles = StyleSheet.create({
-  roles: { flexDirection: 'row', gap: spacing.sm },
-  roleButton: { flex: 1 },
-})

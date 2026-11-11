@@ -49,7 +49,7 @@ export function NoShowCard({ orderId }: { orderId: string }) {
           Ghi lại bạn đã làm gì: gọi mấy lần, gõ cửa, chờ bao lâu. Có thể gửi kèm một ảnh (cửa, nhật ký cuộc gọi).
         </Text>
         <Input label="Ghi chú" value={note} onChangeText={setNote} multiline maxLength={500} style={styles.note} />
-        {photo ? <Image source={{ uri: photo.uri }} style={styles.photo} contentFit="cover" /> : null}
+        {photo ? <Image source={{ uri: photo.uri }} style={styles.photo} contentFit="cover" alt="Ảnh sẽ gửi" /> : null}
         <Button title={photo ? 'Chọn ảnh khác' : 'Thêm ảnh (không bắt buộc)'} variant="outline" onPress={() => void pick()} />
         <Button
           title="Gửi báo cáo"

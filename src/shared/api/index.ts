@@ -1,5 +1,5 @@
-export { api, isApiProblem, problemCode, problemFieldErrors, problemMessage, setAuthHandlers } from './client'
-export type { ApiProblem } from './client'
+export { api, describeProblem, isApiProblem, problemCode, problemFieldErrors, problemMessage, setAuthHandlers } from './client'
+export type { ApiProblem, ProblemDescription, ProblemKind } from './client'
 export { clearLegalRequired, reportLegalRequired, reportMaintenance, reportUpdateRequired, useGateState } from './gate'
 export type { GateState } from './gate'
 export type { components, paths } from './generated/schema'

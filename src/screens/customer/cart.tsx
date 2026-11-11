@@ -3,9 +3,10 @@ import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { lineTotal, unitPrice, useCart } from '@/entities/cart'
+import { useSession } from '@/entities/session'
 import { canPayOnline, newIdempotencyKey, openMomo, usePlaceOrder } from '@/entities/order'
 import { registerForPush } from '@/features/push'
-import { problemMessage } from '@/shared/api'
+import { problemCode, problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
 import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
@@ -13,13 +14,16 @@ import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touc
 /**
  * The cart and checkout (place-order.md): the customer reviews the lines, picks one of their addresses, adds a
  * delivery note, chooses cash on delivery or MoMo and places the order. Prices shown here are a preview; the server prices the order.
+ * A guest fills the cart too; placing the order is where they sign in (the cart stays on the phone meanwhile).
  */
 export default function CartScreen() {
   const router = useRouter()
   const theme = useTheme()
   const toast = useToast()
   const cart = useCart()
-  const addresses = useAddresses()
+  const { session } = useSession()
+  const guest = !session
+  const addresses = useAddresses({ enabled: !guest })
   const place = usePlaceOrder()
   const [note, setNote] = useState('')
   const [chosenAddress, setChosenAddress] = useState<string | null>(null)
@@ -42,7 +46,7 @@ export default function CartScreen() {
         <Card>
           <Text variant="titleSm">Giỏ hàng trống</Text>
           <Text muted>Chọn quán và thêm món bạn muốn đặt.</Text>
-          <Button title="Xem các quán" fullWidth onPress={() => router.replace('/customer')} />
+          <Button title="Xem các quán" fullWidth onPress={() => router.dismissTo('/customer')} />
         </Card>
       </Screen>
     )
@@ -58,6 +62,7 @@ export default function CartScreen() {
           addressId: address.id,
           paymentMethod: payMethod,
           ...(note.trim() ? { note: note.trim() } : {}),
+          ...(totals.voucherCode ? { voucherCode: totals.voucherCode } : {}),
           items: cart.lines.map((l) => ({
             menuItemId: l.menuItemId,
             quantity: l.quantity,
@@ -77,7 +82,11 @@ export default function CartScreen() {
           if (payMethod === 'ONLINE') void openMomo(order.payment)
         },
         // The cart or the shop may change before the next try, and then it is a different order.
-        onError: () => setKey(newIdempotencyKey()),
+        onError: (problem) => {
+          setKey(newIdempotencyKey())
+          // a voucher that no longer applies comes off, so the next try shows the real total
+          if (problemCode(problem)?.startsWith('VOUCHER_')) cart.setVoucher(null)
+        },
       },
     )
   }
@@ -122,7 +131,8 @@ export default function CartScreen() {
 
       <Card>
         <Text variant="titleSm">Giao đến</Text>
-        {list.length === 0 && !addresses.isPending ? (
+        {guest ? <Text muted>Đăng nhập để chọn địa chỉ giao hàng của bạn.</Text> : null}
+        {!guest && list.length === 0 && !addresses.isPending ? (
           <>
             <Text muted>Bạn chưa có địa chỉ giao hàng.</Text>
             <Button title="+ Thêm địa chỉ" fullWidth onPress={() => router.push('/customer/address-form')} />
@@ -191,6 +201,27 @@ export default function CartScreen() {
           <Text muted>Tiền món</Text>
           <Text style={styles.money}>{formatVnd(totals.itemsTotal)}</Text>
         </View>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => (shop ? router.push({ pathname: '/customer/offers', params: { vendorId: shop.id } }) : undefined)}
+          style={styles.sum}
+        >
+          <Text muted>Ưu đãi</Text>
+          <Text color={theme.primary} style={styles.money}>
+            {totals.voucherCode ? `${totals.voucherCode} · Đổi` : 'Chọn ưu đãi'}
+          </Text>
+        </Pressable>
+        {totals.discount > 0 ? (
+          <View style={styles.sum}>
+            <Text muted>Giảm giá</Text>
+            <Text color={theme.primary} style={styles.money}>−{formatVnd(totals.discount)}</Text>
+          </View>
+        ) : null}
+        {totals.voucherMinimum !== null ? (
+          <Text variant="bodySm" color={theme.onWarningSubtle}>
+            Ưu đãi đã chọn áp dụng cho đơn từ {formatVnd(totals.voucherMinimum)}. Hãy thêm món.
+          </Text>
+        ) : null}
         <View style={styles.sum}>
           <Text muted>Phí giao</Text>
           <Text style={styles.money}>{totals.deliveryFee === 0 ? 'Miễn phí' : formatVnd(totals.deliveryFee)}</Text>
@@ -205,7 +236,11 @@ export default function CartScreen() {
           <Notice tone="error" message={`Đơn tối thiểu của quán là ${formatVnd(shop.minOrderValue)}. Hãy thêm món.`} />
         ) : null}
         {place.isError ? <Notice tone="error" message={problemMessage(place.error)} /> : null}
-        <Button title={`${payMethod === 'ONLINE' ? 'Thanh toán MoMo' : 'Đặt đơn'} · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
+        {guest ? (
+          <Button title="Đăng nhập để đặt món" size="lg" fullWidth onPress={() => router.push('/login')} />
+        ) : (
+          <Button title={`${payMethod === 'ONLINE' ? 'Thanh toán MoMo' : 'Đặt đơn'} · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
+        )}
       </Card>
     </Screen>
   )

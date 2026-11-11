@@ -11,7 +11,7 @@ import {
 import { problemMessage } from '@/shared/api'
 import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatAgo, formatVnd } from '@/shared/lib/format'
-import { Button, Card, EmptyState, Notice, Screen, Text, fonts, radius, spacing, useTheme } from '@/shared/ui'
+import { CardListSkeleton, Button, Card, EmptyState, Notice, Screen, Text, fonts, radius, spacing, useTheme } from '@/shared/ui'
 import { NotificationBell } from '@/widgets/notification-bell'
 import { OrderActions } from './order-actions'
 
@@ -85,8 +85,9 @@ export default function SellerOrdersScreen() {
       </View>
 
       {query.isError ? <Notice tone="error" message={problemMessage(query.error)} /> : null}
+      {query.isLoading ? <CardListSkeleton badge /> : null}
       {query.data && (query.data.items ?? []).length === 0 ? (
-        <EmptyState title={tab === 'new'
+        <EmptyState mascot="empty-orders" title={tab === 'new'
               ? 'Chưa có đơn mới. Đơn mới sẽ hiện ở đây ngay khi khách đặt.'
               : tab === 'progress'
                 ? 'Không có đơn nào đang làm.'

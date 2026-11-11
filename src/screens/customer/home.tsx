@@ -1,201 +1,278 @@
-import { useRouter } from 'expo-router'
-import { ArrowRight, MapPin, Search } from 'lucide-react-native'
-import { useEffect, useState } from 'react'
 import { Image } from 'expo-image'
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native'
-import Animated, { FadeInDown, ReduceMotion } from 'react-native-reanimated'
-import { useAddresses } from '@/entities/address'
-import { useCategoryLeaves } from '@/entities/category'
-import { RatingSummary } from '@/entities/review'
-import { deliveryText, formatDistance, useShopsInArea, type Shop } from '@/entities/vendor'
-import { problemMessage } from '@/shared/api'
-import { formatVnd } from '@/shared/lib/format'
-import { mockPhoto } from '@/shared/lib/mock-photos'
-import { Button, Card, Notice, Screen, Text, fonts, radius, spacing, touchTarget, typography, useTheme } from '@/shared/ui'
+import { useFocusEffect, useRouter } from 'expo-router'
+import { ArrowUp } from 'lucide-react-native'
+import { StatusBar } from 'expo-status-bar'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { FlatList, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
+import Animated, { Extrapolation, interpolate, runOnJS, useAnimatedReaction, useAnimatedScrollHandler, useAnimatedStyle, useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useDeliveryPoint, useLocateOnAppOpen } from '@/entities/address'
+import { NO_FILTERS, sameFilters, streetOf, useDisplayCategories, useFavoriteShops, useGuestHiddenShops, useHomeFeed, type FeedCard, type HomeFilters } from '@/entities/feed'
+import { useSession } from '@/entities/session'
+import { afterSignIn } from '@/features/after-sign-in'
+import { SkeletonGroup, Skeleton, Button, Card, ErrorState, Text, fonts, radius, showTabBar, spacing, tabBarFollowScroll, tabBarMotion, touchTarget, useTheme } from '@/shared/ui'
+import { useCart } from '@/entities/cart'
 import { CartBar } from '@/widgets/cart-bar'
-import { NotificationBell } from '@/widgets/notification-bell'
+import { HomeHeader, HomeHeaderCompact } from '@/widgets/home-header'
+import { ShopFeedCard, ShopFeedSkeleton } from '@/widgets/shop-feed-card'
+import { DeliverySheet, deliveryTimeText, type DeliveryTime } from './home-delivery'
+import { FilterBar, FilterSheets, type FilterPanel } from './home-filters'
 
-/** Shops that deliver to the default address: search, category filter, open shops first (browse-vendors-in-area.md). */
+/** How far down (px) the page must be before the way back to the top is offered. */
+const BACK_TO_TOP_AFTER = 400
+
+/**
+ * The first screen of the app, signed in or not (owner design 2026-11-03): the orange header (address, favourites, orders, scan,
+ * search, Deal HOT), the display categories, then shops ten at a time, each with a row of its dishes. With a delivery point
+ * (the default address, or the place a guest typed) the shops deliver there, nearest first; without, the best rated shops.
+ * Scrolling down, a white copy of the header with the row of filters fades in over the top, fully there by the time the row of
+ * filters in the page reaches it (owner design 2026-11-05).
+ */
 export default function CustomerHomeScreen() {
   const router = useRouter()
   const theme = useTheme()
-  const addresses = useAddresses()
-  const leaves = useCategoryLeaves()
-  const address = addresses.data?.find((a) => a.isDefault) ?? addresses.data?.[0]
-  const position = address?.lat !== undefined && address?.lng !== undefined ? { lat: address.lat, lng: address.lng } : null
+  const { session } = useSession()
+  const guest = !session
+  const point = useDeliveryPoint(!guest)
+  useLocateOnAppOpen()
+  const insets = useSafeAreaInsets()
+  const [filters, setFilters] = useState<HomeFilters>(NO_FILTERS)
+  const [panel, setPanel] = useState<FilterPanel | null>(null)
+  const [deliveryOpen, setDeliveryOpen] = useState(false)
+  const [deliveryTime, setDeliveryTime] = useState<DeliveryTime>(null)
+  const [deliverySetAt, setDeliverySetAt] = useState(0)
+  const timeText = deliveryTimeText(deliveryTime, new Date(deliverySetAt))
+  const filtering = !sameFilters(filters, NO_FILTERS)
+  const guestHidden = useGuestHiddenShops()
+  const feed = useHomeFeed({ position: point.position, filters, guestHidden: guest ? (guestHidden.data ?? []) : [] })
+  const favorites = useFavoriteShops(null, !guest)
+  const favoriteIds = useMemo(() => new Set((favorites.data ?? []).map((c) => c.shop.id)), [favorites.data])
+  const cards = useMemo(() => feed.data?.pages.flatMap((p) => p.items) ?? [], [feed.data])
+  const dealMax = feed.data?.pages[0]?.dealMaxPercent ?? 0
 
-  const [query, setQuery] = useState('')
-  const [debounced, setDebounced] = useState('')
-  const [categoryId, setCategoryId] = useState<string | null>(null)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(query.trim()), 300)
-    return () => clearTimeout(timer)
-  }, [query])
-  const shops = useShopsInArea(position, debounced, categoryId)
-  const list = shops.data?.items ?? []
+  const list = useRef<FlatList<FeedCard>>(null)
+  const scrollY = useSharedValue(0)
+  const barTop = useSharedValue(0)
+  const compactHeight = useSharedValue(0)
+  const [compact, setCompact] = useState(false)
+  const [listTop, setListTop] = useState(0)
+  const { height: screenHeight } = useWindowDimensions()
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y
+      tabBarFollowScroll(event.contentOffset.y, event.contentSize.height - event.layoutMeasurement.height)
+    },
+  })
+  const clearAt = useDerivedValue(() => Math.max(barTop.value - compactHeight.value, 120))
+  useAnimatedReaction(
+    () => scrollY.value > clearAt.value * 0.6,
+    (on, before) => {
+      if (on !== before) runOnJS(setCompact)(on)
+    },
+  )
+  useFocusEffect(useCallback(() => showTabBar, []))
+  // The cart bar rides just above the tab bar and drops with it.
+  const cartStyle = useAnimatedStyle(() => ({ transform: [{ translateY: -(1 - tabBarMotion.hidden.value) * tabBarMotion.height.value }] }))
+  // "Back to the top": once the page is well down and the finger comes back up, a little above the tab bar (and the cart bar, when there is one).
+  const { totals } = useCart()
+  const aboveTabBar = spacing.lg + (totals.count > 0 ? touchTarget.large + spacing.lg : 0)
+  const [backToTop, setBackToTop] = useState(false)
+  useAnimatedReaction(
+    () => scrollY.value > BACK_TO_TOP_AFTER && tabBarMotion.wanted.value === 0,
+    (on, before) => {
+      if (on !== before) runOnJS(setBackToTop)(on)
+    },
+  )
+  // On the UI thread and always mounted, so it answers the finger at once.
+  const backToTopStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(scrollY.value > BACK_TO_TOP_AFTER && tabBarMotion.wanted.value === 0 ? 1 : 0, { duration: 90 }),
+    transform: [{ translateY: -tabBarMotion.height.value - aboveTabBar }],
+  }))
+  const compactStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(scrollY.value, [clearAt.value * 0.45, clearAt.value], [0, 1], Extrapolation.CLAMP),
+  }))
 
-  return (
-    <View style={styles.flex}>
-    <Screen>
-      <View style={styles.top}>
-        <View style={styles.flex}>
-          <AddressBar loading={addresses.isPending} label={address?.label} text={address?.formattedAddress} onPress={() => router.push('/customer/addresses')} />
-        </View>
-        <NotificationBell href="/customer/notifications" />
-      </View>
-      {addresses.data && !address ? (
-        <Card>
+  /** New results start at the row of filters, not somewhere down a list that is no longer there. */
+  const applyFilters = (next: HomeFilters) => {
+    setFilters(next)
+    const top = clearAt.get()
+    if (scrollY.get() > top) list.current?.scrollToOffset({ offset: top, animated: false })
+  }
+
+  const headerActions = {
+    guest,
+    onSignIn: () => {
+      afterSignIn(null)
+      router.push('/login')
+    },
+    street: streetOf(point.text),
+    onAddress: () => setDeliveryOpen(true),
+    deliveryLabel: deliveryTime ? timeText : 'Giao ngay',
+    onFavorites: () => router.push('/customer/favorites'),
+    onOrders: () => router.push('/customer/orders'),
+    onScan: () => router.push('/customer/scan'),
+    onSearch: () => router.push('/customer/search'),
+  }
+
+  const header = (
+    <View>
+      {/* orange above the header, so the bounce at the top of the list shows orange, never a white gap */}
+      <View pointerEvents="none" style={[styles.overscroll, { backgroundColor: theme.primary }]} />
+      <HomeHeader {...headerActions} dealMaxPercent={dealMax} onDeals={() => router.push('/customer/deals')} />
+      <CategoryStrip
+        selected={filters.cuisines}
+        onSelect={(id) => applyFilters({ ...filters, cuisines: filters.cuisines.includes(id) ? filters.cuisines.filter((c) => c !== id) : [...filters.cuisines, id] })}
+      />
+      {/* Where the list starts: the filters appear only once the page has scrolled to here (owner 2026-11-09). */}
+      <View
+        onLayout={(e) => {
+          barTop.set(e.nativeEvent.layout.y)
+          setListTop(e.nativeEvent.layout.y)
+        }}
+      />
+      {point.missing && !guest ? (
+        <Card style={styles.inset}>
           <Text variant="titleSm">Bạn muốn nhận món ở đâu?</Text>
           <Text muted>Thêm địa chỉ giao hàng để xem các quán giao tới nơi bạn ở.</Text>
           <Button title="+ Thêm địa chỉ" fullWidth onPress={() => router.push('/customer/address-form')} />
         </Card>
       ) : null}
-      {address ? (
-        <>
-          <Text variant="display" style={styles.headline} accessibilityRole="header">
-            Hôm nay bạn <Text variant="display" color={theme.headlineSoft} style={styles.headline}>muốn ăn gì?</Text>
-          </Text>
-          <View style={[styles.search, { backgroundColor: theme.surfaceMuted }]}>
-            <Search size={18} color={theme.textMuted} />
-            <TextInput
-              accessibilityLabel="Tìm quán hoặc món"
-              placeholder="Tìm món hoặc quán"
-              placeholderTextColor={theme.textMuted}
-              value={query}
-              onChangeText={setQuery}
-              autoCorrect={false}
-              style={[styles.searchInput, typography.bodySm, { color: theme.text }]}
-            />
-          </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-            <Chip label="Tất cả" selected={categoryId === null} onPress={() => setCategoryId(null)} />
-            {(leaves.data ?? []).map((leaf) => (
-              <Chip key={leaf.id} label={leaf.name} selected={categoryId === leaf.id} onPress={() => setCategoryId(leaf.id)} />
-            ))}
-          </ScrollView>
-          {shops.isError ? <Notice tone="error" message={problemMessage(shops.error)} /> : null}
-          {shops.isPending ? <Text muted>Đang tìm quán…</Text> : null}
-          {shops.data && list.length === 0 ? (
-            <Card>
-              <Text variant="titleSm">{debounced || categoryId ? 'Không có quán phù hợp' : 'Chưa có quán nào giao tới đây'}</Text>
-              <Text muted>
-                {debounced || categoryId
-                  ? 'Thử từ khoá khác hoặc bỏ bộ lọc ngành hàng.'
-                  : 'Quán trong khu của bạn sẽ hiện ở đây khi họ mở bán trên bonbon.'}
-              </Text>
+    </View>
+  )
+
+  return (
+    <View style={[styles.flex, { backgroundColor: theme.background }]}>
+      <StatusBar style={compact ? 'auto' : 'light'} />
+      <Animated.FlatList
+        ref={list as never}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        // Tall enough to scroll to the filters even with a few shops, or the filters could not be reached to undo them.
+        contentContainerStyle={{ minHeight: screenHeight + listTop }}
+        data={cards}
+        keyExtractor={(c) => c.shop.id}
+        renderItem={({ item }: { item: FeedCard }) => <ShopFeedCard card={item} favorite={favoriteIds.has(item.shop.id)} />}
+        ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: theme.divider }]} />}
+        ListHeaderComponent={header}
+        ListEmptyComponent={
+          feed.isError || feed.isPaused ? (
+            // paused: the query waits for the phone to be back online, so say that rather than spin
+            <ErrorState error={feed.error ?? new Error('offline')} retrying={feed.isRefetching} onRetry={() => void feed.refetch()} />
+          ) : feed.isPending ? (
+            <ShopFeedSkeleton />
+          ) : feed.data ? (
+            <Card style={styles.inset}>
+              <Text variant="titleSm">{filtering ? 'Không có quán phù hợp' : 'Chưa có quán nào giao tới đây'}</Text>
+              <Text muted>{filtering ? 'Thử bỏ bớt bộ lọc.' : 'Quán trong khu của bạn sẽ hiện ở đây khi họ mở bán trên bonbon.'}</Text>
+              {filtering ? <Button title="Đặt lại bộ lọc" variant="outline" fullWidth onPress={() => applyFilters(NO_FILTERS)} /> : null}
             </Card>
-          ) : null}
-          {list.map((shop, index) => (
-            <ShopCard key={shop.id} shop={shop} index={index} onPress={() => router.push({ pathname: '/customer/vendor', params: { id: shop.id } })} />
-          ))}
-        </>
-      ) : null}
-    </Screen>
-    <CartBar />
+          ) : undefined
+        }
+        ListFooterComponent={feed.isFetchingNextPage ? <ShopFeedSkeleton count={1} /> : <View style={styles.bottom} />}
+        onEndReached={() => {
+          if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
+        }}
+        onEndReachedThreshold={0.6}
+      />
+      <Animated.View
+        pointerEvents={compact ? 'auto' : 'none'}
+        aria-hidden={!compact}
+        onLayout={(e) => {
+          compactHeight.set(e.nativeEvent.layout.height)
+        }}
+        style={[styles.compact, { backgroundColor: theme.surface, borderBottomColor: theme.divider, paddingTop: insets.top + spacing.sm }, compactStyle]}
+      >
+        <View style={styles.compactHeader}>
+          <HomeHeaderCompact {...headerActions} />
+        </View>
+        <FilterBar filters={filters} onChange={applyFilters} onOpen={setPanel} />
+      </Animated.View>
+      <DeliverySheet
+        visible={deliveryOpen}
+        address={point.text}
+        time={deliveryTime}
+        timeText={timeText}
+        onChangeTime={(time) => {
+          setDeliveryTime(time)
+          setDeliverySetAt(Date.now())
+        }}
+        onChooseAddress={() => {
+          setDeliveryOpen(false)
+          router.push('/customer/delivery-address')
+        }}
+        onClose={() => setDeliveryOpen(false)}
+      />
+      <FilterSheets panel={panel} filters={filters} canUseNearby={Boolean(point.position)} onApply={applyFilters} onClose={() => setPanel(null)} />
+      <Animated.View pointerEvents={backToTop ? 'box-none' : 'none'} aria-hidden={!backToTop} style={[styles.backToTop, backToTopStyle]}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => list.current?.scrollToOffset({ offset: 0, animated: true })}
+          style={[styles.backToTopButton, { backgroundColor: theme.surface, borderColor: theme.border }]}
+        >
+          <ArrowUp size={18} color={theme.text} />
+          <Text variant="bodySm" style={styles.backToTopText}>
+            Trở về trang đầu
+          </Text>
+        </Pressable>
+      </Animated.View>
+      <Animated.View pointerEvents="box-none" style={[StyleSheet.absoluteFill, cartStyle]}>
+        <CartBar />
+      </Animated.View>
     </View>
   )
 }
 
-function AddressBar({ loading, label, text, onPress }: { loading: boolean; label?: string; text?: string; onPress: () => void }) {
+/** The display categories: a picture with its name under it, swiped sideways (no bar, no buttons). Pressing one again clears it. */
+function CategoryStrip({ selected, onSelect }: { selected: string[]; onSelect: (id: string) => void }) {
   const theme = useTheme()
-  if (loading) return null
+  const categories = useDisplayCategories()
+  const list = categories.data ?? []
+  if (categories.isLoading) {
+    return (
+      <SkeletonGroup style={[styles.categories, styles.categoriesLoading]}>
+        {[0, 1, 2, 3, 4, 5].map((c) => (
+          <View key={c} style={styles.category}>
+            <Skeleton width={64} height={64} radius={radius.lg} />
+            <Skeleton width={48} height={12} />
+          </View>
+        ))}
+      </SkeletonGroup>
+    )
+  }
+  if (list.length === 0) return null
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel="Đổi địa chỉ giao hàng" onPress={onPress} style={styles.address}>
-      <View style={[styles.round, { backgroundColor: theme.surfaceMuted }]}>
-        <MapPin size={20} color={theme.primary} strokeWidth={1.75} />
-      </View>
-      <View style={styles.flex}>
-        <Text variant="caption" muted>
-          Giao tới
-        </Text>
-        <Text variant="bodySm" style={styles.addressText} numberOfLines={1}>
-          {text ? `${label}: ${text} ▾` : 'Chưa chọn địa chỉ ▾'}
-        </Text>
-      </View>
-    </Pressable>
-  )
-}
-
-function Chip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
-  const theme = useTheme()
-  return (
-    <Pressable
-      accessibilityRole="radio"
-      aria-checked={selected}
-      onPress={onPress}
-      style={[styles.chip, { backgroundColor: selected ? theme.surface : theme.surfaceMuted, borderColor: selected ? theme.primary : 'transparent' }]}
-    >
-      <Text variant="bodySm" color={selected ? theme.primary : theme.textMuted} style={styles.chipLabel}>
-        {label}
-      </Text>
-    </Pressable>
-  )
-}
-
-function ShopCard({ shop, index, onPress }: { shop: Shop; index: number; onPress: () => void }) {
-  const theme = useTheme()
-  const distance = formatDistance(shop.distanceKm)
-  const photo = mockPhoto(shop.id ?? '', shop.name ?? '')
-  return (
-    // The first cards fade up once as the list appears; the system's reduce-motion setting turns it off.
-    <Animated.View entering={FadeInDown.delay(Math.min(index, 5) * 60).duration(320).reduceMotion(ReduceMotion.System)}>
-    <Pressable accessibilityRole="button" accessibilityLabel={`${shop.name}, ${shop.open ? 'đang mở' : 'đang đóng'}`} onPress={onPress}>
-      <Card style={[styles.shop, !shop.open && styles.closed]}>
-        <View style={[styles.cover, { backgroundColor: theme.imageSlot }]}>
-          {photo ? <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" accessibilityIgnoresInvertColors /> : null}
-          {distance ? (
-            <View style={[styles.pill, styles.pillLeft, { backgroundColor: theme.ink }]}>
-              <Text variant="caption" color="#FFFFFF" style={styles.pillText}>
-                {distance}
-              </Text>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categories}>
+      {list.map((c) => {
+        const on = selected.includes(c.id)
+        return (
+          <Pressable key={c.id} accessibilityRole="button" aria-pressed={on} accessibilityLabel={c.name} onPress={() => onSelect(c.id)} style={styles.category}>
+            <View style={[styles.categoryPicture, { backgroundColor: theme.surfaceMuted, borderColor: on ? theme.primary : 'transparent' }]}>
+              {c.imageUrl ? <Image source={{ uri: c.imageUrl }} accessibilityLabel="" contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
             </View>
-          ) : null}
-          <View style={[styles.pill, styles.pillRight, { backgroundColor: theme.surface }]}>
-            <Text variant="caption" color={shop.open ? theme.onSuccessSubtle : theme.textMuted} style={styles.pillText}>
-              {shop.open ? 'Đang mở' : 'Đã đóng'}
+            <Text variant="caption" numberOfLines={1} color={on ? theme.primary : theme.text} style={on ? styles.categoryOn : undefined}>
+              {c.name}
             </Text>
-          </View>
-        </View>
-        <View style={styles.titleRow}>
-          <View style={styles.flex}>
-            <Text variant="titleSm" numberOfLines={1}>
-              {shop.name}
-            </Text>
-            <RatingSummary average={shop.ratingAverage} count={shop.ratingCount} />
-            <Text variant="bodySm" muted numberOfLines={1}>
-              {deliveryText(shop)}
-              {shop.minOrderValue ? ` · tối thiểu ${formatVnd(shop.minOrderValue)}` : ''}
-            </Text>
-          </View>
-          <View style={[styles.go, { backgroundColor: theme.primary }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            <ArrowRight size={18} color={theme.onPrimary} strokeWidth={2} />
-          </View>
-        </View>
-      </Card>
-    </Pressable>
-    </Animated.View>
+          </Pressable>
+        )
+      })}
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  top: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  address: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.min },
-  addressText: { fontFamily: fonts.semibold },
-  round: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
-  headline: { fontFamily: fonts.semibold, letterSpacing: -0.6 },
-  search: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.min, borderRadius: radius.pill, paddingHorizontal: spacing.lg },
-  searchInput: { flex: 1, minHeight: touchTarget.min, paddingVertical: 0 },
-  chips: { gap: spacing.sm },
-  chip: { minHeight: 44, paddingHorizontal: spacing.lg, borderRadius: radius.pill, borderWidth: 1, justifyContent: 'center' },
-  chipLabel: { fontFamily: fonts.semibold },
-  shop: { padding: 10, gap: 10, borderRadius: radius.card },
-  closed: { opacity: 0.7 },
-  cover: { height: 150, borderRadius: radius.media, overflow: 'hidden' },
-  pill: { position: 'absolute', top: 10, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 5 },
-  pillLeft: { left: 10 },
-  pillRight: { right: 10 },
-  pillText: { fontFamily: fonts.semibold },
-  titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: 6, paddingBottom: 4 },
-  go: { width: 40, height: 40, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  backToTop: { position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center' },
+  backToTopButton: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.pill, borderWidth: 1 },
+  backToTopText: { fontFamily: fonts.semibold },
+  compact: { position: 'absolute', top: 0, left: 0, right: 0, borderBottomWidth: StyleSheet.hairlineWidth },
+  compactHeader: { paddingHorizontal: spacing.lg, gap: spacing.sm },
+  overscroll: { position: 'absolute', left: 0, right: 0, top: -1000, height: 1000 },
+  inset: { marginHorizontal: spacing.lg, marginBottom: spacing.md },
+  separator: { height: 8 },
+  bottom: { height: 120 },
+  categories: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md, gap: spacing.md },
+  categoriesLoading: { flexDirection: 'row', overflow: 'hidden' },
+  category: { width: 72, alignItems: 'center', gap: spacing.xs },
+  categoryPicture: { width: 64, height: 64, borderRadius: radius.lg, overflow: 'hidden', borderWidth: 2 },
+  categoryOn: { fontFamily: fonts.semibold },
 })

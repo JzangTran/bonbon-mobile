@@ -21,7 +21,8 @@ export type SessionContextValue = {
   session: Session | null
   /** True until the stored session has been read at startup. */
   restoring: boolean
-  signIn: (input: SignInInput) => Promise<void>
+  /** `remember: false` keeps the session for this run of the app only: nothing is stored, closing the app signs out. */
+  signIn: (input: SignInInput, options?: { remember?: boolean }) => Promise<void>
   /** `alreadyRevoked`: the server ended every session already (logout-all), so only local state is cleared. */
   signOut: (options?: { alreadyRevoked?: boolean }) => Promise<void>
 }

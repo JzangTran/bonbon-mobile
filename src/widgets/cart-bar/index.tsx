@@ -17,18 +17,18 @@ export function CartBar() {
         accessibilityRole="button"
         accessibilityLabel={`Xem giỏ hàng, ${totals.count} món, ${formatVnd(totals.itemsTotal)}`}
         onPress={() => router.push('/customer/cart')}
-        style={[styles.bar, { backgroundColor: theme.primary }]}
+        style={[styles.bar, { backgroundColor: theme.text }]}
       >
-        <ShoppingBag size={20} color={theme.onPrimary} />
+        <ShoppingBag size={20} color={theme.background} />
         <View style={styles.flex}>
-          <Text variant="bodySm" color={theme.onPrimary} numberOfLines={1}>
+          <Text variant="bodySm" color={theme.background} numberOfLines={1}>
             {shop?.name}
           </Text>
-          <Text variant="caption" color={theme.onPrimary}>
+          <Text variant="caption" color={theme.background}>
             {totals.count} món
           </Text>
         </View>
-        <Text variant="titleSm" color={theme.onPrimary} style={styles.money}>
+        <Text variant="titleSm" color={theme.background} style={styles.money}>
           {formatVnd(totals.itemsTotal)}
         </Text>
       </Pressable>

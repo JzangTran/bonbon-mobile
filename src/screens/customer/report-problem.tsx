@@ -102,7 +102,7 @@ export default function ReportProblemScreen() {
         <View style={styles.photos}>
           {photos.map((photo, index) => (
             <Pressable key={photo.uri} accessibilityLabel="Bỏ ảnh này" onPress={() => setPhotos(photos.filter((_, i) => i !== index))}>
-              <Image source={{ uri: photo.uri }} style={styles.photo} contentFit="cover" />
+              <Image source={{ uri: photo.uri }} style={styles.photo} contentFit="cover" alt="Ảnh sẽ gửi" />
             </Pressable>
           ))}
         </View>

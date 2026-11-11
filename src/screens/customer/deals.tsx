@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StyleSheet, View } from 'react-native'
 import { useDeliveryPoint } from '@/entities/address'
 import { useFavoriteShops, useGuestHiddenShops, useHomeFeed, type FeedCard } from '@/entities/feed'
 import { useSession } from '@/entities/session'
 import { problemMessage } from '@/shared/api'
 import { EmptyState, Notice, Text, spacing, useTheme } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
-import { ShopFeedCard } from '@/widgets/shop-feed-card'
+import { ShopFeedCard, ShopFeedSkeleton } from '@/widgets/shop-feed-card'
 
 /** "Deal HOT": shops near the delivery point with discounted dishes, biggest discount first, ten at a time. */
 export default function DealsScreen() {
@@ -35,9 +35,9 @@ export default function DealsScreen() {
           </View>
         }
         ListEmptyComponent={
-          feed.isPending ? <ActivityIndicator style={styles.loading} color={theme.primary} /> : <EmptyState mascot="search" title="Chưa có quán nào đang giảm giá" />
+          feed.isPending ? <ShopFeedSkeleton /> : <EmptyState mascot="search" title="Chưa có quán nào đang giảm giá" />
         }
-        ListFooterComponent={feed.isFetchingNextPage ? <ActivityIndicator style={styles.loading} color={theme.primary} /> : <View style={styles.bottom} />}
+        ListFooterComponent={feed.isFetchingNextPage ? <ShopFeedSkeleton count={1} /> : <View style={styles.bottom} />}
         onEndReached={() => {
           if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
         }}
@@ -52,6 +52,5 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   intro: { padding: spacing.lg, gap: spacing.xs },
   separator: { height: 8 },
-  loading: { marginVertical: 24 },
   bottom: { height: 120 },
 })

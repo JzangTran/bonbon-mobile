@@ -4,7 +4,7 @@ import { ReviewItem, StarPicker, useMyOrderReview, useOrderReviewActions } from 
 import { confirm } from '@/shared/lib/confirm'
 import { useNow } from '@/shared/lib/countdown'
 import { formatDateTime } from '@/shared/lib/format'
-import { Button, Card, Input, Sheet, Text, spacing, useToast } from '@/shared/ui'
+import { CardListSkeleton, Button, Card, Input, Sheet, Text, spacing, useToast } from '@/shared/ui'
 
 const PROMPTS = ['', 'Rất tệ', 'Chưa tốt', 'Bình thường', 'Tốt', 'Rất tốt']
 
@@ -80,9 +80,7 @@ export function OrderReviewCard({ orderId, reviewed }: { orderId: string; review
           }
         />
       ) : (
-        <Text variant="bodySm" muted>
-          Đang tải…
-        </Text>
+        <CardListSkeleton count={1} lines={2} />
       )}
 
       <Sheet visible={open} onClose={() => setOpen(false)} title={existing ? 'Sửa đánh giá' : 'Đánh giá quán'}>

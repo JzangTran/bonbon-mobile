@@ -8,7 +8,7 @@ import { useSession } from '@/entities/session'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
 import { mockPhoto } from '@/shared/lib/mock-photos'
-import { Sheet, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Sheet, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
 
 const TILE = 116
 
@@ -162,7 +162,45 @@ function ShopActions({ shopId, name, favorite, visible, onClose }: { shopId: str
   )
 }
 
+/** Shops on their way, in the shape of the cards above: logo, name and rating, then a row of dishes. */
+export function ShopFeedSkeleton({ count = 3 }: { count?: number }) {
+  const theme = useTheme()
+  return (
+    <SkeletonGroup>
+      {Array.from({ length: count }, (_, card) => (
+        <View key={card}>
+          {card > 0 ? <View style={[styles.skeletonGap, { backgroundColor: theme.divider }]} /> : null}
+          <View style={styles.card}>
+            <View style={[styles.head, styles.skeletonHead]}>
+              <Skeleton width={52} height={52} radius={radius.lg} />
+              <View style={styles.flex}>
+                <Skeleton width="60%" height={20} />
+                <Skeleton width={72} height={14} style={styles.skeletonRating} />
+              </View>
+            </View>
+            <View style={[styles.dishes, styles.skeletonDishes]}>
+              {[0, 1, 2].map((dish) => (
+                <View key={dish} style={styles.tile}>
+                  <Skeleton width={TILE} height={TILE} radius={radius.lg} />
+                  <Skeleton width={72} height={16} style={styles.skeletonPrice} />
+                  <Skeleton width={96} height={12} style={styles.skeletonName} />
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+      ))}
+    </SkeletonGroup>
+  )
+}
+
 const styles = StyleSheet.create({
+  skeletonGap: { height: 8 },
+  skeletonHead: { minHeight: touchTarget.min },
+  skeletonRating: { marginTop: spacing.sm },
+  skeletonDishes: { flexDirection: 'row', overflow: 'hidden' },
+  skeletonPrice: { marginTop: spacing.sm },
+  skeletonName: { marginTop: spacing.xs },
   card: { paddingVertical: spacing.md, gap: spacing.md },
   head: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.lg },
   identity: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: touchTarget.min },

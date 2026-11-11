@@ -610,6 +610,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/account/payment-pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Đã có mã PIN thanh toán chưa
+         * @description Chỉ cho biết đã đặt hay chưa, không bao giờ trả mã.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        get: operations["getPaymentPin"];
+        /**
+         * Tạo hoặc đổi mã PIN thanh toán
+         * @description Mã 6 chữ số. Đã có mã thì phải gửi kèm `currentPin`; sai 5 lần thì khoá đổi mã 15 phút.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        put: operations["changePaymentPin"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/account/hidden-shops/{vendorId}": {
         parameters: {
             query?: never;
@@ -1592,6 +1620,28 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `hasAnyAuthority('order:create', 'vendor:create')`.
          */
         post: operations["acceptLegalDocuments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/geo/tour": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sắp xếp thứ tự giao nhiều điểm
+         * @description Điểm đầu tiên là nơi xuất phát và giữ nguyên; trả về thứ tự ghé các điểm (theo vị trí trong danh sách gửi lên) để giảm quãng đường, không quay lại điểm đầu. Từ 2 đến 12 điểm.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["optimizeTour"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2806,6 +2856,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/account/payment-methods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Phương thức thanh toán đã liên kết
+         * @description Phương thức chính trước. `linkable` là các phương thức còn liên kết được.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        get: operations["listPaymentMethods"];
+        put?: never;
+        /**
+         * Liên kết phương thức thanh toán
+         * @description Chỉ lưu 4 số cuối của tài khoản. Phương thức đầu tiên tự thành phương thức chính. Tiền vẫn trả qua cổng của nhà cung cấp khi đặt đơn.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        post: operations["linkPaymentMethod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/account/change-password": {
         parameters: {
             query?: never;
@@ -3168,6 +3246,34 @@ export interface paths {
         patch: operations["updateCategory"];
         trace?: never;
     };
+    "/api/account/payment-methods/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Gỡ liên kết phương thức thanh toán
+         * @description Xoá hẳn phương thức khỏi tài khoản.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        delete: operations["unlinkPaymentMethod"];
+        options?: never;
+        head?: never;
+        /**
+         * Đặt làm phương thức thanh toán chính
+         * @description Bật cho một phương thức thì tắt ở các phương thức khác.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        patch: operations["setPrimaryPaymentMethod"];
+        trace?: never;
+    };
     "/api/account/me": {
         parameters: {
             query?: never;
@@ -3304,6 +3410,28 @@ export interface paths {
          *     **Không cần đăng nhập.**
          */
         get: operations["listShopReviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/vendors/{id}/place-info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Giờ mở cửa và giờ đông khách của quán
+         * @description Quán đang mở hay đóng và thời điểm đổi trạng thái tiếp theo theo giờ Việt Nam, kèm số đơn trung bình mỗi giờ trong 8 tuần gần nhất, tách ngày làm việc (T2 đến T6) và cuối tuần (T7, CN). Không cần đăng nhập.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["getShopPlaceInfo"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3972,6 +4100,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/geo/route": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Đường đi giữa hai điểm
+         * @description Quãng đường và thời gian ước tính theo đường bộ, phương án tốt nhất trước, kèm các tuyến thay thế nếu có.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["planRoute"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/geo/reverse": {
         parameters: {
             query?: never;
@@ -4091,7 +4241,7 @@ export interface paths {
         };
         /**
          * Danh sách quán ở trang chủ
-         * @description Mỗi trang 10 quán, mỗi quán tối đa 10 món đang bán (món giảm giá trước). Có toạ độ giao hàng: quán có bán kính giao phủ tới điểm đó, gần trước. Không có toạ độ (khách chưa nhập địa chỉ): mọi quán, đánh giá cao trước. `displayCategoryId` lọc theo danh mục ở trang chủ; `deals=true` chỉ quán có món giảm giá, giảm nhiều trước. Khách đã đăng nhập không thấy quán đã ẩn; khách chưa đăng nhập gửi quán đã ẩn trong `hide`. `dealMaxPercent` là mức giảm cao nhất trong khu, cho dòng "Giảm đến X%".
+         * @description Mỗi trang 10 quán, mỗi quán tối đa 10 món đang bán (món giảm giá trước). Có toạ độ giao hàng: quán có bán kính giao phủ tới điểm đó, gần trước. Không có toạ độ (khách chưa nhập địa chỉ): mọi quán, đánh giá cao trước. `displayCategoryId` lọc theo danh mục ở trang chủ, gửi nhiều lần để lấy quán thuộc một trong các danh mục; `deals=true` chỉ quán có món giảm giá, giảm nhiều trước. Bộ lọc: `sort=RATING` đánh giá cao trước (mặc định `RECOMMENDED`); `highlyRated=true` đánh giá từ 4.4; `promotions=true` có món giảm giá hoặc voucher dùng được; `bestSellers=true` từ 10 đơn đã giao trong 30 ngày; `nearby=true` trong 2 km (cần toạ độ). Khách đã đăng nhập không thấy quán đã ẩn; khách chưa đăng nhập gửi quán đã ẩn trong `hide`. `dealMaxPercent` là mức giảm cao nhất trong khu, cho dòng "Giảm đến X%".
          *
          *     **Không cần đăng nhập.**
          */
@@ -5777,6 +5927,11 @@ export interface components {
             /** @description Lý do thay đổi, được ghi lại. */
             reason: string;
         };
+        /** @description `currentPin` is required when a PIN is already set. */
+        PaymentPinRequest: {
+            currentPin?: string;
+            newPin: string;
+        };
         HiddenShop: {
             /**
              * Format: uuid
@@ -6597,6 +6752,22 @@ export interface components {
         AcceptLegalDocumentsRequest: {
             /** @description Id của các văn bản đang chờ đồng ý, đúng như `GET /api/legal/pending`. */
             documentIds: string[];
+        };
+        GeoPoint: {
+            /** Format: double */
+            lat?: number;
+            /** Format: double */
+            lng?: number;
+        };
+        GeoTourRequest: {
+            stops: components["schemas"]["GeoPoint"][];
+        };
+        GeoTour: {
+            order?: number[];
+            /** Format: double */
+            distanceKm?: number;
+            /** Format: double */
+            durationMinutes?: number;
         };
         ChatImageUpload: {
             /** @description Gửi trong `imageKey` của tin nhắn. */
@@ -7444,6 +7615,23 @@ export interface components {
             /** @enum {string} */
             role?: "CUSTOMER" | "SELLER" | "ADMIN";
         };
+        /** @description MoMo: the phone number of the MoMo wallet. */
+        LinkPaymentMethodRequest: {
+            provider: string;
+            account: string;
+        };
+        /** @description `maskedAccount` hides all but the last four digits, as the provider shows it. */
+        LinkedPaymentMethod: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            provider?: string;
+            name?: string;
+            maskedAccount?: string;
+            primary?: boolean;
+        };
         ChangePasswordRequest: {
             currentPassword: string;
             newPassword: string;
@@ -7456,6 +7644,7 @@ export interface components {
             recipientName: string;
             recipientPhone: string;
             makeDefault?: boolean;
+            note?: string;
         };
         DeliveryAddress: {
             /**
@@ -7477,6 +7666,7 @@ export interface components {
             /** Format: double */
             lng?: number;
             isDefault?: boolean;
+            note?: string;
         };
         VoucherUpdateRequest: {
             discountType?: string;
@@ -7611,6 +7801,9 @@ export interface components {
              */
             parentId?: string;
         };
+        PaymentMethodPrimaryRequest: {
+            primary: boolean;
+        };
         UpdateProfileRequest: {
             name?: string;
             phone?: string;
@@ -7635,6 +7828,7 @@ export interface components {
             detail?: string;
             recipientName?: string;
             recipientPhone?: string;
+            note?: string;
         };
         Shop: {
             /**
@@ -7722,6 +7916,20 @@ export interface components {
              * @description Số đánh giá đang hiển thị (chỉ ở danh sách công khai của quán).
              */
             ratingCount?: number;
+        };
+        PlaceInfo: {
+            schedule?: components["schemas"]["ShopSchedule"];
+            weekday?: number[];
+            weekend?: number[];
+        };
+        ShopSchedule: {
+            open?: boolean;
+            /** @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam. */
+            closesAt?: string;
+            /** Format: int32 */
+            opensDay?: number;
+            /** @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam. */
+            opensAt?: string;
         };
         Item: {
             /**
@@ -8528,6 +8736,12 @@ export interface components {
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
             updatedAt?: string;
+        };
+        GeoRoute: {
+            /** Format: double */
+            distanceKm?: number;
+            /** Format: double */
+            durationMinutes?: number;
         };
         /** @description Một điểm trên bản đồ, đã đổi ra địa chỉ. */
         GeoPlace: {
@@ -9799,6 +10013,14 @@ export interface components {
              * @description UUID.
              */
             actedById?: string;
+        };
+        PaymentPinStatus: {
+            set?: boolean;
+        };
+        /** @description `linkable` lists the providers not linked yet; empty when every one is. */
+        PaymentMethods: {
+            methods?: components["schemas"]["LinkedPaymentMethod"][];
+            linkable?: string[];
         };
     };
     responses: never;
@@ -12625,6 +12847,133 @@ export interface operations {
              *     - `REAUTH_REQUIRED`: Đăng nhập đã quá 10 phút.
              */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getPaymentPin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentPinStatus"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    changePaymentPin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaymentPinRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `VALIDATION_ERROR`: Mã PIN không đủ 6 chữ số.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PIN_INCORRECT`: Mã PIN hiện tại không đúng. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PIN_LOCKED`: Nhập sai mã PIN quá 5 lần; thử lại sau 15 phút. */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16514,6 +16863,70 @@ export interface operations {
             };
             /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    optimizeTour: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GeoTourRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeoTour"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `VALIDATION_ERROR`: Danh sách có ít hơn 2 hoặc nhiều hơn 12 điểm, hoặc toạ độ không hợp lệ.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tính đường tạm thời không phản hồi; thử lại sau. */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -20911,6 +21324,127 @@ export interface operations {
             };
         };
     };
+    listPaymentMethods: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentMethods"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    linkPaymentMethod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkPaymentMethodRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedPaymentMethod"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             *     - `UNSUPPORTED_PAYMENT_PROVIDER`: Nhà cung cấp chưa được hỗ trợ (hiện có MOMO).
+             *     - `VALIDATION_ERROR`: Số điện thoại ví không hợp lệ.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PAYMENT_METHOD_ALREADY_LINKED`: Đã liên kết phương thức này. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     changeMyPassword: {
         parameters: {
             query?: never;
@@ -22666,6 +23200,146 @@ export interface operations {
             };
         };
     };
+    unlinkPaymentMethod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PAYMENT_METHOD_NOT_FOUND`: Không có phương thức này trong tài khoản. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    setPrimaryPaymentMethod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaymentMethodPrimaryRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `PAYMENT_METHOD_NOT_FOUND`: Không có phương thức này trong tài khoản. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getMyProfile: {
         parameters: {
             query?: never;
@@ -23120,6 +23794,58 @@ export interface operations {
              * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
              *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              *     - `INVALID_PAGE`: `page` âm hoặc `size` ngoài 1–100.
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `VENDOR_NOT_FOUND`: Quán không tồn tại hoặc chưa được duyệt. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getShopPlaceInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaceInfo"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
              */
             400: {
                 headers: {
@@ -25080,6 +25806,70 @@ export interface operations {
             };
         };
     };
+    planRoute: {
+        parameters: {
+            query: {
+                fromLat: number;
+                fromLng: number;
+                toLat: number;
+                toLng: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeoRoute"][];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `TOO_MANY_REQUESTS`: Gửi quá nhiều lần trong thời gian ngắn; đợi rồi thử lại. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tính đường tạm thời không phản hồi; thử lại sau. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     reverseGeocode: {
         parameters: {
             query: {
@@ -25140,7 +25930,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ tạm thời không phản hồi; thử lại sau. */
             503: {
                 headers: {
                     [name: string]: unknown;
@@ -25283,7 +26073,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ tạm thời không phản hồi; thử lại sau. */
             503: {
                 headers: {
                     [name: string]: unknown;
@@ -25346,7 +26136,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ (Goong) tạm thời không phản hồi; thử lại sau. */
+            /** @description - `GEOCODING_UNAVAILABLE`: Dịch vụ tra địa chỉ tạm thời không phản hồi; thử lại sau. */
             503: {
                 headers: {
                     [name: string]: unknown;
@@ -25362,10 +26152,15 @@ export interface operations {
             query?: {
                 lat?: number;
                 lng?: number;
-                displayCategoryId?: string;
+                displayCategoryId?: string[];
                 deals?: boolean;
                 hide?: string[];
                 page?: number;
+                sort?: string;
+                highlyRated?: boolean;
+                promotions?: boolean;
+                bestSellers?: boolean;
+                nearby?: boolean;
             };
             header?: never;
             path?: never;
@@ -25388,6 +26183,8 @@ export interface operations {
              *     - `INVALID_POSITION`: Chỉ gửi một trong hai toạ độ, hoặc toạ độ ngoài phạm vi.
              *     - `INVALID_PAGE`: `page` âm hoặc quá lớn.
              *     - `TOO_MANY_HIDDEN`: `hide` có hơn 100 quán.
+             *     - `INVALID_SORT`: `sort` không phải RECOMMENDED hay RATING.
+             *     - `TOO_MANY_CATEGORIES`: Gửi hơn 30 `displayCategoryId`.
              */
             400: {
                 headers: {

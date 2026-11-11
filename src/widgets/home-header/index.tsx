@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Image, type ImageSource } from 'expo-image'
 import { ArrowRight, BadgePercent, ChevronDown, ClipboardList, Heart, ScanLine, Search } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
-import { AccessibilityInfo, Pressable, StyleSheet, View } from 'react-native'
+import { AccessibilityInfo, Pressable, StyleSheet, View, type ViewStyle } from 'react-native'
 import Animated, { Easing, ReduceMotion, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Svg, { Path } from 'react-native-svg'
@@ -28,6 +28,7 @@ type Props = {
   onScan: () => void
   onSearch: () => void
   /** The biggest discount nearby, for "Giảm đến X%"; 0 hides the strip. */
+  deliveryLabel: string
   dealMaxPercent: number
   onDeals: () => void
 }
@@ -36,7 +37,7 @@ type Props = {
  * The top of the home page: orange, with a wavy lower edge and a soft light sweeping across it from time to time. The address
  * and the shortcuts (favourite shops, orders), the scan button and the search, then the Deal HOT strip.
  */
-export function HomeHeader({ guest, onSignIn, street, onAddress, onFavorites, onOrders, onScan, onSearch, dealMaxPercent, onDeals }: Props) {
+export function HomeHeader({ deliveryLabel, guest, onSignIn, street, onAddress, onFavorites, onOrders, onScan, onSearch, dealMaxPercent, onDeals }: Props) {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
   const [width, setWidth] = useState(0)
@@ -44,19 +45,10 @@ export function HomeHeader({ guest, onSignIn, street, onAddress, onFavorites, on
     // The light sweeps over the orange and its wavy edge alike; below the wave it is white on white, so it does not show.
     <View style={styles.clip} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       <View style={[styles.orange, { backgroundColor: theme.primary, paddingTop: insets.top + spacing.sm }]}>
-        {guest ? (
-          <View style={styles.guestRow}>
-            <Pressable accessibilityRole="button" onPress={onSignIn} style={styles.signIn}>
-              <Text variant="bodySm" color={WHITE} style={styles.signInText}>
-                Đăng nhập
-              </Text>
-            </Pressable>
-          </View>
-        ) : (
         <View style={styles.row}>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Giao ngay tới ${street ?? 'địa chỉ chưa chọn'}. Đổi địa chỉ`} onPress={onAddress} style={styles.address}>
+          <Pressable accessibilityRole="button" accessibilityLabel={`${deliveryLabel} tới ${street ?? 'địa chỉ chưa chọn'}. Đổi địa chỉ`} onPress={onAddress} style={styles.address}>
             <Text variant="caption" color="rgba(255,255,255,0.85)">
-              Giao ngay
+              {deliveryLabel}
             </Text>
             <View style={styles.addressLine}>
               <Text variant="titleSm" color={WHITE} numberOfLines={1} style={styles.flexShrink}>
@@ -65,14 +57,23 @@ export function HomeHeader({ guest, onSignIn, street, onAddress, onFavorites, on
               <ChevronDown size={18} color={WHITE} strokeWidth={2.25} />
             </View>
           </Pressable>
-          <RoundIcon label="Quán yêu thích" onPress={onFavorites}>
-            <Heart size={20} color={WHITE} strokeWidth={2} />
-          </RoundIcon>
-          <RoundIcon label="Đơn hàng ăn uống" onPress={onOrders}>
-            <ClipboardList size={20} color={WHITE} strokeWidth={2} />
-          </RoundIcon>
+          {guest ? (
+            <Pressable accessibilityRole="button" onPress={onSignIn} style={styles.signIn}>
+              <Text variant="bodySm" color={WHITE} style={styles.signInText}>
+                Đăng nhập
+              </Text>
+            </Pressable>
+          ) : (
+            <>
+              <RoundIcon label="Quán yêu thích" onPress={onFavorites}>
+                <Heart size={20} color={WHITE} strokeWidth={2} />
+              </RoundIcon>
+              <RoundIcon label="Đơn hàng ăn uống" onPress={onOrders}>
+                <ClipboardList size={20} color={WHITE} strokeWidth={2} />
+              </RoundIcon>
+            </>
+          )}
         </View>
-        )}
 
         <View style={styles.row}>
           <Pressable accessibilityRole="button" accessibilityLabel="Quét mã QR của quán" onPress={onScan} style={styles.scan}>
@@ -120,9 +121,59 @@ export function HomeHeader({ guest, onSignIn, street, onAddress, onFavorites, on
   )
 }
 
-function RoundIcon({ label, onPress, children }: { label: string; onPress: () => void; children: React.ReactNode }) {
+type StickyProps = Pick<Props, 'deliveryLabel' | 'guest' | 'onSignIn' | 'street' | 'onAddress' | 'onFavorites' | 'onOrders' | 'onScan' | 'onSearch'>
+
+/** The same header once the page has scrolled: on white, without the Deal HOT strip, which is not always there. */
+export function HomeHeaderCompact({ deliveryLabel, guest, onSignIn, street, onAddress, onFavorites, onOrders, onScan, onSearch }: StickyProps) {
+  const theme = useTheme()
+  const soft = { backgroundColor: theme.surfaceMuted }
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} hitSlop={6} style={styles.round}>
+    <>
+      <View style={styles.row}>
+          <Pressable accessibilityRole="button" accessibilityLabel={`${deliveryLabel} tới ${street ?? 'địa chỉ chưa chọn'}. Đổi địa chỉ`} onPress={onAddress} style={styles.address}>
+            <Text variant="caption" muted>
+              {deliveryLabel}
+            </Text>
+            <View style={styles.addressLine}>
+              <Text variant="titleSm" numberOfLines={1} style={styles.flexShrink}>
+                {street ?? 'Chọn địa chỉ giao hàng'}
+              </Text>
+              <ChevronDown size={18} color={theme.text} strokeWidth={2.25} />
+            </View>
+          </Pressable>
+          {guest ? (
+            <Pressable accessibilityRole="button" onPress={onSignIn} style={[styles.signIn, soft]}>
+              <Text variant="bodySm" style={styles.signInText}>
+                Đăng nhập
+              </Text>
+            </Pressable>
+          ) : (
+            <>
+              <RoundIcon label="Quán yêu thích" onPress={onFavorites} style={soft}>
+                <Heart size={20} color={theme.text} strokeWidth={2} />
+              </RoundIcon>
+              <RoundIcon label="Đơn hàng ăn uống" onPress={onOrders} style={soft}>
+                <ClipboardList size={20} color={theme.text} strokeWidth={2} />
+              </RoundIcon>
+            </>
+          )}
+      </View>
+      <View style={styles.row}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Quét mã QR của quán" onPress={onScan} style={[styles.scan, soft]}>
+          <ScanLine size={20} color={theme.text} strokeWidth={2} />
+        </Pressable>
+        <Pressable accessibilityRole="search" accessibilityLabel="Tìm món ăn" onPress={onSearch} style={[styles.search, soft]}>
+          <Search size={18} color={theme.textMuted} />
+          <TypingHint phrases={HINTS} color={theme.textMuted} />
+        </Pressable>
+      </View>
+    </>
+  )
+}
+
+function RoundIcon({ label, onPress, style, children }: { label: string; onPress: () => void; style?: ViewStyle; children: React.ReactNode }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} hitSlop={6} style={[styles.round, style]}>
       {children}
     </Pressable>
   )
@@ -243,7 +294,6 @@ const styles = StyleSheet.create({
   search: { flex: 1, height: touchTarget.min, borderRadius: radius.pill, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.lg },
   deal: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   hot: { fontFamily: fonts.extrabold, letterSpacing: 0.4, textTransform: 'uppercase' },
-  guestRow: { flexDirection: 'row', justifyContent: 'flex-end' },
   signIn: { height: 40, paddingHorizontal: spacing.lg, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.22)' },
   signInText: { fontFamily: fonts.semibold },
   dealLine: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },

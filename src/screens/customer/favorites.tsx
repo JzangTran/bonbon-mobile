@@ -1,10 +1,10 @@
 import { useRouter } from 'expo-router'
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StyleSheet, View } from 'react-native'
 import { useDeliveryPoint } from '@/entities/address'
 import { useFavoriteShops, type FeedCard } from '@/entities/feed'
 import { problemMessage } from '@/shared/api'
 import { Button, EmptyState, Notice, useTheme } from '@/shared/ui'
-import { ShopFeedCard } from '@/widgets/shop-feed-card'
+import { ShopFeedCard, ShopFeedSkeleton } from '@/widgets/shop-feed-card'
 
 /** "Quán yêu thích": the shops the customer hearted, newest first, each with its dishes like on the home page. */
 export default function FavoritesScreen() {
@@ -22,7 +22,7 @@ export default function FavoritesScreen() {
       ListHeaderComponent={favorites.isError ? <Notice tone="error" message={problemMessage(favorites.error)} /> : undefined}
       ListEmptyComponent={
         favorites.isPending ? (
-          <ActivityIndicator style={styles.loading} color={theme.primary} />
+          <ShopFeedSkeleton />
         ) : (
           <View>
             <EmptyState mascot="all-clear" title="Chưa có quán yêu thích" hint="Bấm ⋮ cạnh tên quán ở trang chủ rồi chọn Thêm vào mục yêu thích." />
@@ -36,5 +36,4 @@ export default function FavoritesScreen() {
 
 const styles = StyleSheet.create({
   separator: { height: 8 },
-  loading: { marginVertical: 24 },
 })

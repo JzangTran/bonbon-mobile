@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { useAcknowledge, useNotifications, type NotificationItem } from '@/entities/notification'
 import { problemMessage } from '@/shared/api'
 import { formatAgo } from '@/shared/lib/format'
-import { Button, Card, Notice, Screen, Text, spacing, useTheme , EmptyState } from '@/shared/ui'
+import { CardListSkeleton, Button, Card, Notice, Screen, Text, spacing, useTheme, EmptyState } from '@/shared/ui'
 
 /**
  * The stored notification list (notifications.md): unread ones stand out, tapping one acknowledges it and opens its
@@ -32,6 +32,7 @@ export function NotificationsScreen({ audience }: { audience: 'customer' | 'sell
         {(list.data?.unread ?? 0) > 0 ? <Button title="Đọc hết" variant="ghost" loading={acknowledge.isPending} onPress={() => acknowledge.mutate('all')} /> : null}
       </View>
       {list.isError ? <Notice tone="error" message={problemMessage(list.error)} /> : null}
+      {list.isLoading ? <CardListSkeleton count={5} lines={2} /> : null}
       {list.data && items.length === 0 ? (
         <EmptyState mascot="empty-notifications" title="Chưa có thông báo nào" hint={audience === 'seller' ? 'Đơn mới và thay đổi của đơn hàng sẽ hiện ở đây.' : 'Cập nhật về đơn hàng của bạn sẽ hiện ở đây.'} />
       ) : null}

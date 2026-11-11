@@ -20,6 +20,28 @@ export type DisplayCategory = { id: string; name: string; imageUrl?: string | nu
 
 type Point = { lat: number; lng: number } | null
 
+/** What the customer narrowed the home page to. Nothing chosen is the plain list, the shops the server recommends first. */
+export type HomeFilters = {
+  sort: 'RECOMMENDED' | 'RATING'
+  highlyRated: boolean
+  promotions: boolean
+  bestSellers: boolean
+  nearby: boolean
+  cuisines: string[]
+}
+export const NO_FILTERS: HomeFilters = { sort: 'RECOMMENDED', highlyRated: false, promotions: false, bestSellers: false, nearby: false, cuisines: [] }
+
+export function sameFilters(a: HomeFilters, b: HomeFilters) {
+  return (
+    a.sort === b.sort &&
+    a.highlyRated === b.highlyRated &&
+    a.promotions === b.promotions &&
+    a.bestSellers === b.bestSellers &&
+    a.nearby === b.nearby &&
+    [...a.cuisines].sort().join() === [...b.cuisines].sort().join()
+  )
+}
+
 export const FEED_KEY = ['home-feed'] as const
 
 /**
@@ -27,14 +49,14 @@ export const FEED_KEY = ['home-feed'] as const
  * (a guest who has not typed an address): every shop, best rated first. The server leaves out the signed-in customer's hidden
  * shops; a guest's own hidden shops are sent along.
  */
-export function useHomeFeed({ position, displayCategoryId, deals = false, guestHidden = [] }: {
+export function useHomeFeed({ position, filters = NO_FILTERS, deals = false, guestHidden = [] }: {
   position: Point
-  displayCategoryId?: string | null
+  filters?: HomeFilters
   deals?: boolean
   guestHidden?: string[]
 }) {
   return useInfiniteQuery({
-    queryKey: [...FEED_KEY, position?.lat ?? null, position?.lng ?? null, displayCategoryId ?? null, deals, guestHidden.join(',')],
+    queryKey: [...FEED_KEY, position?.lat ?? null, position?.lng ?? null, filters, deals, guestHidden.join(',')],
     initialPageParam: 0,
     staleTime: 60_000,
     queryFn: async ({ pageParam }) => {
@@ -42,7 +64,12 @@ export function useHomeFeed({ position, displayCategoryId, deals = false, guestH
         params: {
           query: {
             ...(position ? { lat: position.lat, lng: position.lng } : {}),
-            ...(displayCategoryId ? { displayCategoryId } : {}),
+            ...(filters.cuisines.length ? { displayCategoryId: filters.cuisines } : {}),
+            ...(filters.sort !== 'RECOMMENDED' ? { sort: filters.sort } : {}),
+            ...(filters.highlyRated ? { highlyRated: true } : {}),
+            ...(filters.promotions ? { promotions: true } : {}),
+            ...(filters.bestSellers ? { bestSellers: true } : {}),
+            ...(filters.nearby ? { nearby: true } : {}),
             ...(deals ? { deals: true } : {}),
             ...(guestHidden.length ? { hide: guestHidden } : {}),
             page: pageParam,

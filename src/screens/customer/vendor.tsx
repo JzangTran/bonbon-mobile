@@ -14,7 +14,7 @@ import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
 import { mockPhoto } from '@/shared/lib/mock-photos'
-import { Button, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Button, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useToast } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
 import { DishSheet } from './dish-sheet'
 import { ShopReviewsCard } from './shop-reviews'
@@ -116,6 +116,8 @@ export default function VendorScreen() {
         </View>
 
         {menu.isError ? <Notice tone="error" message={problemMessage(menu.error, 'Không tìm thấy quán này.')} /> : null}
+
+        {!shop && menu.isLoading ? <VendorSkeleton /> : null}
 
         {shop ? (
           <View style={[styles.info, { backgroundColor: theme.surface, borderColor: theme.border }]}>
@@ -277,7 +279,37 @@ function DishRow({ item, canAdd, onOpen, onAdd }: { item: ShopDish; canAdd: bool
   )
 }
 
+/** The shop on its way, under its cover: the name card, then dishes with their pictures. */
+function VendorSkeleton() {
+  const theme = useTheme()
+  return (
+    <SkeletonGroup>
+      <View style={[styles.info, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+        <Skeleton width={76} height={76} radius={radius.md} />
+        <View style={styles.flex}>
+          <Skeleton width="70%" height={20} />
+          <Skeleton width={110} height={14} style={styles.skeletonGap} />
+        </View>
+      </View>
+      <View style={styles.section}>
+        <Skeleton width={130} height={20} />
+        {[0, 1, 2, 3].map((dish) => (
+          <View key={dish} style={[styles.dish, styles.dishMain]}>
+            <Skeleton width={92} height={92} radius={radius.md} />
+            <View style={styles.flex}>
+              <Skeleton width="75%" height={16} />
+              <Skeleton width="50%" height={12} style={styles.skeletonGap} />
+              <Skeleton width={80} height={16} style={styles.skeletonGap} />
+            </View>
+          </View>
+        ))}
+      </View>
+    </SkeletonGroup>
+  )
+}
+
 const styles = StyleSheet.create({
+  skeletonGap: { marginTop: spacing.sm },
   flex: { flex: 1 },
   page: { paddingBottom: 120 },
   cover: { height: COVER_HEIGHT, overflow: 'hidden' },

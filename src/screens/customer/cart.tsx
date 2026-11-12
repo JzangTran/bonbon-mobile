@@ -27,7 +27,7 @@ export default function CartScreen() {
   const place = usePlaceOrder()
   const [note, setNote] = useState('')
   const [chosenAddress, setChosenAddress] = useState<string | null>(null)
-  const [method, setMethod] = useState<'COD' | 'ONLINE'>('COD')
+  const [method, setMethod] = useState<'COD' | 'ONLINE' | 'BANK_TRANSFER'>('COD')
   // One key per checkout attempt: a retry after a timeout returns the same order instead of a second one.
   const [key, setKey] = useState(newIdempotencyKey)
 
@@ -36,7 +36,7 @@ export default function CartScreen() {
   const { totals, shop } = cart
   // MoMo only takes 1.000 to 50.000.000 ₫; a total outside that is paid at the door.
   const onlineAllowed = canPayOnline(totals.grandTotal)
-  const payMethod = method === 'ONLINE' && onlineAllowed ? 'ONLINE' : 'COD'
+  const payMethod = method === 'ONLINE' && !onlineAllowed ? 'COD' : method
   const canOrder = Boolean(address) && totals.count > 0 && !totals.belowMinimum
 
   if (!cart.ready) return <Screen>{null}</Screen>
@@ -76,7 +76,13 @@ export default function CartScreen() {
           cart.clear()
           // After the first order the customer has a reason to hear about it: the moment to ask for permission.
           void registerForPush({ ask: true })
-          toast.show(payMethod === 'ONLINE' ? 'Đã tạo đơn. Hãy hoàn tất thanh toán MoMo.' : 'Đã đặt đơn. Quán sẽ xác nhận trong ít phút.')
+          toast.show(
+            payMethod === 'ONLINE'
+              ? 'Đã tạo đơn. Hãy hoàn tất thanh toán MoMo.'
+              : payMethod === 'BANK_TRANSFER'
+                ? 'Đã đặt đơn. Hãy quét mã để chuyển khoản cho quán.'
+                : 'Đã đặt đơn. Quán sẽ xác nhận trong ít phút.',
+          )
           router.replace({ pathname: '/customer/order', params: { id: order.id } })
           // The order screen waits for the server to confirm the payment; this only takes the customer to MoMo.
           if (payMethod === 'ONLINE') void openMomo(order.payment)
@@ -86,6 +92,8 @@ export default function CartScreen() {
           setKey(newIdempotencyKey())
           // a voucher that no longer applies comes off, so the next try shows the real total
           if (problemCode(problem)?.startsWith('VOUCHER_')) cart.setVoucher(null)
+          // this shop has no bank account VietQR knows: back to cash, the customer sees why in the toast
+          if (problemCode(problem) === 'BANK_TRANSFER_UNAVAILABLE') setMethod('COD')
         },
       },
     )
@@ -173,6 +181,12 @@ export default function CartScreen() {
             title: 'Ví MoMo',
             hint: onlineAllowed ? 'Thanh toán ngay trong ứng dụng MoMo, quán chỉ thấy đơn sau khi bạn trả.' : 'MoMo chỉ nhận đơn từ 1.000 ₫ đến 50.000.000 ₫.',
             enabled: onlineAllowed,
+          },
+          {
+            id: 'BANK_TRANSFER' as const,
+            title: 'Chuyển khoản ngân hàng',
+            hint: 'Quét mã VietQR bằng ứng dụng ngân hàng, tiền vào thẳng tài khoản của quán.',
+            enabled: true,
           },
         ].map((option) => {
           const selected = payMethod === option.id

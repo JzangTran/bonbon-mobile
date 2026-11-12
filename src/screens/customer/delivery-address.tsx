@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
-import { Building2, Clock, Home, LocateFixed, MapPin, MoreVertical, Plus, type LucideIcon } from 'lucide-react-native'
+import { Building2, Clock, Home, LocateFixed, MapPin, MoreVertical, Plus, Trash2, type LucideIcon } from 'lucide-react-native'
 import { useState } from 'react'
 import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import {
   ADDRESSES_QUERY_KEY,
+  addressWithSingleLabel,
   chooseDeliveryPlace,
   clearCurrentLocation,
   distanceKm,
@@ -20,6 +21,7 @@ import {
 import { useSession } from '@/entities/session'
 import { afterSignIn } from '@/features/after-sign-in'
 import { api, problemMessage } from '@/shared/api'
+import { confirm } from '@/shared/lib/confirm'
 import { CardListSkeleton, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
 import { PlaceSearchHeader, PlaceSuggestions, type Suggestion } from './place-parts'
 
@@ -132,7 +134,7 @@ function TabButton({ label, on, onPress }: { label: string; on: boolean; onPress
   )
 }
 
-function PlaceRow({ icon: Icon, title, distance, detail, onPress, onMore }: { icon: LucideIcon; title: string; distance?: string; detail: string; onPress?: () => void; onMore?: () => void }) {
+function PlaceRow({ icon: Icon, title, distance, detail, onPress, onMore, moreIcon: MoreIcon = MoreVertical, moreLabel }: { icon: LucideIcon; title: string; distance?: string; detail: string; onPress?: () => void; onMore?: () => void; moreIcon?: LucideIcon; moreLabel?: string }) {
   const theme = useTheme()
   return (
     <View style={styles.row}>
@@ -148,8 +150,8 @@ function PlaceRow({ icon: Icon, title, distance, detail, onPress, onMore }: { ic
         </View>
       </Pressable>
       {onMore ? (
-        <Pressable accessibilityRole="button" accessibilityLabel={`Chi tiết ${title}`} hitSlop={8} onPress={onMore} style={styles.more}>
-          <MoreVertical size={20} color={theme.textMuted} />
+        <Pressable accessibilityRole="button" accessibilityLabel={moreLabel ?? `Chi tiết ${title}`} hitSlop={8} onPress={onMore} style={styles.more}>
+          <MoreIcon size={20} color={theme.textMuted} />
         </Pressable>
       ) : null}
     </View>
@@ -182,14 +184,41 @@ function SavedTab({ signedIn, onDone }: { signedIn: boolean; onDone: () => void 
     },
     onError: (e) => toast.show(problemMessage(e), 'error'),
   })
+  const remove = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await api.DELETE('/api/account/addresses/{id}', { params: { path: { id } } })
+      if (error) throw error
+    },
+    onSuccess: async () => {
+      toast.show('Đã gỡ địa chỉ.')
+      await queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY })
+    },
+    onError: (e) => toast.show(problemMessage(e), 'error'),
+  })
+  const askRemove = async (id: string, label: string) => {
+    if (await confirm(`Gỡ "${label}"?`, 'Địa chỉ này sẽ bị xoá khỏi danh sách đã lưu. Đơn đã đặt không bị ảnh hưởng.', 'Gỡ')) remove.mutate(id)
+  }
+  const saved = addresses.data ?? []
+  // one Nhà and one Công ty: once there is one, its button goes, and the way to change it is to remove it
+  const hasHome = signedIn && !!addressWithSingleLabel(saved, 'Nhà')
+  const hasWork = signedIn && !!addressWithSingleLabel(saved, 'Công ty')
   return (
     <View>
       <AddOption icon={Plus} label="Thêm mới" color={theme.info} onPress={() => add()} />
-      <AddOption icon={Home} label="Thêm Nhà" color={theme.info} onPress={() => add('Nhà')} />
-      <AddOption icon={Building2} label="Thêm Công ty" color={theme.info} onPress={() => add('Công ty')} />
+      {hasHome ? null : <AddOption icon={Home} label="Thêm Nhà" color={theme.info} onPress={() => add('Nhà')} />}
+      {hasWork ? null : <AddOption icon={Building2} label="Thêm Công ty" color={theme.info} onPress={() => add('Công ty')} />}
       {addresses.isLoading ? <CardListSkeleton count={2} /> : null}
-      {(addresses.data ?? []).map((a) => (
-        <PlaceRow key={a.id} icon={a.label === 'Nhà' ? Home : a.label === 'Công ty' ? Building2 : MapPin} title={a.label ?? ''} detail={a.formattedAddress ?? ''} onPress={() => select.mutate(a.id!)} />
+      {saved.map((a) => (
+        <PlaceRow
+          key={a.id}
+          icon={a.label === 'Nhà' ? Home : a.label === 'Công ty' ? Building2 : MapPin}
+          title={a.label ?? ''}
+          detail={a.formattedAddress ?? ''}
+          onPress={() => select.mutate(a.id!)}
+          onMore={() => void askRemove(a.id!, a.label ?? 'địa chỉ này')}
+          moreIcon={Trash2}
+          moreLabel={`Gỡ ${a.label ?? 'địa chỉ này'}`}
+        />
       ))}
     </View>
   )
@@ -209,7 +238,8 @@ function AddOption({ icon: Icon, label, color, onPress }: { icon: LucideIcon; la
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   strong: { fontFamily: fonts.semibold },
-  page: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xxxl, gap: spacing.md },
+  // room under the header, so the two tabs do not sit against it
+  page: { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xxxl, gap: spacing.md },
   tabs: { flexDirection: 'row', gap: spacing.sm },
   tab: { height: 36, paddingHorizontal: spacing.lg, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: touchTarget.min },

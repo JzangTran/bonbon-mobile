@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react-native'
 import { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { ADDRESSES_QUERY_KEY, resolvePlace, useLocatedPlace, type RecentPlace } from '@/entities/address'
+import { ADDRESSES_QUERY_KEY, addressWithSingleLabel, resolvePlace, useAddresses, useLocatedPlace, type RecentPlace } from '@/entities/address'
 import { api, problemFieldErrors, problemMessage } from '@/shared/api'
 import { Input, Notice, OsmMap, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
 import { FooterButton, PlaceSearchHeader, PlaceSuggestions, type Suggestion } from './place-parts'
@@ -60,6 +60,9 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
       return data
     },
   })
+  const saved = useAddresses()
+  // Nhà and Công ty are one address each: say so here, before the server has to
+  const takenBy = addressWithSingleLabel(saved.data ?? [], name)
   const needsPhone = me.isSuccess && !me.data.phone
   const phone = me.data?.phone ?? typedPhone.trim()
   const save = useMutation({
@@ -85,7 +88,7 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
     },
   })
   const errors = save.isError ? problemFieldErrors(save.error) : {}
-  const ready = name.trim() !== '' && !!place.placeId && phone !== '' && me.isSuccess && !save.isPending
+  const ready = name.trim() !== '' && !takenBy && !!place.placeId && phone !== '' && me.isSuccess && !save.isPending
   return (
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
@@ -99,7 +102,13 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.page}>
         <OsmMap lat={place.lat} lng={place.lng} height={MAP_HEIGHT} pinColor={theme.primary} me={here?.position} />
         {save.isError && Object.keys(errors).length === 0 ? <Notice tone="error" message={problemMessage(save.error)} /> : null}
-        <Input label="Tên" value={name} onChangeText={setName} maxLength={30} error={errors.label} />
+        <Input
+          label="Tên"
+          value={name}
+          onChangeText={setName}
+          maxLength={30}
+          error={errors.label ?? (takenBy ? `Bạn đã có địa chỉ "${takenBy.label}". Hãy gỡ địa chỉ đó ở mục Đã lưu trước, hoặc đặt tên khác.` : undefined)}
+        />
         <View style={styles.field}>
           <Text variant="bodySm">Địa chỉ</Text>
           <Pressable accessibilityRole="button" accessibilityLabel={`Địa chỉ: ${place.detail}. Đổi địa chỉ`} onPress={onChangeAddress} style={[styles.addressBox, { backgroundColor: theme.surface, borderColor: theme.borderInput }]}>

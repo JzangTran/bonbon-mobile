@@ -48,18 +48,20 @@ export function Sheet({ visible, onClose, title, children, fullScreen = false, h
         <Animated.View style={[StyleSheet.absoluteFill, clearBackdrop ? undefined : styles.dim, dim]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Đóng" />
         </Animated.View>
-        <Animated.View
-          style={[
-            styles.sheet,
-            fullScreen ? [styles.full, { paddingTop: insets.top + spacing.md }] : undefined,
-            { backgroundColor: theme.surface, paddingBottom: Math.max(insets.bottom, spacing.lg) },
-            rise,
-          ]}
-        >
+        {/* the sheet and what floats above it rise as one; `above` sits in the flow over the sheet, so it can never overlap it */}
+        <Animated.View style={[fullScreen ? styles.fullRise : undefined, rise]}>
           {above ? <View style={styles.above}>{above}</View> : null}
-          {fullScreen ? null : <View style={[styles.handle, { backgroundColor: theme.divider }]} />}
-          {title ? <Text variant="title">{title}</Text> : null}
-          {children}
+          <View
+            style={[
+              styles.sheet,
+              fullScreen ? [styles.full, { paddingTop: insets.top + spacing.md }] : undefined,
+              { backgroundColor: theme.surface, paddingBottom: Math.max(insets.bottom, spacing.lg) },
+            ]}
+          >
+            {fullScreen ? null : <View style={[styles.handle, { backgroundColor: theme.divider }]} />}
+            {title ? <Text variant="title">{title}</Text> : null}
+            {children}
+          </View>
         </Animated.View>
       </View>
     </Modal>
@@ -75,7 +77,8 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.md,
   },
-  above: { position: 'absolute', left: spacing.lg, bottom: '100%', marginBottom: spacing.md },
+  above: { alignSelf: 'flex-start', marginLeft: spacing.lg, marginBottom: spacing.md },
+  fullRise: { flex: 1 },
   full: { flex: 1, borderTopLeftRadius: 0, borderTopRightRadius: 0 },
   handle: { alignSelf: 'center', width: 40, height: 4, borderRadius: radius.pill },
 })

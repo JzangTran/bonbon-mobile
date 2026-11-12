@@ -13,9 +13,10 @@ export type FeedShop = {
   ratingAverage?: number | null
   ratingCount?: number
   deliveryFee?: number
+  deliveryRadiusKm?: number | null
 }
 export type FeedCard = { shop: FeedShop; dishes: FeedDish[] }
-export type FeedPage = { items: FeedCard[]; page: number; hasMore: boolean; total: number; dealMaxPercent: number }
+export type FeedPage = { items: FeedCard[]; page: number; hasMore: boolean; total: number; dealMaxPercent: number; outOfArea?: boolean }
 export type DisplayCategory = { id: string; name: string; imageUrl?: string | null }
 
 type Point = { lat: number; lng: number } | null

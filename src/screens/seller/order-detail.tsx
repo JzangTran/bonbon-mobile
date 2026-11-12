@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Linking, Pressable, StyleSheet, View } from 'react-native'
-import { OrderStatusBadge, useOrderLive, useShopOrder, type OrderStatus } from '@/entities/order'
+import { OrderStatusBadge, useOrderAction, useOrderLive, useShopOrder, type OrderStatus } from '@/entities/order'
+import { confirm } from '@/shared/lib/confirm'
 import { problemMessage } from '@/shared/api'
 import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
@@ -113,8 +114,10 @@ export default function SellerOrderDetailScreen() {
                 Khách trả {formatVnd(data.totals?.grandTotal)}
               </Text>
               <Text variant="bodySm" muted>
-                {data.paymentMethod === 'COD' ? 'Thu tiền mặt khi giao' : 'Thanh toán online'} · {data.paymentStatus === 'PAID' ? 'đã thu tiền' : 'chưa thu'}
+                {data.paymentMethod === 'COD' ? 'Thu tiền mặt khi giao' : data.paymentMethod === 'BANK_TRANSFER' ? 'Khách chuyển khoản' : 'Thanh toán online'} ·{' '}
+                {data.paymentStatus === 'PAID' ? 'đã thu tiền' : 'chưa thu'}
               </Text>
+              {data.paymentMethod === 'BANK_TRANSFER' && data.paymentStatus !== 'PAID' ? <TransferReceived id={data.id!} message={`BONBON${data.number}`} /> : null}
             </View>
           </Card>
 
@@ -140,6 +143,24 @@ export default function SellerOrderDetailScreen() {
         </>
       ) : null}
     </Screen>
+  )
+}
+
+/** A bank transfer goes straight to the shop's account: the shop checks its bank for the message and marks it received. */
+function TransferReceived({ id, message }: { id: string; message: string }) {
+  const action = useOrderAction(id)
+  const ask = async () => {
+    if (await confirm('Đã nhận tiền?', `Chỉ xác nhận khi tài khoản của quán đã nhận khoản chuyển có nội dung ${message}.`, 'Đã nhận tiền')) {
+      action.mutate({ kind: 'transferReceived' })
+    }
+  }
+  return (
+    <View style={{ gap: spacing.xs }}>
+      <Text variant="caption" muted>
+        Nội dung chuyển khoản: {message}
+      </Text>
+      <Button title="Đã nhận tiền" variant="outline" loading={action.isPending} onPress={() => void ask()} />
+    </View>
   )
 }
 

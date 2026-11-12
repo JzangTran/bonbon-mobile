@@ -41,6 +41,7 @@ export type OrderAction =
   | { kind: 'reject'; reason: string }
   | { kind: 'cancel'; reason: string }
   | { kind: 'advance'; to: 'PREPARING' | 'OUT_FOR_DELIVERY' | 'DELIVERED' }
+  | { kind: 'transferReceived' }
 
 /** Confirm, reject, move to the next step or cancel one order; the answer is the updated order. */
 export function useOrderAction(id: string) {
@@ -59,6 +60,8 @@ export function useOrderAction(id: string) {
             return api.POST('/api/merchant/orders/{id}/cancel', { ...path, body: { reason: action.reason } })
           case 'advance':
             return api.POST('/api/merchant/orders/{id}/status', { ...path, body: { to: action.to } })
+          case 'transferReceived':
+            return api.POST('/api/merchant/orders/{id}/transfer-received', path)
         }
       }
       const result = await send()

@@ -1268,6 +1268,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/merchant/orders/{id}/transfer-received": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đã nhận tiền chuyển khoản
+         * @description Quán xác nhận khoản chuyển khoản của khách đã vào tài khoản: đơn chuyển sang đã thanh toán.
+         *
+         *     **Cần đăng nhập**, quyền `order:write`.
+         */
+        post: operations["markShopOrderTransferReceived"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/merchant/orders/{id}/status": {
         parameters: {
             query?: never;
@@ -3572,6 +3594,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders/{id}/bank-transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Thông tin chuyển khoản
+         * @description Tài khoản ngân hàng của quán, số tiền, nội dung chuyển khoản và mã VietQR để khách quét bằng ứng dụng ngân hàng. Tiền đi thẳng vào tài khoản quán; `received` thành true khi quán xác nhận đã nhận tiền.
+         *
+         *     **Cần đăng nhập**, quyền `order:create`.
+         */
+        get: operations["getOrderBankTransfer"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications": {
         parameters: {
             query?: never;
@@ -4241,7 +4285,7 @@ export interface paths {
         };
         /**
          * Danh sách quán ở trang chủ
-         * @description Mỗi trang 10 quán, mỗi quán tối đa 10 món đang bán (món giảm giá trước). Có toạ độ giao hàng: quán có bán kính giao phủ tới điểm đó, gần trước. Không có toạ độ (khách chưa nhập địa chỉ): mọi quán, đánh giá cao trước. `displayCategoryId` lọc theo danh mục ở trang chủ, gửi nhiều lần để lấy quán thuộc một trong các danh mục; `deals=true` chỉ quán có món giảm giá, giảm nhiều trước. Bộ lọc: `sort=RATING` đánh giá cao trước (mặc định `RECOMMENDED`); `highlyRated=true` đánh giá từ 4.4; `promotions=true` có món giảm giá hoặc voucher dùng được; `bestSellers=true` từ 10 đơn đã giao trong 30 ngày; `nearby=true` trong 2 km (cần toạ độ). Khách đã đăng nhập không thấy quán đã ẩn; khách chưa đăng nhập gửi quán đã ẩn trong `hide`. `dealMaxPercent` là mức giảm cao nhất trong khu, cho dòng "Giảm đến X%".
+         * @description Mỗi trang 10 quán, mỗi quán tối đa 10 món đang bán (món giảm giá trước). Có toạ độ giao hàng: quán có bán kính giao phủ tới điểm đó, gần trước. Không có toạ độ (khách chưa nhập địa chỉ): mọi quán, đánh giá cao trước. `displayCategoryId` lọc theo danh mục ở trang chủ, gửi nhiều lần để lấy quán thuộc một trong các danh mục; `deals=true` chỉ quán có món giảm giá, giảm nhiều trước. Bộ lọc: `sort=RATING` đánh giá cao trước (mặc định `RECOMMENDED`); `highlyRated=true` đánh giá từ 4.4; `promotions=true` có món giảm giá hoặc voucher dùng được; `bestSellers=true` từ 10 đơn đã giao trong 30 ngày; `nearby=true` trong 2 km (cần toạ độ). Khách đã đăng nhập không thấy quán đã ẩn; khách chưa đăng nhập gửi quán đã ẩn trong `hide`. `dealMaxPercent` là mức giảm cao nhất trong khu, cho dòng "Giảm đến X%". Không quán nào giao tới toạ độ: `outOfArea=true` và danh sách là các quán gần nhất để xem, chưa đặt được.
          *
          *     **Không cần đăng nhập.**
          */
@@ -6514,10 +6558,6 @@ export interface components {
             /** @description Vì sao quán cho rằng điểm này không đúng. */
             reason: string;
         };
-        OrderStepRequest: {
-            /** @enum {string} */
-            to: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
-        };
         Line: {
             name?: string;
             /** Format: int32 */
@@ -6611,6 +6651,10 @@ export interface components {
              * @description Số tiền, số nguyên VND (không có phần thập phân).
              */
             grandTotal?: number;
+        };
+        OrderStepRequest: {
+            /** @enum {string} */
+            to: "PENDING_PAYMENT" | "PLACED" | "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "REJECTED" | "CANCELLED" | "NOT_DELIVERED";
         };
         OrderReasonRequest: {
             reason?: string;
@@ -8109,6 +8153,20 @@ export interface components {
             paymentMethod?: string;
             paymentStatus?: string;
         };
+        OrderBankTransfer: {
+            bankName?: string;
+            bankBin?: string;
+            accountNumber?: string;
+            accountName?: string;
+            /**
+             * Format: int32
+             * @description Số tiền, số nguyên VND (không có phần thập phân).
+             */
+            amount?: number;
+            message?: string;
+            qrPayload?: string;
+            received?: boolean;
+        };
         NotificationItem: {
             /**
              * Format: uuid
@@ -8838,6 +8896,7 @@ export interface components {
             total?: number;
             /** Format: int32 */
             dealMaxPercent?: number;
+            outOfArea?: boolean;
         };
         DisplayCategory: {
             /**
@@ -15466,6 +15525,89 @@ export interface operations {
             };
         };
     };
+    markShopOrderTransferReceived: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopOrderDetail"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt; `status` cho biết trạng thái hồ sơ.
+             *     - `NOT_A_BANK_TRANSFER`: Đơn không thanh toán bằng chuyển khoản.
+             *     - `ALREADY_PAID`: Đơn đã được ghi nhận thanh toán.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     advanceShopOrder: {
         parameters: {
             query?: never;
@@ -21611,7 +21753,10 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description - `ADDRESS_LIMIT_REACHED`: Đã có đủ 10 địa chỉ. */
+            /**
+             * @description - `ADDRESS_LIMIT_REACHED`: Đã có đủ 10 địa chỉ.
+             *     - `ADDRESS_LABEL_TAKEN`: Đã có một địa chỉ tên "Nhà" (hoặc "Công ty"); mỗi tên chỉ dùng một địa chỉ, gỡ địa chỉ cũ trước.
+             */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -23581,6 +23726,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Problem"];
                 };
             };
+            /** @description - `ADDRESS_LABEL_TAKEN`: Đổi tên thành "Nhà" hoặc "Công ty" khi địa chỉ khác đã mang tên đó. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
             500: {
                 headers: {
@@ -24260,6 +24414,88 @@ export interface operations {
              *     - `CASE_NOT_FOUND`: Đơn này chưa có khiếu nại.
              */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getOrderBankTransfer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderBankTransfer"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `order:create`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `ORDER_NOT_FOUND`: Đơn không tồn tại hoặc không phải của người gọi (không tiết lộ đơn của người khác). */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `NOT_A_BANK_TRANSFER`: Đơn không thanh toán bằng chuyển khoản.
+             *     - `BANK_TRANSFER_UNAVAILABLE`: Quán không còn tài khoản nhận chuyển khoản.
+             */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

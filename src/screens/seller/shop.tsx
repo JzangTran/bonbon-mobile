@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { AutoReplyCard } from './auto-reply-card'
 import { useRouter } from 'expo-router'
 import { Linking, StyleSheet, Switch, View } from 'react-native'
 import { useShopCases } from '@/entities/order-case'
@@ -146,6 +147,8 @@ export default function SellerShopScreen() {
         </Text>
         <Button title="Quét mã đăng nhập web" variant="outline" onPress={() => router.push('/seller/web-login')} />
       </Card>
+
+      <AutoReplyCard />
 
       <Card>
         <Text variant="titleSm">Cài đặt thông báo</Text>

@@ -1,4 +1,5 @@
 import { Image } from 'expo-image'
+import { ReportSheet, type ReportTarget } from '@/features/report-content'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { ArrowLeft, ArrowRight, BadgePercent, Heart, Motorbike, Plus, Star, Store } from 'lucide-react-native'
@@ -34,6 +35,7 @@ export default function VendorScreen() {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
   const { session } = useSession()
+  const [reporting, setReporting] = useState<ReportTarget | null>(null)
   const { position } = useDeliveryPoint(!!session)
   const menu = useShopMenu(id, position)
   const vouchers = useShopVouchers(id)
@@ -215,9 +217,20 @@ export default function VendorScreen() {
                 router.push(session ? { pathname: '/customer/chat', params: { vendorId: shop.id } } : '/login')
               }}
             />
+            {session ? (
+              <Button
+                title="Báo cáo quán"
+                variant="ghost"
+                onPress={() => {
+                  setInfoOpen(false)
+                  setReporting({ type: 'SHOP', id: shop.id ?? '' })
+                }}
+              />
+            ) : null}
           </>
         ) : null}
       </Sheet>
+      <ReportSheet target={reporting} onClose={() => setReporting(null)} />
       <CartBar />
     </View>
   )

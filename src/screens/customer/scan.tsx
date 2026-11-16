@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Notice, Text, radius, spacing } from '@/shared/ui'
+import { webLoginSession } from '@/shared/lib/web-login-code'
 
 const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
 
@@ -65,6 +66,12 @@ export default function ScanScreen() {
           barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
           onBarcodeScanned={({ data }) => {
             if (handled.current) return
+            const webSession = webLoginSession(data)
+            if (webSession) {
+              handled.current = true
+              router.replace({ pathname: '/customer/web-login', params: { s: webSession } })
+              return
+            }
             const id = shopIdFromCode(data)
             if (!id) {
               setProblem('Mã này không phải mã quán trên bonbon.')

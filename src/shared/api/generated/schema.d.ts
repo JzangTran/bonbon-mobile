@@ -1874,6 +1874,138 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/qr-login/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Trạng thái mã QR đăng nhập (web)
+         * @description `EXPIRED` cả khi hết hạn lẫn khi `pollToken` sai, để không ai dò được phiên của người khác.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["qrLoginStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/qr-login/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tạo mã QR đăng nhập (web)
+         * @description Trang đăng nhập của người bán gọi để có mã QR, hiệu lực 3 phút. Vẽ `qrContent` thành mã QR, giữ `pollToken` trong trình duyệt rồi hỏi `status` khoảng 2 giây một lần.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["startQrLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/qr-login/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Quét mã QR đăng nhập (điện thoại)
+         * @description Ứng dụng di động đã đăng nhập gửi mã phiên đọc từ mã QR. Không đăng nhập ngay: trả về trình duyệt và IP đang chờ để người bán đối chiếu, sau đó gọi `confirm` hoặc `reject`.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["scanQrLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/qr-login/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Từ chối đăng nhập web (điện thoại)
+         * @description Người bán không nhận ra trình duyệt đang chờ. Trình duyệt sẽ thấy `REJECTED`.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["rejectQrLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/qr-login/exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Lấy token sau khi điện thoại xác nhận (web)
+         * @description Dùng được một lần. Phiên đăng nhập luôn ở vai trò người bán; refresh token nằm trong cookie như đăng nhập thường.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["exchangeQrLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/qr-login/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Xác nhận đăng nhập web (điện thoại)
+         * @description Chỉ tài khoản đã quét mới xác nhận được. Trình duyệt sẽ thấy `CONFIRMED` và lấy token bằng `exchange`.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        post: operations["confirmQrLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/logout": {
         parameters: {
             query?: never;
@@ -6841,6 +6973,59 @@ export interface components {
         };
         RefreshRequest: {
             refreshToken?: string;
+        };
+        /** @description Trình duyệt hỏi trạng thái hoặc đổi phiên đã xác nhận lấy token. */
+        Poll: {
+            /** @description UUID. */
+            sessionId: string;
+            pollToken: string;
+        };
+        /** @description Trạng thái phiên mà trình duyệt thấy. */
+        Status: {
+            /** @enum {string} */
+            state?: "PENDING" | "SCANNED" | "CONFIRMED" | "REJECTED" | "EXPIRED";
+        };
+        /** @description Phiên đăng nhập bằng mã QR vừa tạo trên web. */
+        Started: {
+            /** @description Mã của phiên, nằm trong mã QR. */
+            sessionId?: string;
+            /** @description Bí mật chỉ trình duyệt giữ, dùng để hỏi trạng thái và lấy token; không nằm trong mã QR. */
+            pollToken?: string;
+            /**
+             * @description Nội dung cần vẽ thành mã QR.
+             * @example bonbon://qr-login?s=...
+             */
+            qrContent?: string;
+            /**
+             * Format: int64
+             * @description Số giây còn hiệu lực.
+             */
+            expiresInSeconds?: number;
+        };
+        /** @description Điện thoại gửi mã phiên đọc được từ mã QR. */
+        Scan: {
+            /** @description UUID. */
+            sessionId: string;
+        };
+        /** @description Thông tin của trình duyệt đang chờ đăng nhập, cho người bán đối chiếu trước khi xác nhận. */
+        Inspect: {
+            /**
+             * @description Trình duyệt và hệ điều hành, đọc từ User-Agent.
+             * @example Chrome trên Windows
+             */
+            device?: string;
+            /** @description Địa chỉ IP của trình duyệt. */
+            ip?: string;
+            /**
+             * Format: date-time
+             * @description Lúc trình duyệt tạo mã.
+             */
+            requestedAt?: string;
+            /**
+             * Format: date-time
+             * @description Lúc mã hết hạn.
+             */
+            expiresAt?: string;
         };
         Logout: {
             refreshToken?: string;
@@ -17679,6 +17864,382 @@ export interface operations {
             };
             /** @description - `INVALID_REFRESH_TOKEN`: Refresh token sai, hết hạn hoặc đã bị thu hồi; đăng nhập lại. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    qrLoginStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Poll"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    startQrLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Started"];
+                };
+            };
+            /** @description - `RATE_LIMITED`: Một địa chỉ IP tạo quá 10 mã trong một phút. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    scanQrLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Scan"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Inspect"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Cần đăng nhập trên điện thoại. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NO_SELLER_ACCESS`: Tài khoản không có vai trò người bán. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_ALREADY_SCANNED`: Mã đã được quét bằng tài khoản khác. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_EXPIRED`: Mã hết hạn, đã bị từ chối hoặc đã được dùng. */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    rejectQrLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Scan"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Cần đăng nhập trên điện thoại. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_ALREADY_SCANNED`: Mã đã được quét bằng tài khoản khác. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_EXPIRED`: Mã hết hạn hoặc chưa được quét. */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    exchangeQrLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Poll"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_NOT_CONFIRMED`: Điện thoại chưa xác nhận. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_EXPIRED`: Mã hết hạn, sai `pollToken` hoặc đã được dùng. */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    confirmQrLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Scan"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Cần đăng nhập trên điện thoại. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `NO_SELLER_ACCESS`: Tài khoản không còn vai trò người bán. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_ALREADY_SCANNED`: Mã đã được quét bằng tài khoản khác. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QR_EXPIRED`: Mã hết hạn hoặc chưa được quét. */
+            410: {
                 headers: {
                     [name: string]: unknown;
                 };

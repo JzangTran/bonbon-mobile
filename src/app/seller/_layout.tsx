@@ -52,6 +52,7 @@ function SellerTabs({ closing }: { closing: boolean }) {
       <Tabs.Screen name="support" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="ticket" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="notification-settings" options={{ href: null, tabBarStyle: { display: 'none' } }} />
+      <Tabs.Screen name="web-login" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
       <Tabs.Screen name="shop" options={{ title: 'Cửa hàng', tabBarIcon: ({ color }) => <Store color={color} size={22} /> }} />
     </Tabs>

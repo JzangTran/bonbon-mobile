@@ -4,10 +4,13 @@ import { useTheme } from './theme'
 import { radius, spacing } from './tokens'
 
 /** Inline result message under a form; announced to screen readers. */
-export function Notice({ tone, message }: { tone: 'error' | 'success'; message: string | null }) {
+export function Notice({ tone, message }: { tone: 'error' | 'success' | 'warning'; message: string | null }) {
   const theme = useTheme()
   if (!message) return null
-  const colors = tone === 'error' ? { bg: theme.dangerSubtle, fg: theme.onDangerSubtle } : { bg: theme.successSubtle, fg: theme.onSuccessSubtle }
+  const colors =
+    tone === 'error' ? { bg: theme.dangerSubtle, fg: theme.onDangerSubtle }
+    : tone === 'warning' ? { bg: theme.warningSubtle, fg: theme.onWarningSubtle }
+    : { bg: theme.successSubtle, fg: theme.onSuccessSubtle }
   return (
     <View
       accessibilityRole={tone === 'error' ? 'alert' : undefined}

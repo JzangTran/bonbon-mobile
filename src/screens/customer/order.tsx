@@ -10,6 +10,7 @@ import { radius, SkeletonGroup, Skeleton, Button, Card, Notice, Screen, Text, fo
 import { NoShowAnswerCard } from './no-show-answer'
 import { OrderCaseCard } from './order-case'
 import { PaymentCard, RefundCard } from './order-payment'
+import { BankTransferCard } from './order-transfer'
 import { OrderReviewCard } from './order-review'
 import { reorder } from './reorder'
 
@@ -115,6 +116,9 @@ export default function CustomerOrderScreen() {
 
           {status === 'OUT_FOR_DELIVERY' || status === 'DELIVERED' || status === 'NOT_DELIVERED' || status === 'CANCELLED' ? <NoShowAnswerCard orderId={data.id!} /> : null}
           {status === 'PENDING_PAYMENT' ? <PaymentCard orderId={data.id!} payment={data.payment} /> : null}
+          {data.paymentMethod === 'BANK_TRANSFER' && (data.paymentStatus !== 'PAID' || status !== 'DELIVERED') ? (
+            <BankTransferCard orderId={data.id!} active={!['REJECTED', 'CANCELLED', 'NOT_DELIVERED'].includes(status ?? '')} />
+          ) : null}
           {data.refund ? <RefundCard orderId={data.id!} refund={data.refund} /> : null}
 
           {status === 'DELIVERED' ? <OrderCaseCard orderId={data.id!} /> : null}
@@ -171,7 +175,7 @@ export default function CustomerOrderScreen() {
                 Tổng cộng {formatVnd(data.totals?.grandTotal)}
               </Text>
               <Text variant="bodySm" muted>
-                {data.paymentMethod === 'COD' ? 'Tiền mặt khi nhận hàng' : 'Thanh toán MoMo'}
+                {data.paymentMethod === 'COD' ? 'Tiền mặt khi nhận hàng' : data.paymentMethod === 'BANK_TRANSFER' ? 'Chuyển khoản cho quán' : 'Thanh toán MoMo'}
                 {data.paymentStatus === 'PAID' ? ' · đã thanh toán' : ''}
               </Text>
             </View>

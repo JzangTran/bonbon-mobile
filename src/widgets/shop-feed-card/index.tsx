@@ -57,6 +57,11 @@ export const ShopFeedCard = memo(function ShopFeedCard({ card, favorite = false 
                   · Đang đóng
                 </Text>
               ) : null}
+              {shop.distanceKm != null && shop.deliveryRadiusKm != null && shop.distanceKm > Number(shop.deliveryRadiusKm) ? (
+                <Text variant="caption" color={theme.onWarningSubtle}>
+                  · Ngoài vùng giao
+                </Text>
+              ) : null}
             </View>
           </View>
         </Pressable>

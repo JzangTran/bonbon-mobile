@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as WebBrowser from 'expo-web-browser'
 import { Linking, Platform } from 'react-native'
 import { api, problemMessage, type components } from '@/shared/api'
@@ -79,5 +79,21 @@ export function useRefundDestination(orderId: string) {
       void queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY })
     },
     onError: (error) => toast.show(problemMessage(error), 'error'),
+  })
+}
+
+export type OrderBankTransfer = components['schemas']['OrderBankTransfer']
+
+/** The shop's account, the amount, the message and the VietQR code of a bank transfer order; checked again until the shop marks it received. */
+export function useBankTransfer(orderId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: [...MY_ORDERS_KEY, 'bank-transfer', orderId],
+    enabled,
+    refetchInterval: (query) => (query.state.data?.received ? false : 10_000),
+    queryFn: async () => {
+      const { data, error } = await api.GET('/api/orders/{id}/bank-transfer', { params: { path: { id: orderId } } })
+      if (error || !data) throw error
+      return data
+    },
   })
 }

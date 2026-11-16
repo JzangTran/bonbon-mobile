@@ -42,6 +42,9 @@ export default function VendorScreen() {
   const [dish, setDish] = useState<ShopDish | null>(null)
   const [infoOpen, setInfoOpen] = useState(false)
   const shop = menu.data?.shop
+  // a shop seen from outside its delivery radius can be looked at, not ordered from
+  const outOfRange = shop?.distanceKm != null && shop.deliveryRadiusKm != null && shop.distanceKm > Number(shop.deliveryRadiusKm)
+  const orderable = Boolean(shop?.open) && !outOfRange
   const cart = useCart()
   const toast = useToast()
   const favorite = (favorites.data ?? []).some((c) => c.shop.id === id)
@@ -118,6 +121,11 @@ export default function VendorScreen() {
         {menu.isError ? <Notice tone="error" message={problemMessage(menu.error, 'Không tìm thấy quán này.')} /> : null}
 
         {!shop && menu.isLoading ? <VendorSkeleton /> : null}
+        {outOfRange ? (
+          <View style={styles.rangeNotice}>
+            <Notice tone="warning" message={`Quán chỉ giao trong ${shop?.deliveryRadiusKm} km, địa chỉ của bạn cách ${formatDistance(shop?.distanceKm)}. Bạn xem được thực đơn nhưng chưa đặt được.`} />
+          </View>
+        ) : null}
 
         {shop ? (
           <View style={[styles.info, { backgroundColor: theme.surface, borderColor: theme.border }]}>
@@ -179,7 +187,7 @@ export default function VendorScreen() {
           <View key={section.id} style={styles.section}>
             <Text variant="titleSm">{section.name}</Text>
             {(section.items ?? []).map((item) => (
-              <DishRow key={item.id} item={item} canAdd={Boolean(shop?.open)} onOpen={() => setDish(item)} onAdd={() => quickAdd(item)} />
+              <DishRow key={item.id} item={item} canAdd={orderable} onOpen={() => setDish(item)} onAdd={() => quickAdd(item)} />
             ))}
           </View>
         ))}
@@ -190,7 +198,7 @@ export default function VendorScreen() {
         ) : null}
       </ScrollView>
 
-      <DishSheet dish={dish} shop={cartShop} canOrder={Boolean(shop?.open) && !dish?.soldOut} onAdd={addToCart} onClose={() => setDish(null)} />
+      <DishSheet dish={dish} shop={cartShop} canOrder={orderable && !dish?.soldOut} onAdd={addToCart} onClose={() => setDish(null)} />
       <Sheet visible={infoOpen} onClose={() => setInfoOpen(false)} title="Giao hàng">
         {shop ? (
           <>
@@ -309,6 +317,7 @@ function VendorSkeleton() {
 }
 
 const styles = StyleSheet.create({
+  rangeNotice: { paddingHorizontal: spacing.lg, paddingTop: spacing.md },
   skeletonGap: { marginTop: spacing.sm },
   flex: { flex: 1 },
   page: { paddingBottom: 120 },

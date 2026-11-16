@@ -49,6 +49,7 @@ export default function CustomerHomeScreen() {
   const favoriteIds = useMemo(() => new Set((favorites.data ?? []).map((c) => c.shop.id)), [favorites.data])
   const cards = useMemo(() => feed.data?.pages.flatMap((p) => p.items) ?? [], [feed.data])
   const dealMax = feed.data?.pages[0]?.dealMaxPercent ?? 0
+  const outOfArea = feed.data?.pages[0]?.outOfArea === true
 
   const list = useRef<FlatList<FeedCard>>(null)
   const scrollY = useSharedValue(0)
@@ -135,6 +136,13 @@ export default function CustomerHomeScreen() {
           <Text variant="titleSm">Bạn muốn nhận món ở đâu?</Text>
           <Text muted>Thêm địa chỉ giao hàng để xem các quán giao tới nơi bạn ở.</Text>
           <Button title="+ Thêm địa chỉ" fullWidth onPress={() => router.push('/customer/address-form')} />
+        </Card>
+      ) : null}
+      {outOfArea ? (
+        <Card style={[styles.inset, { backgroundColor: theme.warningSubtle }]}>
+          <Text variant="titleSm">Chưa có quán giao tới đây</Text>
+          <Text variant="bodySm">Bạn vẫn xem được các quán gần nhất dưới đây, nhưng chưa đặt được. Đổi địa chỉ giao nếu bạn đang ở nơi khác.</Text>
+          <Button title="Đổi địa chỉ giao" variant="outline" fullWidth onPress={() => setDeliveryOpen(true)} />
         </Card>
       ) : null}
     </View>

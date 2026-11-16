@@ -107,3 +107,48 @@ export function useSendMessage(target: { conversationId?: string | null; vendorI
     onError: (error) => toast.show(problemMessage(error), 'error'),
   })
 }
+
+/** Close or reopen the conversation to the other side (send-message.md "Blocking a conversation"); ordering is never affected. */
+export function useBlockConversation(conversationId: string | null) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (block: boolean) => {
+      if (!conversationId) return null
+      const options = { params: { path: { id: conversationId } } }
+      const { data, error } = block
+        ? await api.POST('/api/conversations/{id}/block', options)
+        : await api.DELETE('/api/conversations/{id}/block', options)
+      if (error || !data) throw error
+      return data
+    },
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: CHAT_KEY }),
+  })
+}
+
+export type AutoReply = components['schemas']['AutoReply']
+const AUTO_REPLY_KEY = ['merchant', 'auto-reply'] as const
+
+/** The shop's one auto-reply (configure-auto-reply.md). */
+export function useAutoReply(enabled = true) {
+  return useQuery({
+    queryKey: AUTO_REPLY_KEY,
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await api.GET('/api/merchant/shop/auto-reply')
+      if (error || !data) throw error
+      return data
+    },
+  })
+}
+
+export function useSaveAutoReply() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (body: AutoReply) => {
+      const { data, error } = await api.PUT('/api/merchant/shop/auto-reply', { body })
+      if (error || !data) throw error
+      return data
+    },
+    onSuccess: (data) => queryClient.setQueryData(AUTO_REPLY_KEY, data),
+  })
+}

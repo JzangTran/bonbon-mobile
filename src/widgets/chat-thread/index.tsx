@@ -1,8 +1,9 @@
-import { CornerUpLeft, ImagePlus, Send, X } from 'lucide-react-native'
+import { Ban, Bot, CornerUpLeft, Flag, ImagePlus, Send, X } from 'lucide-react-native'
 import { useEffect, useState, type ReactNode } from 'react'
-import { FlatList, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native'
+import { Alert, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useMarkRead, useSendMessage, useShopConversation, useThread, type ChatMessage, type PickedImage } from '@/entities/chat'
+import { useBlockConversation, useConversations, useMarkRead, useSendMessage, useShopConversation, useThread, type ChatMessage, type PickedImage } from '@/entities/chat'
+import { ReportSheet, type ReportTarget } from '@/features/report-content'
 import { problemMessage } from '@/shared/api'
 import { formatDateTime } from '@/shared/lib/format'
 import { pickImages } from '@/shared/lib/pick-image'
@@ -25,6 +26,12 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
   const toast = useToast()
   const existing = useShopConversation(given ? undefined : vendorId)
   const conversationId = given ?? existing.data?.id ?? null
+  const list = useConversations(live)
+  const conversation = existing.data ?? list.data?.items?.find((c) => c.id === conversationId)
+  const block = useBlockConversation(conversationId)
+  const [reporting, setReporting] = useState<ReportTarget | null>(null)
+  const blockedByMe = !!conversation?.blockedByMe
+  const blockedByOther = !!conversation?.blockedByOther
   const thread = useThread(conversationId, live)
   const markRead = useMarkRead()
   const send = useSendMessage({ conversationId, vendorId })
@@ -46,6 +53,19 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
     if (images[0]) setImage(images[0])
   }
 
+  const toggleBlock = () => {
+    if (blockedByMe) {
+      block.mutate(false)
+      return
+    }
+    Alert.alert('Chặn cuộc trò chuyện?', 'Bên kia sẽ không nhắn được cho bạn nữa. Đơn hàng không bị ảnh hưởng và bạn có thể bỏ chặn bất cứ lúc nào.', [
+      { text: 'Huỷ', style: 'cancel' },
+      { text: 'Chặn', style: 'destructive', onPress: () => block.mutate(true) },
+    ])
+  }
+
+  const report = (m: ChatMessage) => setReporting({ type: 'MESSAGE', id: m.id ?? '' })
+
   const submit = () => {
     if (!text.trim() && !image) return
     send.mutate(
@@ -63,6 +83,17 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: theme.background }]} edges={topInset ? ['top'] : []}>
       {header}
+      {conversationId ? (
+        <View style={[styles.toolbar, { borderBottomColor: theme.divider }]}>
+          <Pressable accessibilityRole="button" onPress={toggleBlock} disabled={block.isPending} hitSlop={8} style={styles.toolbarButton}>
+            <Ban size={14} color={theme.textMuted} />
+            <Text variant="caption" muted>
+              {blockedByMe ? 'Bỏ chặn' : 'Chặn'}
+            </Text>
+          </Pressable>
+        </View>
+      ) : null}
+      <ReportSheet target={reporting} onClose={() => setReporting(null)} />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
         {thread.isError ? <Notice tone="error" message={problemMessage(thread.error, 'Không tải được tin nhắn lúc này.')} /> : null}
         {!conversationId && !existing.isPending ? (
@@ -85,8 +116,15 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
               <Button title="Tải tin cũ hơn" variant="ghost" loading={thread.isFetchingNextPage} onPress={() => void thread.fetchNextPage()} />
             ) : undefined
           }
-          renderItem={({ item }) => <Bubble message={item} onReply={() => setReplyTo(item)} />}
+          renderItem={({ item }) => <Bubble message={item} onReply={blockedByMe || blockedByOther ? undefined : () => setReplyTo(item)} onReport={() => report(item)} />}
         />
+        {blockedByMe || blockedByOther ? (
+          <View style={[styles.composer, { borderTopColor: theme.divider, backgroundColor: theme.surfaceMuted }]}>
+            <Text variant="bodySm" muted style={styles.center}>
+              {blockedByMe ? 'Bạn đã chặn cuộc trò chuyện này. Bỏ chặn để nhắn tiếp.' : 'Bên kia đã đóng cuộc trò chuyện này.'}
+            </Text>
+          </View>
+        ) : (
         <View style={[styles.composer, { borderTopColor: theme.divider, backgroundColor: theme.surface }]}>
           {replyTo ? (
             <Chip label={`Trả lời: ${replyTo.text || 'Ảnh'}`} onClear={() => setReplyTo(null)} />
@@ -125,16 +163,34 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
             </Pressable>
           </View>
         </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
 
-function Bubble({ message: m, onReply }: { message: ChatMessage; onReply: () => void }) {
+function Bubble({ message: m, onReply, onReport }: { message: ChatMessage; onReply?: () => void; onReport: () => void }) {
   const theme = useTheme()
   const mine = !!m.mine
+  // the other side's messages can be reported, by a long press or the small link under them
+  const reportable = !mine && !m.removed && !m.autoReply
+  if (m.removed) {
+    return (
+      <View style={[styles.bubbleRow, { alignItems: mine ? 'flex-end' : 'flex-start' }]}>
+        <View style={[styles.bubble, styles.removed, { borderColor: theme.border }]}>
+          <Text variant="bodySm" muted>
+            Tin nhắn đã bị gỡ vì vi phạm quy định.
+          </Text>
+        </View>
+      </View>
+    )
+  }
   return (
-    <View style={[styles.bubbleRow, { alignItems: mine ? 'flex-end' : 'flex-start' }]}>
+    <Pressable
+      onLongPress={reportable ? onReport : undefined}
+      accessibilityHint={reportable ? 'Nhấn giữ để báo cáo tin này' : undefined}
+      style={[styles.bubbleRow, { alignItems: mine ? 'flex-end' : 'flex-start' }]}
+    >
       <View style={[styles.bubble, { backgroundColor: mine ? theme.primary : theme.surfaceMuted }]}>
         {m.replyTo ? (
           <Text variant="caption" color={mine ? theme.onPrimary : theme.textMuted} numberOfLines={2} style={styles.quote}>
@@ -145,17 +201,35 @@ function Bubble({ message: m, onReply }: { message: ChatMessage; onReply: () => 
         {m.text ? <Text color={mine ? theme.onPrimary : theme.text}>{m.text}</Text> : null}
       </View>
       <View style={styles.meta}>
+        {m.autoReply ? (
+          <View style={styles.replyButton}>
+            <Bot size={12} color={theme.textMuted} />
+            <Text variant="caption" muted>
+              Trả lời tự động
+            </Text>
+          </View>
+        ) : null}
         <Text variant="caption" muted>
           {formatDateTime(m.createdAt)}
         </Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Trả lời tin này" onPress={onReply} hitSlop={8} style={styles.replyButton}>
-          <CornerUpLeft size={12} color={theme.textMuted} />
-          <Text variant="caption" muted>
-            Trả lời
-          </Text>
-        </Pressable>
+        {onReply ? (
+          <Pressable accessibilityRole="button" accessibilityLabel="Trả lời tin này" onPress={onReply} hitSlop={8} style={styles.replyButton}>
+            <CornerUpLeft size={12} color={theme.textMuted} />
+            <Text variant="caption" muted>
+              Trả lời
+            </Text>
+          </Pressable>
+        ) : null}
+        {reportable ? (
+          <Pressable accessibilityRole="button" accessibilityLabel="Báo cáo tin này" onPress={onReport} hitSlop={8} style={styles.replyButton}>
+            <Flag size={12} color={theme.textMuted} />
+            <Text variant="caption" muted>
+              Báo cáo
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
-    </View>
+    </Pressable>
   )
 }
 
@@ -203,5 +277,8 @@ const styles = StyleSheet.create({
   iconButton: { width: touchTarget.min, height: touchTarget.min, alignItems: 'center', justifyContent: 'center' },
   preview: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   thumb: { width: 56, height: 56, borderRadius: radius.lg },
+  toolbar: { flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: spacing.md, paddingVertical: spacing.xs, borderBottomWidth: StyleSheet.hairlineWidth },
+  toolbarButton: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 32 },
+  removed: { backgroundColor: 'transparent', borderWidth: 1, borderStyle: 'dashed' },
   chip: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
 })

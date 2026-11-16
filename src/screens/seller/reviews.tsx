@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router'
+import { ReportSheet, type ReportTarget } from '@/features/report-content'
 import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { ReviewItem, useReplyActions, useSellerReviews, type Review } from '@/entities/review'
@@ -17,6 +18,7 @@ export default function SellerReviewsScreen() {
   const reviews = useSellerReviews(unreplied)
   const { save, remove } = useReplyActions()
   const [target, setTarget] = useState<Review | null>(null)
+  const [reporting, setReporting] = useState<ReportTarget | null>(null)
   const [text, setText] = useState('')
   const items = (reviews.data?.pages ?? []).flatMap((page) => page.items ?? [])
   const total = reviews.data?.pages[0]?.total ?? 0
@@ -90,12 +92,15 @@ export default function SellerReviewsScreen() {
           <ReviewItem
             review={review}
             footer={
-              <ReplyActions
-                review={review}
-                busy={remove.isPending}
-                onReply={() => openReply(review)}
-                onDelete={() => void askDelete(review)}
-              />
+              <>
+                <ReplyActions
+                  review={review}
+                  busy={remove.isPending}
+                  onReply={() => openReply(review)}
+                  onDelete={() => void askDelete(review)}
+                />
+                <Button title="Báo cáo đánh giá" variant="ghost" onPress={() => setReporting({ type: 'REVIEW', id: review.id ?? '' })} />
+              </>
             }
           />
         </Card>
@@ -111,6 +116,7 @@ export default function SellerReviewsScreen() {
         <Input label="Nội dung" value={text} onChangeText={setText} multiline maxLength={1000} style={styles.reply} />
         <Button title={editing ? 'Lưu thay đổi' : 'Gửi phản hồi'} size="lg" fullWidth disabled={text.trim().length === 0} loading={save.isPending} onPress={submit} />
       </Sheet>
+      <ReportSheet target={reporting} onClose={() => setReporting(null)} />
     </Screen>
   )
 }

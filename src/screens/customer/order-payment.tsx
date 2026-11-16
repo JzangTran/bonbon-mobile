@@ -3,6 +3,8 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { openMomo, useRefundDestination, useRetryPayment, type OrderPayment, type OrderRefund } from '@/entities/order'
 import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatVnd } from '@/shared/lib/format'
+import { BANK_ACCOUNT, isPersonName } from '@/shared/lib/validate'
+import { BankPicker } from '@/entities/bank'
 import { Button, Card, Input, Notice, Text, spacing, useTheme, useToast } from '@/shared/ui'
 
 /**
@@ -67,7 +69,9 @@ export function RefundCard({ orderId, refund }: { orderId: string; refund: Order
   const [accountName, setAccountName] = useState('')
   const send = useRefundDestination(orderId)
   const amount = formatVnd(refund.amount)
-  const valid = bankName.trim().length > 0 && /^[0-9]{6,20}$/.test(accountNumber) && accountName.trim().length > 0
+  const accountProblem = accountNumber !== '' && !BANK_ACCOUNT.test(accountNumber) ? 'Số tài khoản gồm 6–19 chữ số.' : undefined
+  const nameProblem = accountName.trim() !== '' && !isPersonName(accountName) ? 'Tên chủ tài khoản chỉ gồm chữ cái và khoảng trắng.' : undefined
+  const valid = bankName !== '' && BANK_ACCOUNT.test(accountNumber) && accountName.trim().length > 0 && !nameProblem
 
   return (
     <Card>
@@ -80,16 +84,16 @@ export function RefundCard({ orderId, refund }: { orderId: string; refund: Order
         <>
           <Text variant="bodySm">Chúng tôi cần số tài khoản ngân hàng để chuyển lại {amount} cho bạn. Tài khoản chỉ dùng cho khoản hoàn này.</Text>
           {refund.failureReason ? <Notice tone="error" message={`Lần chuyển trước không thành công: ${refund.failureReason}. Hãy nhập tài khoản khác.`} /> : null}
-          <Input label="Ngân hàng" value={bankName} onChangeText={setBankName} maxLength={100} placeholder="Ví dụ: Vietcombank" />
-          <Input label="Số tài khoản" value={accountNumber} onChangeText={(t) => setAccountNumber(t.replace(/[^0-9]/g, ''))} keyboardType="number-pad" maxLength={20} />
-          <Input label="Tên chủ tài khoản" value={accountName} onChangeText={setAccountName} maxLength={100} autoCapitalize="characters" />
+          <BankPicker value={bankName} onChange={setBankName} />
+          <Input label="Số tài khoản" value={accountNumber} onChangeText={(t) => setAccountNumber(t.replace(/[^0-9]/g, ''))} keyboardType="number-pad" maxLength={19} error={accountProblem} />
+          <Input label="Tên chủ tài khoản" value={accountName} onChangeText={setAccountName} maxLength={100} autoCapitalize="characters" error={nameProblem} />
           <Button
             title="Gửi tài khoản"
             size="lg"
             fullWidth
             disabled={!valid}
             loading={send.isPending}
-            onPress={() => send.mutate({ bankName: bankName.trim(), accountNumber, accountName: accountName.trim() })}
+            onPress={() => send.mutate({ bankName, accountNumber, accountName: accountName.trim() })}
           />
         </>
       ) : refund.mode === 'MANUAL' ? (

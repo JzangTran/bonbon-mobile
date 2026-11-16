@@ -3660,6 +3660,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/banks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách ngân hàng
+         * @description Không cần đăng nhập. Ứng dụng cho chọn từ danh sách này thay vì gõ tên ngân hàng; backend chỉ nhận tên có trong danh sách.
+         *
+         *     **Không cần đăng nhập.**
+         */
+        get: operations["listBanks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/orders/{id}": {
         parameters: {
             query?: never;
@@ -5584,7 +5606,7 @@ export interface components {
              */
             bankName: string;
             /**
-             * @description Số tài khoản, 6–20 chữ số.
+             * @description Số tài khoản, 6–19 chữ số.
              * @example 0123456789
              */
             accountNumber: string;
@@ -5792,7 +5814,6 @@ export interface components {
         ShopApplicationStep1Request: {
             name?: string;
             phone?: string;
-            /** Format: email */
             email?: string;
             /** Format: int32 */
             provinceCode?: number;
@@ -6254,10 +6275,7 @@ export interface components {
         SubmitContactRequest: {
             /** @description Họ tên, tối đa 100 ký tự. */
             fullName: string;
-            /**
-             * Format: email
-             * @description Email nhận câu trả lời.
-             */
+            /** @description Email nhận câu trả lời. */
             email: string;
             /** @description Người gửi là ai: `CUSTOMER` (đặt món), `SELLER` (bán hàng) hoặc `OTHER`. */
             role: string;
@@ -6991,7 +7009,6 @@ export interface components {
             newPassword: string;
         };
         EmailRequest: {
-            /** Format: email */
             email: string;
             captchaToken?: string;
         };
@@ -6999,7 +7016,6 @@ export interface components {
             status?: string;
         };
         RegisterRequest: {
-            /** Format: email */
             email: string;
             password?: string;
             name?: string;
@@ -7094,7 +7110,6 @@ export interface components {
             captchaToken?: string;
         };
         EmailStatusRequest: {
-            /** Format: email */
             email: string;
         };
         EmailStatusResponse: {
@@ -7641,7 +7656,6 @@ export interface components {
             status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "CLOSING" | "CLOSED";
         };
         CreateAdminRequest: {
-            /** Format: email */
             email: string;
             name: string;
         };
@@ -7927,7 +7941,6 @@ export interface components {
         ShopProfileUpdateRequest: {
             name?: string;
             phone?: string;
-            /** Format: email */
             email?: string;
             /** Format: int32 */
             provinceCode?: number;
@@ -8301,6 +8314,29 @@ export interface components {
              * @description Thời điểm ISO 8601 theo UTC; hiển thị theo giờ Việt Nam.
              */
             lastSeenAt?: string;
+        };
+        /** @description Ngân hàng trong danh sách Napas mà VietQR dùng. */
+        BankView: {
+            /**
+             * @description Mã BIN 6 số.
+             * @example 970436
+             */
+            bin?: string;
+            /**
+             * @description Mã viết tắt.
+             * @example VCB
+             */
+            code?: string;
+            /**
+             * @description Tên ngắn, dùng để lưu và hiển thị.
+             * @example Vietcombank
+             */
+            shortName?: string;
+            /**
+             * @description Tên đầy đủ.
+             * @example Ngân hàng TMCP Ngoại Thương Việt Nam
+             */
+            name?: string;
         };
         OrderPage: {
             items?: components["schemas"]["OrderSummary"][];
@@ -24767,6 +24803,35 @@ export interface operations {
                 };
                 content: {
                     "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listBanks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankView"][];
                 };
             };
             /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */

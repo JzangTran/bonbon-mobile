@@ -1,25 +1,35 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { isEmail, isPersonName, passwordProblem } from '@/shared/lib/validate'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Linking } from 'react-native'
+import { Linking, View } from 'react-native'
 import { z } from 'zod'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
 import { useLocale, useTx, type Tx } from '@/shared/i18n'
-import { Button, Captcha, Checkbox, Input, Notice, Text, useTheme } from '@/shared/ui'
+import { Button, Captcha, Checkbox, Input, Notice, PasswordStrength, Text, useTheme } from '@/shared/ui'
 import { AuthLink, AuthSheet, OrDivider } from '@/widgets/auth-sheet'
 
 const schemaFor = (tx: Tx) =>
   z
     .object({
-      name: z.string().trim().min(1, tx('Vui lòng nhập họ tên', 'Enter your name')).max(100, tx('Tối đa 100 ký tự', 'At most 100 characters')),
-      email: z.email(tx('Email không hợp lệ', 'Invalid email')).max(255),
+      name: z
+        .string()
+        .trim()
+        .min(1, tx('Vui lòng nhập họ tên', 'Enter your name'))
+        .max(100, tx('Tối đa 100 ký tự', 'At most 100 characters'))
+        .refine(isPersonName, tx('Họ tên chỉ gồm chữ cái và khoảng trắng', 'Use letters and spaces only')),
+      email: z.string().trim().max(255).refine(isEmail, tx('Email không hợp lệ', 'Invalid email')),
       password: z.string().min(8, tx('Mật khẩu tối thiểu 8 ký tự', 'At least 8 characters')).max(100, tx('Tối đa 100 ký tự', 'At most 100 characters')),
       confirmPassword: z.string(),
     })
     .refine((v) => v.password === v.confirmPassword, { path: ['confirmPassword'], message: tx('Mật khẩu nhập lại không khớp', 'The passwords do not match') })
+    .superRefine((v, ctx) => {
+      const problem = passwordProblem(v.password, v.email, v.name, tx)
+      if (problem) ctx.addIssue({ code: 'custom', path: ['password'], message: problem })
+    })
 type Values = z.infer<ReturnType<typeof schemaFor>>
 type DocType = 'CUSTOMER_TERMS' | 'PRIVACY_POLICY'
 
@@ -116,13 +126,19 @@ export default function RegisterScreen() {
     >
       {(['name', 'email', 'password', 'confirmPassword'] as const).map((name) => (
         <Controller key={name} control={form.control} name={name} render={({ field, fieldState }) => (
+          <View style={{ gap: 6 }}>
           <Input
             label={{ name: tx('Họ tên', 'Full name'), email: 'Email', password: tx('Mật khẩu', 'Password'), confirmPassword: tx('Nhập lại mật khẩu', 'Repeat password') }[name]}
             secureTextEntry={name === 'password' || name === 'confirmPassword'}
             keyboardType={name === 'email' ? 'email-address' : 'default'}
             autoCapitalize={name === 'name' ? 'words' : 'none'}
+            autoComplete={name === 'name' ? 'name' : name === 'email' ? 'email' : 'new-password'}
+            textContentType={name === 'name' ? 'name' : name === 'email' ? 'emailAddress' : 'newPassword'}
+            maxLength={name === 'email' ? 255 : 100}
             value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message}
           />
+          {name === 'password' && !fieldState.error ? <PasswordStrength password={field.value} email={form.getValues('email')} name={form.getValues('name')} /> : null}
+          </View>
         )} />
       ))}
       <Checkbox checked={accepted} onChange={setAccepted}>

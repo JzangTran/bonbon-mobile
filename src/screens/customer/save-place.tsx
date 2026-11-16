@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { compactPhone, isVnPhone } from '@/shared/lib/validate'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { ArrowLeft } from 'lucide-react-native'
 import { useState } from 'react'
@@ -64,7 +65,8 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
   // Nhà and Công ty are one address each: say so here, before the server has to
   const takenBy = addressWithSingleLabel(saved.data ?? [], name)
   const needsPhone = me.isSuccess && !me.data.phone
-  const phone = me.data?.phone ?? typedPhone.trim()
+  const phone = me.data?.phone ?? compactPhone(typedPhone)
+  const phoneProblem = needsPhone && typedPhone.trim() !== '' && !isVnPhone(typedPhone, 'mobile') ? 'Số di động Việt Nam không hợp lệ, ví dụ 0912345678.' : undefined
   const save = useMutation({
     mutationFn: async () => {
       const { error } = await api.POST('/api/account/addresses', {
@@ -88,7 +90,7 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
     },
   })
   const errors = save.isError ? problemFieldErrors(save.error) : {}
-  const ready = name.trim() !== '' && !takenBy && !!place.placeId && phone !== '' && me.isSuccess && !save.isPending
+  const ready = name.trim() !== '' && !takenBy && !!place.placeId && phone !== '' && !phoneProblem && me.isSuccess && !save.isPending
   return (
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
@@ -132,7 +134,7 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
             Ghi chú thêm lưu ý giao hàng hoặc chỉ dẫn đường đi tại đây
           </Text>
         </View>
-        {needsPhone ? <Input label="Số điện thoại nhận hàng" keyboardType="phone-pad" value={typedPhone} onChangeText={setTypedPhone} error={errors.recipientPhone} /> : null}
+        {needsPhone ? <Input label="Số điện thoại nhận hàng" keyboardType="phone-pad" autoComplete="tel" textContentType="telephoneNumber" maxLength={15} placeholder="0912345678" value={typedPhone} onChangeText={setTypedPhone} error={phoneProblem ?? errors.recipientPhone} /> : null}
       </ScrollView>
       <FooterButton title="Lưu địa chỉ này" disabled={!ready} onPress={() => save.mutate()} />
     </View>

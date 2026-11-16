@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router'
+import { compactPhone, isVnPhone } from '@/shared/lib/validate'
 import { useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { ProviderLogo, usePaymentMethodActions } from '@/entities/payment-method'
@@ -18,6 +19,7 @@ export default function LinkPaymentMethodScreen() {
   const { link } = usePaymentMethodActions()
   const [phone, setPhone] = useState('')
   const errors = link.isError ? problemFieldErrors(link.error) : {}
+  const phoneProblem = compactPhone(phone).length >= 10 && !isVnPhone(phone, 'mobile') ? 'Số di động Việt Nam không hợp lệ, ví dụ 0912345678.' : undefined
   return (
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <PageHeader title="Thêm phương thức thanh toán" />
@@ -27,17 +29,18 @@ export default function LinkPaymentMethodScreen() {
           <Text style={styles.strong}>Ví MoMo</Text>
         </View>
         {link.isError && Object.keys(errors).length === 0 ? <Notice tone="error" message={problemMessage(link.error)} /> : null}
-        <Input label="Số điện thoại đăng ký MoMo" keyboardType="phone-pad" value={phone} onChangeText={setPhone} error={errors.account} maxLength={12} />
+        <Input label="Số điện thoại đăng ký MoMo" keyboardType="phone-pad" autoComplete="tel" textContentType="telephoneNumber" placeholder="0912345678"
+          value={phone} onChangeText={setPhone} error={phoneProblem ?? errors.account} maxLength={15} />
         <Text variant="caption" muted>
           bonbon chỉ lưu 4 số cuối. Khi đặt đơn, bạn vẫn xác nhận thanh toán trong ứng dụng MoMo.
         </Text>
       </ScrollView>
       <FooterButton
         title="Liên kết"
-        disabled={phone.trim().length < 10 || link.isPending}
+        disabled={!isVnPhone(phone, 'mobile') || link.isPending}
         onPress={() =>
           link.mutate(
-            { provider: 'MOMO', account: phone.trim() },
+            { provider: 'MOMO', account: compactPhone(phone) },
             {
               onSuccess: () => {
                 toast.show('Đã liên kết ví MoMo.')

@@ -115,21 +115,23 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
       <Card>
         <Input label="Tên món" value={name} onChangeText={setName} maxLength={100} error={fieldErrors.name} />
         <Input label="Mô tả (không bắt buộc)" value={description} onChangeText={setDescription} maxLength={500} multiline />
-        <Input label="Giá (₫)" keyboardType="number-pad" value={price} onChangeText={setPrice} error={fieldErrors.price} />
+        <Input label="Giá (₫)" keyboardType="number-pad" maxLength={8} value={price} onChangeText={(t) => setPrice(t.replace(/\D/g, ''))} error={fieldErrors.price} />
         <Input
           label="Giá gốc khi giảm giá (₫, không bắt buộc)"
           keyboardType="number-pad"
           placeholder="Không giảm giá"
+          maxLength={8}
           value={original}
-          onChangeText={setOriginal}
+          onChangeText={(t) => setOriginal(t.replace(/\D/g, ''))}
           error={fieldErrors.originalPrice}
         />
         <Input
           label="Số phần còn lại"
           placeholder="Để trống = không giới hạn"
           keyboardType="number-pad"
+          maxLength={6}
           value={stock}
-          onChangeText={setStock}
+          onChangeText={(t) => setStock(t.replace(/\D/g, ''))}
         />
         <Text variant="bodySm">Mục thực đơn</Text>
         <View style={styles.chips}>

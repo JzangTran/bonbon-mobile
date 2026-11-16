@@ -206,3 +206,14 @@ export function useDeliveryPoint(signedIn: boolean) {
     position: location ? { lat: location.lat, lng: location.lng } : null,
   }
 }
+
+/** "Nhà" and "Công ty" name one address each; to change one, the old address goes first (owner decision 2026-11-12). */
+const SINGLE_LABELS = ['nha', 'cong ty']
+const labelKey = (label: string | null | undefined) =>
+  (label ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').trim().toLowerCase().replace(/\s+/g, ' ')
+
+/** The saved address that already carries this name when the name is one of the two that allow only one, else undefined. */
+export function addressWithSingleLabel<T extends { label?: string | null }>(addresses: readonly T[], label: string): T | undefined {
+  const key = labelKey(label)
+  return SINGLE_LABELS.includes(key) ? addresses.find((a) => labelKey(a.label) === key) : undefined
+}

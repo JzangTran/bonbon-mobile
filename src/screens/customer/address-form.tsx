@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { compactPhone, isPersonName, isVnPhone } from '@/shared/lib/validate'
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { MapPin } from 'lucide-react-native'
 import { useEffect, useLayoutEffect, useState } from 'react'
@@ -39,6 +40,7 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
   const [detail, setDetail] = useState(existing?.detail ?? '')
   const [name, setName] = useState(existing?.recipientName ?? '')
   const [phone, setPhone] = useState(existing?.recipientPhone ?? '')
+  const [touched, setTouched] = useState({ name: false, phone: false })
   const [makeDefault, setMakeDefault] = useState(false)
 
   useEffect(() => {
@@ -62,7 +64,7 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
       if (existing?.id) {
         const { error } = await api.PATCH('/api/account/addresses/{id}', {
           params: { path: { id: existing.id } },
-          body: { label, placeId: place?.placeId, detail, recipientName: name.trim(), recipientPhone: phone.trim() },
+          body: { label, placeId: place?.placeId, detail, recipientName: name.trim(), recipientPhone: compactPhone(phone) },
         })
         if (error) throw error
       } else {
@@ -72,7 +74,7 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
             placeId: place?.placeId ?? '',
             detail: detail.trim() || undefined,
             recipientName: name.trim(),
-            recipientPhone: phone.trim(),
+            recipientPhone: compactPhone(phone),
             makeDefault,
           },
         })
@@ -85,9 +87,13 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
       router.back()
     },
   })
-  const fieldErrors = save.isError ? problemFieldErrors(save.error) : {}
+  const serverErrors = save.isError ? problemFieldErrors(save.error) : {}
+  // said under the field as soon as the person leaves it, not after a round trip
+  const nameProblem = touched.name && name.trim() !== '' && !isPersonName(name) ? 'Họ tên chỉ gồm chữ cái và khoảng trắng.' : undefined
+  const phoneProblem = touched.phone && phone.trim() !== '' && !isVnPhone(phone, 'mobile') ? 'Số di động Việt Nam không hợp lệ, ví dụ 0912345678.' : undefined
+  const fieldErrors: Record<string, string | undefined> = { ...serverErrors, ...(nameProblem ? { recipientName: nameProblem } : {}), ...(phoneProblem ? { recipientPhone: phoneProblem } : {}) }
   const currentAddress = place?.description ?? existing?.formattedAddress
-  const canSave = !!currentAddress && name.trim() !== '' && phone.trim() !== ''
+  const canSave = !!currentAddress && name.trim() !== '' && isPersonName(name) && isVnPhone(phone, 'mobile')
 
   return (
     <Screen>
@@ -163,12 +169,18 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
           </Text>
         )}
         <Input label="Chi tiết (toà, tầng, căn hộ)" placeholder="Ví dụ: Toà S2, tầng 12, căn 05" value={detail} onChangeText={setDetail} maxLength={200} />
-        <Input label="Người nhận" value={name} onChangeText={setName} maxLength={100} error={fieldErrors.recipientName} />
+        <Input label="Người nhận" value={name} onChangeText={setName} onBlur={() => setTouched((t) => ({ ...t, name: true }))} maxLength={100}
+          autoCapitalize="words" autoComplete="name" textContentType="name" error={fieldErrors.recipientName} />
         <Input
           label="Số điện thoại người nhận"
           keyboardType="phone-pad"
+          autoComplete="tel"
+          textContentType="telephoneNumber"
+          maxLength={15}
+          placeholder="0912345678"
           value={phone}
           onChangeText={setPhone}
+          onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
           error={fieldErrors.recipientPhone}
         />
         {!existing ? (

@@ -1,22 +1,21 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { useSession, type Role } from '@/entities/session'
 import { unregisterPush } from '@/features/push'
 import { api, problemMessage, type components } from '@/shared/api'
 import { Pressable, StyleSheet, View } from 'react-native'
-import { Button, Card, Input, Notice, Sheet, TEXT_SCALES, Text, radius, spacing, touchTarget, useTextScale, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, PasswordStrength, Sheet, TEXT_SCALES, Text, radius, spacing, touchTarget, useTextScale, useTheme, useToast } from '@/shared/ui'
+import { compactPhone, isPersonName, isVnPhone, passwordProblem } from '@/shared/lib/validate'
 import { DeleteAccountCard } from './delete-account-card'
 
 type Profile = components['schemas']['Profile']
 
-const VN_MOBILE = /^(0|\+84)(3|5|7|8|9)\d{8}$/
-
 const profileSchema = z.object({
-  name: z.string().trim().min(1, 'Vui lòng nhập họ tên').max(100, 'Tối đa 100 ký tự'),
-  phone: z.string().trim().refine((v) => v === '' || VN_MOBILE.test(v), 'Số điện thoại di động Việt Nam không hợp lệ'),
+  name: z.string().trim().min(1, 'Vui lòng nhập họ tên').max(100, 'Tối đa 100 ký tự').refine(isPersonName, 'Họ tên chỉ gồm chữ cái và khoảng trắng'),
+  phone: z.string().transform(compactPhone).refine((v) => v === '' || isVnPhone(v, 'mobile'), 'Số điện thoại di động Việt Nam không hợp lệ, ví dụ 0912345678'),
 })
 
 const passwordSchema = z
@@ -26,6 +25,7 @@ const passwordSchema = z
     confirmPassword: z.string(),
   })
   .refine((v) => v.newPassword === v.confirmPassword, { path: ['confirmPassword'], message: 'Mật khẩu nhập lại không khớp' })
+  .refine((v) => v.newPassword === '' || v.newPassword !== v.currentPassword, { path: ['newPassword'], message: 'Mật khẩu mới phải khác mật khẩu hiện tại.' })
 
 const ROLE_NAME: Record<Role, string> = { CUSTOMER: 'Khách hàng', SELLER: 'Người bán' }
 
@@ -117,11 +117,11 @@ function ProfileCard({ profile }: { profile: Profile | undefined }) {
         Email đăng nhập: {profile?.email ?? '…'}
       </Text>
       <Controller control={form.control} name="name" render={({ field, fieldState }) => (
-        <Input label="Họ tên" autoCapitalize="words" value={field.value} onChangeText={field.onChange} onBlur={field.onBlur}
+        <Input label="Họ tên" autoCapitalize="words" autoComplete="name" textContentType="name" maxLength={100} value={field.value} onChangeText={field.onChange} onBlur={field.onBlur}
           error={fieldState.error?.message} />
       )} />
       <Controller control={form.control} name="phone" render={({ field, fieldState }) => (
-        <Input label="Số điện thoại" keyboardType="phone-pad" placeholder="0912345678" value={field.value}
+        <Input label="Số điện thoại" keyboardType="phone-pad" autoComplete="tel" textContentType="telephoneNumber" maxLength={15} placeholder="0912345678" value={field.value}
           onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
       )} />
       <Notice tone="error" message={save.isError ? problemMessage(save.error) : null} />
@@ -176,9 +176,15 @@ function PasswordCard() {
     resolver: zodResolver(passwordSchema),
     defaultValues: { currentPassword: '', newPassword: '', confirmPassword: '' },
   })
+  const typedNew = useWatch({ control: form.control, name: 'newPassword' })
 
   const onSubmit = form.handleSubmit(async ({ currentPassword, newPassword }) => {
     setError(null)
+    const weak = passwordProblem(newPassword, session?.email, session?.name)
+    if (weak) {
+      form.setError('newPassword', { message: weak })
+      return
+    }
     const { data, error: problem } = await api.POST('/api/account/change-password', { body: { currentPassword, newPassword } })
     if (!data?.accessToken || !data.refreshToken || !session) {
       setError(problemMessage(problem as unknown))
@@ -200,11 +206,12 @@ function PasswordCard() {
         <Controller key={name} control={form.control} name={name} render={({ field, fieldState }) => (
           <Input
             label={{ currentPassword: 'Mật khẩu hiện tại', newPassword: 'Mật khẩu mới', confirmPassword: 'Nhập lại mật khẩu mới' }[name]}
-            secureTextEntry autoComplete={name === 'currentPassword' ? 'current-password' : 'new-password'}
+            secureTextEntry autoComplete={name === 'currentPassword' ? 'current-password' : 'new-password'} maxLength={100}
             value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message}
           />
         )} />
       ))}
+      <PasswordStrength password={typedNew} email={session?.email} name={session?.name} />
       <Notice tone="error" message={error} />
       <Button title="Đổi mật khẩu" loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
     </Card>

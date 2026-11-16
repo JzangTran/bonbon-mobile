@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, Clock, MapPin, type LucideIcon } from 'lucide-re
 import { useEffect, useRef, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import Animated, { Extrapolation, interpolate, runOnJS, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated'
+import { LinearGradient } from 'expo-linear-gradient'
 import { Button, Sheet, Text, fonts, radius, spacing, useTheme } from '@/shared/ui'
 
 /** A chosen window; null is "as soon as possible". */
@@ -16,8 +17,9 @@ const ROW = 44
 // the centre row, one clear row each side, and half of one more each side: at most five in sight
 const WHEEL_HEIGHT = ROW * 4
 const WHEEL_PAD = (WHEEL_HEIGHT - ROW) / 2
-const SETTLE_MS = 140
 
+/** "#RRGGBB" with an alpha, for the gradients that fade to the sheet's own colour (a transparent black would grey the edge). */
+const withAlpha = (hex: string, alpha: number) => `${hex}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`
 const pad = (n: number) => String(n).padStart(2, '0')
 const clock = (minutes: number) => `${pad(Math.floor(minutes / 60) % 24)}:${pad(minutes % 60)}`
 const slotLabel = (start: number) => `${clock(start)} - ${clock(start + SLOT_MINUTES)}`
@@ -151,85 +153,87 @@ function TimePicker({ now, time, onDone }: { now: Date; time: DeliveryTime; onDo
   )
 }
 
-/** A column turned like a wheel: rows lean and fade away from the centre, and it always comes to rest on one. */
+/**
+ * A column turned like a wheel. While it moves nothing leaves the UI thread: each row reads the scroll offset and bends along a
+ * cylinder (it leans back, shrinks, fades and is pulled in towards the centre), so there is no state to change per frame and nothing
+ * to flicker. The scroll position is handed to React once, when the wheel has come to rest on a row.
+ */
 function Wheel({ items, initial, onPick }: { items: string[]; initial: number; onPick: (index: number) => void }) {
+  const theme = useTheme()
   const list = useRef<Animated.ScrollView>(null)
   const y = useSharedValue(initial * ROW)
-  const [start] = useState(initial)
-  const [selected, setSelected] = useState(initial)
-  const [moving, setMoving] = useState(false)
-  const top = useRef(initial * ROW)
-  const held = useRef(false)
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const last = items.length - 1
 
   useEffect(() => {
-    list.current?.scrollTo({ y: start * ROW, animated: false })
-    return () => clearTimeout(timer.current)
-  }, [start])
+    list.current?.scrollTo({ y: initial * ROW, animated: false })
+    // only where the wheel starts: a new list is a new wheel (it has its own key)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const settle = () => {
-    // a finger resting on the wheel has not let go of it
-    if (held.current) return
-    const index = Math.min(items.length - 1, Math.max(0, Math.round(top.current / ROW)))
-    setSelected(index)
-    setMoving(false)
-    onPick(index)
-    if (Math.abs(top.current - index * ROW) > 0.5) list.current?.scrollTo({ y: index * ROW, animated: true })
-  }
-  const arm = () => {
-    clearTimeout(timer.current)
-    timer.current = setTimeout(settle, SETTLE_MS)
-  }
-  const moved = (offset: number) => {
-    top.current = offset
-    setMoving(true)
-    arm()
-  }
+  const rest = (offset: number) => onPick(Math.min(last, Math.max(0, Math.round(offset / ROW))))
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       y.value = event.contentOffset.y
-      runOnJS(moved)(event.contentOffset.y)
+    },
+    onEndDrag: (event) => {
+      // let go without a flick: it comes to rest here, no momentum follows
+      if (Math.abs(event.velocity?.y ?? 0) < 0.05) runOnJS(rest)(event.contentOffset.y)
+    },
+    onMomentumEnd: (event) => {
+      runOnJS(rest)(event.contentOffset.y)
     },
   })
 
   return (
-    <Animated.ScrollView
-      ref={list}
-      style={styles.wheel}
-      contentContainerStyle={styles.wheelContent}
-      showsVerticalScrollIndicator={false}
-      snapToInterval={ROW}
-      decelerationRate="fast"
-      scrollEventThrottle={16}
-      onScroll={onScroll}
-      onScrollBeginDrag={() => {
-        held.current = true
-        setMoving(true)
-      }}
-      onScrollEndDrag={() => {
-        held.current = false
-        arm()
-      }}
-    >
-      {items.map((label, index) => (
-        <WheelRow key={label} label={label} index={index} y={y} on={index === selected} moving={moving} />
-      ))}
-    </Animated.ScrollView>
+    <View style={styles.wheel}>
+      <Animated.ScrollView
+        ref={list}
+        style={styles.wheelScroll}
+        contentContainerStyle={styles.wheelContent}
+        showsVerticalScrollIndicator={false}
+        snapToInterval={ROW}
+        decelerationRate="fast"
+        scrollEventThrottle={16}
+        onScroll={onScroll}
+      >
+        {items.map((label, index) => (
+          <WheelRow key={label} label={label} index={index} y={y} />
+        ))}
+      </Animated.ScrollView>
+      {/* the rows melt into the sheet above and below, which is what makes the wheel look round */}
+      <LinearGradient pointerEvents="none" colors={[theme.surface, withAlpha(theme.surface, 0)]} style={[styles.fade, styles.fadeTop]} />
+      <LinearGradient pointerEvents="none" colors={[withAlpha(theme.surface, 0), theme.surface]} style={[styles.fade, styles.fadeBottom]} />
+    </View>
   )
 }
 
-function WheelRow({ label, index, y, on, moving }: { label: string; index: number; y: SharedValue<number>; on: boolean; moving: boolean }) {
+/** The angle between two neighbouring rows on the cylinder, and its radius so that the rows keep their spacing at the centre. */
+const STEP = 0.5
+const RADIUS = ROW / STEP
+
+function WheelRow({ label, index, y }: { label: string; index: number; y: SharedValue<number> }) {
   const theme = useTheme()
   const turn = useAnimatedStyle(() => {
+    // positive: the row is above the centre
     const away = y.value / ROW - index
+    const clamped = Math.max(-2.4, Math.min(2.4, away))
+    const angle = clamped * STEP
+    const near = Math.abs(clamped)
     return {
-      opacity: interpolate(Math.abs(away), [0, 1, 2], [1, 0.55, 0.2], Extrapolation.CLAMP),
-      transform: [{ perspective: 400 }, { rotateX: `${interpolate(away, [-2, 0, 2], [-44, 0, 44], Extrapolation.CLAMP)}deg` }],
+      opacity: interpolate(near, [0, 1, 2, 2.4], [1, 0.62, 0.26, 0.08], Extrapolation.CLAMP),
+      transform: [
+        { perspective: 600 },
+        // pulled in along the curve instead of keeping the flat spacing
+        // a row's flat place is -away * ROW from the centre; on the cylinder it is -RADIUS * sin(angle), so it moves by the difference
+        { translateY: away * ROW - RADIUS * Math.sin(angle) },
+        { rotateX: `${(angle * 180) / Math.PI}deg` },
+        { scale: interpolate(near, [0, 1, 2], [1, 0.92, 0.82], Extrapolation.CLAMP) },
+      ],
     }
   })
   return (
     <Animated.View style={[styles.row, turn]}>
-      <Text numberOfLines={1} color={moving ? theme.textMuted : theme.text} style={on && !moving ? styles.bold : undefined}>
+      <Text numberOfLines={1} color={theme.text} style={styles.rowText}>
         {label}
       </Text>
     </Animated.View>
@@ -238,7 +242,7 @@ function WheelRow({ label, index, y, on, moving }: { label: string; index: numbe
 
 const styles = StyleSheet.create({
   flexShrink: { flexShrink: 1 },
-  bold: { fontFamily: fonts.bold },
+  rowText: { fontFamily: fonts.semibold },
   backCircle: { width: 44, height: 44, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   footer: { flexDirection: 'row', gap: spacing.md },
   footerButton: { flex: 1 },
@@ -249,6 +253,10 @@ const styles = StyleSheet.create({
   // one band across both wheels, behind them
   band: { position: 'absolute', left: 0, right: 0, top: WHEEL_PAD, height: ROW, borderRadius: radius.md },
   wheel: { flex: 1 },
+  wheelScroll: { flex: 1 },
   wheelContent: { paddingVertical: WHEEL_PAD },
+  fade: { position: 'absolute', left: 0, right: 0, height: ROW * 1.3 },
+  fadeTop: { top: 0 },
+  fadeBottom: { bottom: 0 },
   row: { height: ROW, alignItems: 'center', justifyContent: 'center' },
 })

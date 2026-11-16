@@ -30,6 +30,7 @@ export default function CustomerLayout() {
       <Stack.Screen name="place" options={{ title: 'Địa điểm', headerShown: false }} />
       <Stack.Screen name="save-place" options={{ title: 'Thêm vào Địa điểm đã lưu', headerShown: false }} />
       <Stack.Screen name="scan" options={{ title: 'Quét mã QR', headerShown: false, presentation: 'fullScreenModal', animation: 'fade' }} />
+      <Stack.Screen name="web-login" options={{ title: 'Đăng nhập trang quản lý quán', headerShown: false }} />
       {/* Cài đặt thanh toán and what opens from it slide up as full pages */}
       <Stack.Screen name="payment-settings" options={{ title: 'Cài đặt thanh toán', headerShown: false, animation: 'slide_from_bottom' }} />
       <Stack.Screen name="payment-method" options={{ title: 'Chi tiết', headerShown: false, animation: 'slide_from_bottom' }} />

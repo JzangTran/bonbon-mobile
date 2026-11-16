@@ -140,6 +140,14 @@ export default function SellerShopScreen() {
       </Card>
 
       <Card>
+        <Text variant="titleSm">Đăng nhập trên máy tính</Text>
+        <Text variant="bodySm" muted>
+          Mở trang đăng nhập người bán trên máy tính, chọn Đăng nhập bằng mã QR rồi quét mã đó. Không cần gõ mật khẩu.
+        </Text>
+        <Button title="Quét mã đăng nhập web" variant="outline" onPress={() => router.push('/seller/web-login')} />
+      </Card>
+
+      <Card>
         <Text variant="titleSm">Cài đặt thông báo</Text>
         <Text variant="bodySm" muted>
           Chọn thông báo đẩy và email bạn muốn nhận, giờ yên lặng và các thiết bị.

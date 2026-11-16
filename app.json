@@ -27,6 +27,12 @@
     "plugins": [
       "expo-router",
       [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "bonbon dùng Face ID để bạn xác nhận khi đăng nhập trang quản lý quán bằng mã QR."
+        }
+      ],
+      [
         "expo-location",
         {
           "locationWhenInUsePermission": "bonbon dùng vị trí hiện tại của bạn để tìm các quán giao tới chỗ bạn."
@@ -45,7 +51,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "bonbon cần dùng máy ảnh để quét mã QR của quán.",
+          "cameraPermission": "bonbon cần dùng máy ảnh để quét mã QR của quán và mã đăng nhập trang quản lý quán.",
           "recordAudioAndroid": false
         }
       ],

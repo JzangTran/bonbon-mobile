@@ -4,7 +4,18 @@ import { secureStorage } from '@/shared/lib/secure-storage'
 /** One role is active per session; switching is an explicit action (switch-role flow). */
 export type Role = 'CUSTOMER' | 'SELLER'
 
+/** A main account or member of a seller team: the login, the shop open now and the shops to switch to. */
+export type TeamSession = {
+  kind: 'MAIN_ACCOUNT' | 'MEMBER'
+  login: string
+  shopId: string | null
+  shopName: string | null
+  shops: { vendorId: string; name: string; status: string }[]
+}
+
 export type Session = {
+  /** Only for a seller-team session; personal account pages are hidden for it. */
+  team?: TeamSession
   userId: string
   email: string
   name: string
@@ -40,6 +51,19 @@ export function permissionsOf(accessToken: string): Set<string> {
     return new Set(claims.permissions ?? [])
   } catch {
     return new Set()
+  }
+}
+
+/** The `team` part of a server user summary. */
+export function teamOf(raw: unknown): TeamSession | undefined {
+  const t = raw as (Partial<TeamSession> & { shops?: { vendorId?: string; name?: string; status?: string }[] }) | null | undefined
+  if (!t?.kind) return undefined
+  return {
+    kind: t.kind,
+    login: t.login ?? '',
+    shopId: t.shopId ?? null,
+    shopName: t.shopName ?? null,
+    shops: (t.shops ?? []).map((s) => ({ vendorId: s.vendorId ?? '', name: s.name ?? '', status: s.status ?? '' })),
   }
 }
 

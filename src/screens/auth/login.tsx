@@ -4,16 +4,23 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
 import { z } from 'zod'
-import { loadLastRole, useSession, type Role } from '@/entities/session'
+import { loadLastRole, teamOf, useSession, type Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
 import { useLocale, useTx, type Tx } from '@/shared/i18n'
 import { Button, Captcha, Checkbox, Input, Notice, Text, spacing, useTheme, useToast } from '@/shared/ui'
 import { AuthLink, AuthSheet, OrDivider } from '@/widgets/auth-sheet'
 
+/** A seller team signs in as `name:main` (main account) or `name:code` (member). */
+const TEAM_LOGIN = /^[a-z0-9._-]{2,40}:[a-z0-9._-]{2,40}$/
+const isTeamLogin = (v: string) => TEAM_LOGIN.test(v.trim().toLowerCase())
+
 const schemaFor = (tx: Tx) =>
   z.object({
-    email: z.email(tx('Email không hợp lệ', 'Invalid email')),
+    email: z
+      .string()
+      .trim()
+      .refine((v) => isTeamLogin(v) || z.email().safeParse(v).success, tx('Nhập email, hoặc tên đăng nhập nhóm dạng tên:main / tên:mã', 'Enter an email, or a team login like name:main / name:code')),
     password: z.string().min(1, tx('Vui lòng nhập mật khẩu', 'Enter your password')),
   })
 type Values = z.infer<ReturnType<typeof schemaFor>>
@@ -49,6 +56,7 @@ export default function LoginScreen() {
       availableRoles: ((user.availableRoles ?? [role]) as Role[]).filter((r) => r !== ('ADMIN' as Role)),
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
+      team: teamOf((user as { team?: unknown }).team),
     }, { remember })
   }
 
@@ -66,6 +74,18 @@ export default function LoginScreen() {
   const onSubmit = form.handleSubmit(async (values) => {
     setError(null)
     setUnverifiedEmail(null)
+    if (isTeamLogin(values.email)) {
+      const { data: team, error: teamProblem } = await api.POST('/api/seller-team/login', {
+        body: { login: values.email.trim().toLowerCase(), password: values.password, captchaToken: captchaToken ?? undefined },
+      })
+      if (!team) {
+        if (problemCode(teamProblem) === 'CAPTCHA_REQUIRED') setNeedsCaptcha(true)
+        setError(problemMessage(teamProblem))
+        return
+      }
+      await finish(team)
+      return
+    }
     const { data, error: problem } = await api.POST('/api/auth/login', {
       body: { ...values, captchaToken: captchaToken ?? undefined },
     })
@@ -115,7 +135,7 @@ export default function LoginScreen() {
       footer={<AuthLink text={tx('Bạn chưa có tài khoản?', "Don't have an account?")} action={tx('Tạo tài khoản ngay', 'Create one now')} href="/register" />}
     >
       <Controller control={form.control} name="email" render={({ field, fieldState }) => (
-        <Input label="Email" keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress"
+        <Input label={tx('Email hoặc tên đăng nhập nhóm', 'Email or team login')} keyboardType="email-address" autoCapitalize="none" autoComplete="username" textContentType="username"
           value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
       )} />
       <Controller control={form.control} name="password" render={({ field, fieldState }) => (

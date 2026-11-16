@@ -10,6 +10,7 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { Button, Card, Input, Notice, PasswordStrength, Sheet, TEXT_SCALES, Text, radius, spacing, touchTarget, useTextScale, useTheme, useToast } from '@/shared/ui'
 import { compactPhone, isPersonName, isVnPhone, passwordProblem } from '@/shared/lib/validate'
 import { DeleteAccountCard } from './delete-account-card'
+import { PrivacyCard } from './privacy-card'
 
 type Profile = components['schemas']['Profile']
 
@@ -31,6 +32,28 @@ const ROLE_NAME: Record<Role, string> = { CUSTOMER: 'Khách hàng', SELLER: 'Ng�
 
 /** Account basics shared by the customer Account tab and the seller Shop tab. */
 export function AccountPanel() {
+  const { session } = useSession()
+  // a main account or member is not the shop owner: the owner's personal pages are closed to it
+  if (session?.team) return <TeamCard />
+  return <PersonalPanel />
+}
+
+function TeamCard() {
+  const { session, signOut } = useSession()
+  const team = session?.team
+  return (
+    <Card>
+      <Text variant="title">{team?.kind === 'MAIN_ACCOUNT' ? 'Tài khoản chính' : 'Thành viên'}</Text>
+      <Text variant="body">{team?.login}</Text>
+      <Text variant="bodySm" muted>
+        {team?.shopName ? `Đang làm việc ở ${team.shopName}. ` : ''}Thông tin cá nhân, mật khẩu và thành viên do chủ tài khoản chính quản lý trên trang người bán.
+      </Text>
+      <Button title="Đăng xuất" variant="outline" onPress={() => void signOut()} />
+    </Card>
+  )
+}
+
+function PersonalPanel() {
   const profile = useQuery({
     queryKey: ['account', 'me'],
     queryFn: async () => {
@@ -46,6 +69,7 @@ export function AccountPanel() {
       <RoleCard />
       {profile.data?.hasPassword !== false ? <PasswordCard /> : null}
       <SessionCard hasPassword={profile.data?.hasPassword !== false} />
+      <PrivacyCard />
       <DeleteAccountCard />
     </>
   )

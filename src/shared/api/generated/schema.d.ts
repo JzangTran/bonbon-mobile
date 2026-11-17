@@ -326,7 +326,7 @@ export interface paths {
         get?: never;
         /**
          * Tạm ngưng / nhận đơn lại
-         * @description Ghi đè lịch ngay lập tức; đơn đã nhận không bị ảnh hưởng. Ai bấm và lúc nào được ghi lại.
+         * @description Ghi đè lịch ngay lập tức; đơn đã nhận không bị ảnh hưởng. Tạm ngưng có thể kèm số phút (tự nhận đơn lại khi hết) và lý do. Ai bấm và lúc nào được ghi lại.
          *
          *     **Cần đăng nhập**, quyền `vendor:write`.
          */
@@ -367,6 +367,34 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `review:respond`.
          */
         delete: operations["deleteReviewReply"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/quick-replies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Sửa tin trả lời mẫu
+         * @description Đổi mã gõ tắt hoặc nội dung.
+         *
+         *     **Cần đăng nhập**, quyền `conversation:write`.
+         */
+        put: operations["updateQuickReply"];
+        post?: never;
+        /**
+         * Xoá tin trả lời mẫu
+         * @description Xoá hẳn; ba tin gợi ý không được tạo lại.
+         *
+         *     **Cần đăng nhập**, quyền `conversation:write`.
+         */
+        delete: operations["deleteQuickReply"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1666,6 +1694,34 @@ export interface paths {
          *     **Cần đăng nhập**, quyền `vendor:write`.
          */
         post: operations["closeMyShop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/merchant/quick-replies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tin trả lời mẫu
+         * @description Theo thứ tự đã tạo. Lần đầu mở, quán được tạo sẵn ba tin gợi ý.
+         *
+         *     **Cần đăng nhập**, quyền `conversation:read`.
+         */
+        get: operations["listQuickReplies"];
+        put?: never;
+        /**
+         * Thêm tin trả lời mẫu
+         * @description Tối đa 30 tin; mã gõ tắt không trùng trong quán.
+         *
+         *     **Cần đăng nhập**, quyền `conversation:write`.
+         */
+        post: operations["createQuickReply"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6699,6 +6755,13 @@ export interface components {
             shipping?: components["schemas"]["ShopShipping"];
             tax?: components["schemas"]["ShopTaxInfo"];
             identity?: components["schemas"]["ShopIdentity"];
+            /**
+             * Format: date-time
+             * @description Tạm ngưng nhận đơn đến lúc này rồi tự mở lại; rỗng khi không tạm ngưng có hạn.
+             */
+            pausedUntil?: string;
+            /** @description Lý do tạm ngưng quán đã chọn. */
+            pauseReason?: string;
         };
         ShopIdentity: {
             docType?: string;
@@ -6840,10 +6903,35 @@ export interface components {
         };
         AcceptingOrdersRequest: {
             accepting: boolean;
+            /**
+             * Format: int32
+             * @description Khi tạm ngưng: số phút (15–480) rồi tự nhận đơn lại; bỏ trống là tạm ngưng đến khi bật lại.
+             */
+            pauseMinutes?: number;
+            /** @description Lý do tạm ngưng, tối đa 100 ký tự, ví dụ Quá đông, Hết nguyên liệu. */
+            reason?: string;
         };
         ReviewReplyRequest: {
             /** @description Nội dung phản hồi, tối đa 1000 ký tự. */
             text: string;
+        };
+        QuickReplyRequest: {
+            /**
+             * @description 1–20 ký tự a-z, 0-9, gạch ngang; gõ `/` + mã trong ô chat để chèn.
+             * @example giao
+             */
+            shortcut: string;
+            /** @description Nội dung, 1–1000 ký tự. */
+            text: string;
+        };
+        QuickReply: {
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            id?: string;
+            shortcut?: string;
+            text?: string;
         };
         OptionGroupRequest: {
             name: string;
@@ -6943,6 +7031,11 @@ export interface components {
             /** Format: int32 */
             sortOrder?: number;
             optionGroupIds?: string[];
+            /**
+             * Format: date-time
+             * @description Hết món chỉ đến lúc này (hết hôm nay); rỗng là hết đến khi bật lại hoặc đang bán.
+             */
+            soldOutUntil?: string;
         };
         MenuSectionView: {
             /**
@@ -7978,6 +8071,11 @@ export interface components {
             lineTotal?: number;
             note?: string;
             options?: components["schemas"]["LineOption"][];
+            /**
+             * Format: uuid
+             * @description UUID.
+             */
+            menuItemId?: string;
         };
         LineOption: {
             group?: string;
@@ -9434,6 +9532,8 @@ export interface components {
         MenuItemStatusRequest: {
             /** @enum {string} */
             status: "AVAILABLE" | "SOLD_OUT";
+            /** @description Với `SOLD_OUT`: `TODAY` là hết đến 4 giờ sáng mai rồi tự bán lại; bỏ trống là hết đến khi bật lại. */
+            until?: string;
         };
         ModerationTermActive: {
             active: boolean;
@@ -13719,6 +13819,157 @@ export interface operations {
              *     - `RESPONSE_HIDDEN`: Phản hồi đã bị quản trị ẩn.
              */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateQuickReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuickReplyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuickReply"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `conversation:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QUICK_REPLY_NOT_FOUND`: Không có tin này trong quán. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QUICK_REPLY_SHORTCUT_TAKEN`: Mã gõ tắt đã có. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    deleteQuickReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `conversation:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `QUICK_REPLY_NOT_FOUND`: Không có tin này trong quán. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -18738,6 +18989,137 @@ export interface operations {
             /**
              * @description - `SHOP_CANNOT_CLOSE`: Cửa hàng không ở trạng thái đang hoạt động hoặc bị đình chỉ; `status` cho biết trạng thái.
              *     - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listQuickReplies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuickReply"][];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `conversation:read`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `SHOP_NOT_APPROVED`: Người gọi chưa có cửa hàng được duyệt. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `INTERNAL_ERROR`: Lỗi không lường trước ở máy chủ. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createQuickReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuickReplyRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuickReply"];
+                };
+            };
+            /**
+             * @description - `VALIDATION_FAILED`: Dữ liệu gửi lên không hợp lệ; `errors` liệt kê từng trường và lý do.
+             *     - `INVALID_CHARACTER`: Văn bản có ký tự điều khiển hoặc ký tự đảo chiều chữ không được phép (xuống dòng và tab thì được).
+             */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `UNAUTHENTICATED`: Thiếu access token, token sai hoặc đã hết hạn. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description - `FORBIDDEN`: Vai trò đang dùng không có quyền `conversation:write`. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /**
+             * @description - `QUICK_REPLY_SHORTCUT_TAKEN`: Mã gõ tắt đã có.
+             *     - `TOO_MANY_QUICK_REPLIES`: Đã đủ 30 tin.
              */
             409: {
                 headers: {

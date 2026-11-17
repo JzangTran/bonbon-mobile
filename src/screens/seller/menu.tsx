@@ -70,9 +70,12 @@ function DishRow({ item }: { item: MenuItem }) {
   const switchedOff = item.status === 'SOLD_OUT'
   const outOfStock = item.stockQuantity === 0
   const blockedByOptions = Boolean(item.soldOut) && !switchedOff && !outOfStock
-  const toggle = useMenuMutation((status: 'AVAILABLE' | 'SOLD_OUT') =>
-    api.PATCH('/api/merchant/menu-items/{id}/status', { params: { path: { id: item.id! } }, body: { status } }),
+  const toggle = useMenuMutation(({ status, until }: { status: 'AVAILABLE' | 'SOLD_OUT'; until?: 'TODAY' }) =>
+    api.PATCH('/api/merchant/menu-items/{id}/status', { params: { path: { id: item.id! } }, body: { status, until } }),
   )
+  // "Hết hôm nay" comes back by itself at 4 a.m.; "Hết đến khi bật lại" waits for the seller (Uber Eats, GrabMerchant)
+  const [choosing, setChoosing] = useState(false)
+  const until = item.soldOutUntil ? new Date(item.soldOutUntil) : null
 
   return (
     <View style={[styles.dish, { borderTopColor: theme.divider }]}>
@@ -106,12 +109,17 @@ function DishRow({ item }: { item: MenuItem }) {
         </View>
       </Pressable>
       <Button
-        title={switchedOff ? 'Hết món' : 'Đang bán'}
+        title={switchedOff ? (until ? `Hết đến ${until.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}` : 'Hết món') : 'Đang bán'}
         variant={switchedOff ? 'outline' : 'primary'}
         loading={toggle.isPending}
         accessibilityState={{ selected: !switchedOff }}
-        onPress={() => toggle.mutate(switchedOff ? 'AVAILABLE' : 'SOLD_OUT')}
+        onPress={() => (switchedOff ? toggle.mutate({ status: 'AVAILABLE' }) : setChoosing(true))}
       />
+      <Sheet visible={choosing} onClose={() => setChoosing(false)} title={`Báo hết ${item.name ?? ''}`}>
+        <Button title="Hết hôm nay" fullWidth onPress={() => { setChoosing(false); toggle.mutate({ status: 'SOLD_OUT', until: 'TODAY' }) }} />
+        <Text variant="caption" muted>Tự bán lại lúc 4 giờ sáng mai.</Text>
+        <Button title="Hết đến khi bật lại" variant="outline" fullWidth onPress={() => { setChoosing(false); toggle.mutate({ status: 'SOLD_OUT' }) }} />
+      </Sheet>
     </View>
   )
 }

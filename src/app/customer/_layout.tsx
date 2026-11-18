@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router'
 import { CartProvider } from '@/entities/cart'
 import { CustomerLiveProvider } from '@/entities/order'
-import { fonts, useTheme } from '@/shared/ui'
+import { PageHeader, useTheme } from '@/shared/ui'
 
 /** Customer tabs, plus screens that open on top of them (addresses). Guests browse here too, before signing in. */
 export default function CustomerLayout() {
@@ -11,9 +11,8 @@ export default function CustomerLayout() {
     <CustomerLiveProvider>
     <Stack
       screenOptions={{
-        headerTintColor: theme.text,
-        headerStyle: { backgroundColor: theme.surface },
-        headerTitleStyle: { fontFamily: fonts.semibold },
+        // The same back arrow and title as the pages that draw their own (payments, offers): never the platform's default bar.
+        header: ({ options, navigation }) => <PageHeader title={typeof options.title === 'string' ? options.title : undefined} onBack={navigation.goBack} />,
         contentStyle: { backgroundColor: theme.background },
       }}
     >

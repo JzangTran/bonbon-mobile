@@ -18,11 +18,7 @@ export default function SellerEarningsScreen() {
   const items = (ledger.data?.pages ?? []).flatMap((page) => page.items ?? [])
 
   return (
-    <Screen>
-      <View>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller/shop')} />
-      </View>
-      <Text variant="headline">Thu nhập</Text>
+    <Screen title="Thu nhập" onBack={() => router.replace('/seller/shop')}>
 
       {summary.isError ? <Notice tone="error" message={problemMessage(summary.error, 'Không tải được thu nhập lúc này.')} /> : null}
       {s ? (

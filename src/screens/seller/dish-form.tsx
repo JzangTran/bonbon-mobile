@@ -107,11 +107,7 @@ function DishForm({ menu, item, defaultSectionId }: { menu: Menu; item?: MenuIte
   }
 
   return (
-    <Screen>
-      <View style={styles.header}>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller/menu')} />
-      </View>
-      <Text variant="headline">{item ? 'Sửa món' : 'Thêm món'}</Text>
+    <Screen title={item ? 'Sửa món' : 'Thêm món'} onBack={() => router.replace('/seller/menu')}>
       <Card>
         <Input label="Tên món" value={name} onChangeText={setName} maxLength={100} error={fieldErrors.name} />
         <Input label="Mô tả (không bắt buộc)" value={description} onChangeText={setDescription} maxLength={500} multiline />

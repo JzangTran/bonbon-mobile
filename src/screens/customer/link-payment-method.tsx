@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { ProviderLogo, usePaymentMethodActions } from '@/entities/payment-method'
 import { problemFieldErrors, problemMessage } from '@/shared/api'
-import { Input, Notice, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { Input, Notice, Text, fonts, spacing, useTheme, useToast , PageHeader } from '@/shared/ui'
 import { FooterButton } from './place-parts'
-import { PageHeader } from './payment-settings'
+
 
 /**
  * Linking a MoMo wallet by its phone number. bonbon keeps the last four digits only; paying still opens MoMo at checkout, so no

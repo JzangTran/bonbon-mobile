@@ -3,8 +3,8 @@ import { Pressable, StyleSheet, Switch, View } from 'react-native'
 import { ProviderLogo, usePaymentMethodActions, usePaymentMethods } from '@/entities/payment-method'
 import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
-import { Notice, Text, fonts, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
-import { PageHeader } from './payment-settings'
+import { Notice, Text, fonts, spacing, touchTarget, useTheme, useToast , PageHeader } from '@/shared/ui'
+
 
 /** One linked wallet: make it the main way to pay, or unlink it. */
 export default function PaymentMethodScreen() {

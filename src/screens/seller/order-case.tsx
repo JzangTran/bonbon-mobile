@@ -25,10 +25,7 @@ export default function SellerOrderCaseScreen() {
   }
 
   return (
-    <Screen>
-      <View>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller/order-cases')} />
-      </View>
+    <Screen title="Khiếu nại" onBack={() => router.replace('/seller/order-cases')}>
       {detail.isError ? <Notice tone="error" message={problemMessage(detail.error, 'Không tìm thấy khiếu nại này.')} /> : null}
       {c ? (
         <>

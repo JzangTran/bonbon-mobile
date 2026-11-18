@@ -5,8 +5,8 @@ import { useMyOrder } from '@/entities/order'
 import { ProviderLogo } from '@/entities/payment-method'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
-import { Notice, Skeleton, SkeletonGroup, Text, fonts, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
-import { PageHeader } from './payment-settings'
+import { Notice, Skeleton, SkeletonGroup, Text, fonts, radius, spacing, touchTarget, useTheme , PageHeader } from '@/shared/ui'
+
 
 /** "10 tháng 11 năm 2026, 9:30 PM". */
 function paidAt(iso: string | undefined) {

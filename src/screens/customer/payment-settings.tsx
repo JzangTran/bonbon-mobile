@@ -1,10 +1,9 @@
 import { useRouter } from 'expo-router'
-import { ArrowLeft, ChevronRight, LockKeyhole, Plus } from 'lucide-react-native'
+import { ChevronRight, LockKeyhole, Plus } from 'lucide-react-native'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ProviderLogo, usePaymentMethods } from '@/entities/payment-method'
 import { problemMessage } from '@/shared/api'
-import { Notice, Skeleton, SkeletonGroup, Text, fonts, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { Notice, PageHeader, Skeleton, SkeletonGroup, Text, fonts, spacing, touchTarget, useTheme } from '@/shared/ui'
 
 /** Cài đặt thanh toán: the linked wallets (the main one marked), linking another, and the payment PIN. */
 export default function PaymentSettingsScreen() {
@@ -78,22 +77,6 @@ export default function PaymentSettingsScreen() {
   )
 }
 
-/** Back and a title, for the full pages that slide up from the payments tab. */
-export function PageHeader({ title, onBack }: { title: string; onBack?: () => void }) {
-  const theme = useTheme()
-  const router = useRouter()
-  const insets = useSafeAreaInsets()
-  return (
-    <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
-      <Pressable accessibilityRole="button" accessibilityLabel="Quay lại" hitSlop={8} onPress={onBack ?? (() => router.back())} style={styles.back}>
-        <ArrowLeft size={24} color={theme.text} />
-      </Pressable>
-      <Text variant="titleSm" style={styles.strong} accessibilityRole="header">
-        {title}
-      </Text>
-    </View>
-  )
-}
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },

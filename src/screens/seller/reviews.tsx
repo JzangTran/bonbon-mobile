@@ -49,11 +49,7 @@ export default function SellerReviewsScreen() {
   }
 
   return (
-    <Screen>
-      <View style={styles.top}>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller/shop')} />
-      </View>
-      <Text variant="headline">Đánh giá của khách</Text>
+    <Screen title="Đánh giá của khách" onBack={() => router.replace('/seller/shop')}>
       <View style={styles.tabs} accessibilityRole="tablist">
         {[
           { id: false, label: 'Tất cả' },

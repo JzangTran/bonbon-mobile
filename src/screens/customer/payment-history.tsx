@@ -4,8 +4,8 @@ import { PAST_STATUSES, ACTIVE_STATUSES, useMyOrders } from '@/entities/order'
 import { isPaid } from '@/entities/payment-method'
 import { problemMessage } from '@/shared/api'
 import { formatDateTime } from '@/shared/lib/format'
-import { EmptyState, Notice, Skeleton, SkeletonGroup, Text, spacing, useTheme } from '@/shared/ui'
-import { PageHeader } from './payment-settings'
+import { EmptyState, Notice, Skeleton, SkeletonGroup, Text, spacing, useTheme , PageHeader } from '@/shared/ui'
+
 import { TransactionRow } from './payments'
 
 const ALL = [...ACTIVE_STATUSES, ...PAST_STATUSES]

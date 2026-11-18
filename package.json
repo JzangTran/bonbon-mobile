@@ -52,8 +52,12 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.1.0",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.2.2",
     "eslint": "^9.39.5",
+    "jest": "^30.5.2",
+    "jest-expo": "^58.0.15",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -63,7 +67,23 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "api:generate": "npx --yes openapi-typescript@7.13.0 http://localhost:8080/v3/api-docs -o src/shared/api/generated/schema.d.ts"
+    "api:generate": "npx --yes openapi-typescript@7.13.0 http://localhost:8080/v3/api-docs -o src/shared/api/generated/schema.d.ts",
+    "test": "jest"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./jest.setup.ts"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.ts?(x)"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|lucide-react-native|react-native-svg)"
+    ],
+    "moduleNameMapper": {
+      "^lucide-react-native$": "<rootDir>/jest/lucide-mock.js"
+    }
+  }
 }

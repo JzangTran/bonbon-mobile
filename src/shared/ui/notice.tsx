@@ -3,7 +3,7 @@ import { Text } from './text'
 import { useTheme } from './theme'
 import { radius, spacing } from './tokens'
 
-/** Inline result message under a form; announced to screen readers. */
+/** v4 inline message, kept for the screens that use it; new code uses InlineMessage (title, what it means, action). */
 export function Notice({ tone, message }: { tone: 'error' | 'success' | 'warning'; message: string | null }) {
   const theme = useTheme()
   if (!message) return null

@@ -3,14 +3,14 @@ import { Pressable, StyleSheet, Switch, View } from 'react-native'
 import { ProviderLogo, usePaymentMethodActions, usePaymentMethods } from '@/entities/payment-method'
 import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
-import { Notice, Text, fonts, spacing, touchTarget, useTheme, useToast , PageHeader } from '@/shared/ui'
+import { Notice, Text, fonts, spacing, touchTarget, useTheme, useFeedback , PageHeader } from '@/shared/ui'
 
 
 /** One linked wallet: make it the main way to pay, or unlink it. */
 export default function PaymentMethodScreen() {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const { id } = useLocalSearchParams<{ id: string }>()
   const methods = usePaymentMethods()
   const { setPrimary, unlink } = usePaymentMethodActions()
@@ -21,10 +21,10 @@ export default function PaymentMethodScreen() {
     if (await confirm(`Gỡ liên kết ${method.name}?`, 'Bạn có thể liên kết lại bất cứ lúc nào.', 'Gỡ liên kết')) {
       unlink.mutate(method.id!, {
         onSuccess: () => {
-          toast.show(`Đã gỡ liên kết ${method.name}.`)
+          feedback.success(`Đã gỡ liên kết ${method.name}. Bạn liên kết lại được bất cứ lúc nào trong Cài đặt thanh toán.`)
           router.back()
         },
-        onError: (e) => toast.show(problemMessage(e), 'error'),
+        onError: (e) => feedback.error(problemMessage(e)),
       })
     }
   }
@@ -50,7 +50,7 @@ export default function PaymentMethodScreen() {
               accessibilityLabel="Đặt làm phương thức thanh toán chính"
               value={method.primary}
               disabled={setPrimary.isPending}
-              onValueChange={(primary) => setPrimary.mutate({ id: method.id!, primary }, { onError: (e) => toast.show(problemMessage(e), 'error') })}
+              onValueChange={(primary) => setPrimary.mutate({ id: method.id!, primary }, { onError: (e) => feedback.error(problemMessage(e)) })}
               trackColor={{ true: theme.text, false: theme.border }}
             />
           </View>

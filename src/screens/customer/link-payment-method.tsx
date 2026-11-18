@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { ProviderLogo, usePaymentMethodActions } from '@/entities/payment-method'
 import { problemFieldErrors, problemMessage } from '@/shared/api'
-import { Input, Notice, Text, fonts, spacing, useTheme, useToast , PageHeader } from '@/shared/ui'
+import { Input, Notice, Text, fonts, spacing, useTheme, useFeedback , PageHeader } from '@/shared/ui'
 import { FooterButton } from './place-parts'
 
 
@@ -15,7 +15,7 @@ import { FooterButton } from './place-parts'
 export default function LinkPaymentMethodScreen() {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const { link } = usePaymentMethodActions()
   const [phone, setPhone] = useState('')
   const errors = link.isError ? problemFieldErrors(link.error) : {}
@@ -43,7 +43,7 @@ export default function LinkPaymentMethodScreen() {
             { provider: 'MOMO', account: compactPhone(phone) },
             {
               onSuccess: () => {
-                toast.show('Đã liên kết ví MoMo.')
+                feedback.success('Đã liên kết ví MoMo. Lần đặt món tới bạn chọn được MoMo để thanh toán nhanh.')
                 router.back()
               },
             },

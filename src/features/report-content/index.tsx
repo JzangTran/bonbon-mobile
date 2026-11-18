@@ -3,7 +3,7 @@ import { Check } from 'lucide-react-native'
 import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { api, problemMessage } from '@/shared/api'
-import { Button, Input, Notice, Sheet, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { Button, Input, Notice, Sheet, Text, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 
 export type ReportTarget = { type: 'SHOP' | 'MESSAGE' | 'REVIEW' | 'REVIEW_RESPONSE'; id: string }
 type Reason = 'SPAM' | 'OFFENSIVE' | 'SCAM_OR_FRAUD' | 'INAPPROPRIATE_IMAGE' | 'FALSE_INFORMATION' | 'OTHER'
@@ -23,7 +23,7 @@ const REASONS: { id: Reason; label: string; hint: string }[] = [
  */
 export function ReportSheet({ target, onClose }: { target: ReportTarget | null; onClose: () => void }) {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const [reason, setReason] = useState<Reason | null>(null)
   const [note, setNote] = useState('')
   const send = useMutation({
@@ -36,7 +36,7 @@ export function ReportSheet({ target, onClose }: { target: ReportTarget | null; 
       return data
     },
     onSuccess: (data) => {
-      toast.show(data?.alreadyReported ? 'Bạn đã báo cáo nội dung này rồi. Chúng tôi đang xem xét.' : 'Cảm ơn bạn. Chúng tôi sẽ xem xét trong vòng 24 giờ.')
+      feedback.success(data?.alreadyReported ? 'Bạn đã báo cáo nội dung này rồi. Chúng tôi đang xem xét.' : 'Cảm ơn bạn. Chúng tôi sẽ xem xét trong vòng 24 giờ.')
       setReason(null)
       setNote('')
       onClose()

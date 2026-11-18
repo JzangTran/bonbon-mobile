@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { StyleSheet, Switch, View } from 'react-native'
 import { useAutoReply, useSaveAutoReply } from '@/entities/chat'
 import { problemMessage } from '@/shared/api'
-import { Button, Card, Input, Notice, Text, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Text, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 /**
  * The one message the shop sends by itself when a customer writes and nobody has answered yet (configure-auto-reply.md). On by default
@@ -10,7 +10,7 @@ import { Button, Card, Input, Notice, Text, spacing, useTheme, useToast } from '
  */
 export function AutoReplyCard() {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const current = useAutoReply()
   const save = useSaveAutoReply()
   const [draft, setDraft] = useState<string | null>(null)
@@ -42,7 +42,7 @@ export function AutoReplyCard() {
             variant="outline"
             disabled={!changed || !message.trim()}
             loading={save.isPending}
-            onPress={() => save.mutate({ message: message.trim() }, { onSuccess: () => { setDraft(null); toast.show('Đã lưu tin trả lời tự động.') } })}
+            onPress={() => save.mutate({ message: message.trim() }, { onSuccess: () => { setDraft(null); feedback.success('Đã lưu tin trả lời tự động. Khách nhắn khi quán chưa trả lời sẽ nhận tin này.') } })}
           />
         </>
       ) : null}

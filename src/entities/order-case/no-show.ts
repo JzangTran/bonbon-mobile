@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Platform } from 'react-native'
 import { api, isApiProblem, problemMessage } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 import { CASES_KEY, type PickedPhoto } from './api'
 
 export type NoShowAnswer = 'UNABLE' | 'RECEIVED' | 'SHOP_NEVER_CAME'
@@ -27,7 +27,7 @@ async function uploadNoShowPhoto(orderId: string, photo: PickedPhoto): Promise<s
 /** Reports that the customer was not there when the food arrived (report-customer-no-show.md). */
 export function useReportNoShow(orderId: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (input: { note: string; photo: PickedPhoto | null }) => {
       const photoKey = input.photo ? await uploadNoShowPhoto(orderId, input.photo) : undefined
@@ -39,10 +39,10 @@ export function useReportNoShow(orderId: string) {
       return data
     },
     onSuccess: () => {
-      toast.show('Đã báo. Khách có 2 giờ để trả lời.')
+      feedback.success('Đã báo khách không nhận hàng. Khách có 2 giờ để trả lời; quá hạn thì đơn tự kết thúc.')
       void queryClient.invalidateQueries({ queryKey: CASES_KEY })
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 
@@ -80,7 +80,7 @@ export function useMyNoShow(orderId: string, enabled: boolean) {
 
 export function useAnswerNoShow(orderId: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (input: { answer: NoShowAnswer; note?: string }) => {
       const { data, error } = await api.POST('/api/orders/{id}/no-show-answer', {
@@ -91,10 +91,10 @@ export function useAnswerNoShow(orderId: string) {
       return data
     },
     onSuccess: () => {
-      toast.show('Đã gửi câu trả lời.')
+      feedback.success('Đã gửi câu trả lời. Quán và đội hỗ trợ thấy câu trả lời ngay.')
       void queryClient.invalidateQueries({ queryKey: CASES_KEY })
       void queryClient.invalidateQueries({ queryKey: ['orders'] })
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }

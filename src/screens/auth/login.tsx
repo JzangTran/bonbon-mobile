@@ -8,7 +8,7 @@ import { loadLastRole, teamOf, useSession, type Role } from '@/entities/session'
 import { GoogleSignIn } from '@/features/google-sign-in'
 import { api, problemCode, problemMessage, type components } from '@/shared/api'
 import { useLocale, useTx, type Tx } from '@/shared/i18n'
-import { Button, Captcha, Checkbox, Input, Notice, Text, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Captcha, Checkbox, Input, Notice, Text, spacing, useTheme, useFeedback } from '@/shared/ui'
 import { AuthLink, AuthSheet, OrDivider } from '@/widgets/auth-sheet'
 
 /** A seller team signs in as `name:main` (main account) or `name:code` (member). */
@@ -31,7 +31,7 @@ export default function LoginScreen() {
   const tx = useTx()
   const locale = useLocale()
   const { signIn } = useSession()
-  const toast = useToast()
+  const feedback = useFeedback()
   const [error, setError] = useState<string | null>(null)
   const [needsCaptcha, setNeedsCaptcha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
@@ -44,7 +44,7 @@ export default function LoginScreen() {
   useEffect(() => form.clearErrors(), [form, locale])
 
   const finish = async (data: LoginResponse) => {
-    if (data.deletionCancelled) toast.show(tx('Việc xoá tài khoản đã được huỷ vì bạn đăng nhập lại.', 'Your account deletion was cancelled because you signed in again.'))
+    if (data.deletionCancelled) feedback.success(tx('Việc xoá tài khoản đã được huỷ vì bạn đăng nhập lại.', 'Your account deletion was cancelled because you signed in again.'))
     const { tokens, user } = data
     const role = (user?.activeRole ?? tokens?.role) as Role | undefined
     if (!tokens?.accessToken || !tokens.refreshToken || !user?.id || !role) return

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Linking, Pressable, StyleSheet, View } from 'react-native'
 import { api, problemMessage } from '@/shared/api'
-import { Button, Card, Input, Notice, Sheet, Text, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Sheet, Text, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 const TYPES = [
   { id: 'CORRECT', label: 'Sửa dữ liệu', hint: 'Thông tin sai mà bạn không tự sửa được.' },
@@ -20,7 +20,7 @@ const day = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'short' })
  */
 export function PrivacyCard() {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [type, setType] = useState<(typeof TYPES)[number]['id']>('CORRECT')
@@ -44,7 +44,7 @@ export function PrivacyCard() {
       void queryClient.invalidateQueries({ queryKey: ['account', 'data-requests'] })
       if (data.downloadUrl) void Linking.openURL(data.downloadUrl)
     },
-    onError: (e) => toast.show(problemMessage(e)),
+    onError: (e) => feedback.error(e),
   })
   const ask = useMutation({
     mutationFn: async () => {
@@ -55,7 +55,7 @@ export function PrivacyCard() {
       void queryClient.invalidateQueries({ queryKey: ['account', 'data-requests'] })
       setOpen(false)
       setDetails('')
-      toast.show('Đã gửi yêu cầu. Bạn nhận phản hồi trong 2 ngày làm việc.')
+      feedback.success('Đã gửi yêu cầu về dữ liệu. Bạn nhận phản hồi qua email trong 2 ngày làm việc.')
     },
     onError: (e) => setError(problemMessage(e)),
   })

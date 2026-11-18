@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { useBankTransfer } from '@/entities/order'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
-import { Card, Notice, QrCode, Skeleton, Text, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { Card, Notice, QrCode, Skeleton, Text, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 /**
  * A bank transfer order (VietQR): the money goes straight to the shop's own account. Scanning the code in any banking
@@ -12,13 +12,13 @@ import { Card, Notice, QrCode, Skeleton, Text, radius, spacing, useTheme, useToa
  */
 export function BankTransferCard({ orderId, active }: { orderId: string; active: boolean }) {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const transfer = useBankTransfer(orderId, true)
   const data = transfer.data
 
   const copy = async (label: string, value: string) => {
     await Clipboard.setStringAsync(value)
-    toast.show(`Đã chép ${label}.`)
+    feedback.success(`Đã chép ${label}.`)
   }
 
   if (transfer.isPending) {

@@ -5,7 +5,7 @@ import { useSession } from '@/entities/session'
 import { api, clearLegalRequired, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
 import { formatDateTime } from '@/shared/lib/format'
-import { Button, Card, Checkbox, Notice, Text, useToast } from '@/shared/ui'
+import { Button, Card, Checkbox, Notice, Text, useFeedback } from '@/shared/ui'
 import { BlockingScreen } from './blocking-screen'
 
 /**
@@ -15,7 +15,7 @@ import { BlockingScreen } from './blocking-screen'
 export function LegalAcceptanceScreen() {
   const { signOut } = useSession()
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const pending = useQuery({
@@ -35,7 +35,7 @@ export function LegalAcceptanceScreen() {
     },
     onSuccess: async () => {
       clearLegalRequired()
-      toast.show('Cảm ơn bạn đã đồng ý.')
+      feedback.success('Đã ghi nhận bạn đồng ý với điều khoản mới. Bạn dùng bonbon tiếp như bình thường.')
       await queryClient.invalidateQueries()
     },
     onError: (e) => setError(problemMessage(e)),

@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native'
 import { ADDRESSES_QUERY_KEY, MAX_ADDRESSES, clearCurrentLocation, useAddresses, type DeliveryAddress } from '@/entities/address'
 import { api, problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
-import { Button, Card, Notice, Screen, Text, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Notice, Screen, Text, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 /** Saved delivery addresses (manage-delivery-addresses.md): default first, up to 10. */
 export default function AddressesScreen() {
@@ -39,7 +39,7 @@ export default function AddressesScreen() {
 function AddressCard({ address }: { address: DeliveryAddress }) {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const queryClient = useQueryClient()
   const id = address.id!
   const refresh = () => queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY })
@@ -52,7 +52,7 @@ function AddressCard({ address }: { address: DeliveryAddress }) {
       clearCurrentLocation()
       return refresh()
     },
-    onError: (e) => toast.show(problemMessage(e), 'error'),
+    onError: (e) => feedback.error(problemMessage(e)),
   })
   const remove = useMutation({
     mutationFn: async () => {
@@ -60,10 +60,10 @@ function AddressCard({ address }: { address: DeliveryAddress }) {
       if (error) throw error
     },
     onSuccess: () => {
-      toast.show('Đã xoá địa chỉ.')
+      feedback.success('Đã xoá địa chỉ. Địa chỉ không còn trong danh sách giao hàng.')
       return refresh()
     },
-    onError: (e) => toast.show(problemMessage(e), 'error'),
+    onError: (e) => feedback.error(problemMessage(e)),
   })
 
   return (

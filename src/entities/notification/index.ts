@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 
 export type NotificationItem = components['schemas']['NotificationItem']
 
@@ -36,13 +36,13 @@ export function useUnreadCount(): number {
 /** Acknowledges one notification (idempotent on the server) or all of them. */
 export function useAcknowledge() {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (id: string | 'all') => {
       const { error } = id === 'all' ? await api.POST('/api/notifications/ack-all') : await api.POST('/api/notifications/{id}/ack', { params: { path: { id } } })
       if (error) throw error
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY }),
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }

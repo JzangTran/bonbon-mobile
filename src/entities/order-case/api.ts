@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Platform } from 'react-native'
 import { api, isApiProblem, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 
 export type OrderCase = components['schemas']['OrderCase']
 export type OrderCaseLine = components['schemas']['OrderCaseLine']
@@ -47,7 +47,7 @@ export function useIncidentQuote(orderId: string, lines: ClaimedLine[]) {
 
 export function useReportNotReceived(orderId: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async () => {
       const { data, error } = await api.POST('/api/orders/{id}/report-not-received', { params: { path: { id: orderId } }, body: {} })
@@ -55,10 +55,10 @@ export function useReportNotReceived(orderId: string) {
       return data
     },
     onSuccess: () => {
-      toast.show('Đã gửi báo cáo. Quán sẽ trả lời sớm.')
+      feedback.success('Đã gửi báo cáo cho quán. Quán có 12 giờ để trả lời; bạn nhận thông báo khi có kết quả.')
       void queryClient.invalidateQueries({ queryKey: CASES_KEY })
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 
@@ -129,13 +129,13 @@ export function useShopCase(id: string) {
 
 export function useCaseAnswer(id: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   const done = (message: string) => {
-    toast.show(message)
+    feedback.success(message)
     void queryClient.invalidateQueries({ queryKey: CASES_KEY })
   }
   const failed = (error: unknown) => {
-    toast.show(problemMessage(error), 'error')
+    feedback.error(problemMessage(error))
     void queryClient.invalidateQueries({ queryKey: CASES_KEY })
   }
   const accept = useMutation({

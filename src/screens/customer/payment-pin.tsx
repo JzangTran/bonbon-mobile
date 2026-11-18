@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useChangePaymentPin, usePaymentPin } from '@/entities/payment-method'
 import { problemCode, problemMessage } from '@/shared/api'
-import { Button, Skeleton, SkeletonGroup, Text, fonts, radius, spacing, useTheme, useToast , PageHeader } from '@/shared/ui'
+import { Button, Skeleton, SkeletonGroup, Text, fonts, radius, spacing, useTheme, useFeedback , PageHeader } from '@/shared/ui'
 
 
 const LENGTH = 6
@@ -46,7 +46,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 function PinFlow({ hasPin }: { hasPin: boolean }) {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const change = useChangePaymentPin()
   const [step, setStep] = useState<Step>(hasPin ? 'current' : 'new')
   const [current, setCurrent] = useState('')
@@ -62,7 +62,7 @@ function PinFlow({ hasPin }: { hasPin: boolean }) {
       setFresh(pin)
       setStep('repeat')
     } else if (pin !== fresh) {
-      toast.show('Mã PIN nhập lại không khớp. Hãy nhập mã mới lần nữa.', 'error')
+      feedback.error('Mã PIN nhập lại không khớp. Hãy nhập mã mới lần nữa.')
       setFresh('')
       setStep('new')
     } else {
@@ -71,7 +71,7 @@ function PinFlow({ hasPin }: { hasPin: boolean }) {
         {
           onSuccess: () => setStep('done'),
           onError: (e) => {
-            toast.show(problemMessage(e), 'error')
+            feedback.error(problemMessage(e))
             if (problemCode(e) === 'PIN_INCORRECT' || problemCode(e) === 'PIN_LOCKED') {
               setCurrent('')
               setFresh('')

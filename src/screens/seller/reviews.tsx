@@ -7,12 +7,12 @@ import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { useNow } from '@/shared/lib/countdown'
 import { formatDateTime } from '@/shared/lib/format'
-import { Button, Card, Input, Notice, Screen, Sheet, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Screen, Sheet, Text, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 
 /** Customers' reviews of the shop, with the one reply each (respond-to-review.md); a reply can change for 24 hours. */
 export default function SellerReviewsScreen() {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const router = useRouter()
   const [unreplied, setUnreplied] = useState(false)
   const reviews = useSellerReviews(unreplied)
@@ -36,7 +36,7 @@ export default function SellerReviewsScreen() {
       {
         onSuccess: () => {
           setTarget(null)
-          toast.show(editing ? 'Đã cập nhật phản hồi.' : 'Đã gửi phản hồi.')
+          feedback.success(editing ? 'Đã cập nhật phản hồi. Khách thấy câu trả lời mới dưới đánh giá.' : 'Đã gửi phản hồi. Câu trả lời hiện dưới đánh giá và khách nhận thông báo.')
         },
       },
     )
@@ -44,7 +44,7 @@ export default function SellerReviewsScreen() {
 
   const askDelete = async (review: Review) => {
     if (review.id && (await confirm('Xoá phản hồi này?', 'Bạn có thể phản hồi lại sau đó.', 'Xoá'))) {
-      remove.mutate(review.id, { onSuccess: () => toast.show('Đã xoá phản hồi.') })
+      remove.mutate(review.id, { onSuccess: () => feedback.success('Đã xoá phản hồi. Khách chỉ còn thấy đánh giá của mình.') })
     }
   }
 

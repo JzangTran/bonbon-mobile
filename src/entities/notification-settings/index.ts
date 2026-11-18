@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 
 export type NotificationPreferences = components['schemas']['NotificationPreferences']
 export type PushDevice = components['schemas']['PushDeviceView']
@@ -20,7 +20,7 @@ export function useNotificationPreferences() {
 
 export function useUpdatePreference() {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (change: { category: string; channel: 'PUSH' | 'EMAIL'; enabled: boolean }) => {
       const { data, error } = await api.PUT('/api/me/notification-preferences', { body: { changes: [change] } })
@@ -28,14 +28,14 @@ export function useUpdatePreference() {
       return data
     },
     onSuccess: (data) => queryClient.setQueryData([...KEY, 'preferences'], data),
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 
 /** Both times, or neither to clear. */
 export function useSetQuietHours() {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (hours: { start?: string; end?: string }) => {
       const { data, error } = await api.PUT('/api/me/quiet-hours', { body: hours })
@@ -43,10 +43,10 @@ export function useSetQuietHours() {
       return data
     },
     onSuccess: (data) => {
-      toast.show(data.quietHours ? 'Đã đặt giờ yên lặng.' : 'Đã bỏ giờ yên lặng.')
+      feedback.success(data.quietHours ? 'Đã đặt giờ yên lặng. Trong khung giờ này thông báo vẫn vào hộp thư nhưng không đổ chuông.' : 'Đã bỏ giờ yên lặng. Thông báo đổ chuông ở mọi giờ.')
       queryClient.setQueryData([...KEY, 'preferences'], data)
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 
@@ -63,16 +63,16 @@ export function usePushDevices() {
 
 export function useRemoveDevice() {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await api.DELETE('/api/push-devices/{id}', { params: { path: { id } } })
       if (error) throw error
     },
     onSuccess: () => {
-      toast.show('Đã gỡ thiết bị.')
+      feedback.success('Đã gỡ thiết bị. Thiết bị đó không còn nhận thông báo cho tới khi đăng nhập lại.')
       void queryClient.invalidateQueries({ queryKey: [...KEY, 'devices'] })
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }

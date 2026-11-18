@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { FeedbackRegion } from './feedback'
 import { Modal, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native'
 import Animated, { Easing, ReduceMotion, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -60,7 +61,10 @@ export function Sheet({ visible, onClose, title, children, fullScreen = false, h
           >
             {fullScreen ? null : <View style={[styles.handle, { backgroundColor: theme.divider }]} />}
             {title ? <Text variant="title">{title}</Text> : null}
-            {children}
+            {/* errors by the sheet's buttons; successes go up to the screen, which stays after the sheet closes */}
+            <FeedbackRegion errorsOnly placement="bottom">
+              {children}
+            </FeedbackRegion>
           </View>
         </Animated.View>
       </View>

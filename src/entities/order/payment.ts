@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as WebBrowser from 'expo-web-browser'
 import { Linking, Platform } from 'react-native'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 import { MY_ORDERS_KEY } from './customer'
 
 export type OrderPayment = components['schemas']['OrderPayment']
@@ -45,7 +45,7 @@ export async function openMomo(payment: OrderPayment | undefined): Promise<'app'
 /** A fresh MoMo attempt for an order that is still unpaid; the answer is the order with the new payment link. */
 export function useRetryPayment(orderId: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async () => {
       const { data, error } = await api.POST('/api/orders/{id}/pay', { params: { path: { id: orderId } } })
@@ -57,7 +57,7 @@ export function useRetryPayment(orderId: string) {
       void queryClient.invalidateQueries({ queryKey: [...MY_ORDERS_KEY, 'list'] })
     },
     onError: (error) => {
-      toast.show(problemMessage(error), 'error')
+      feedback.error(problemMessage(error))
       // The order may have been cancelled or paid meanwhile: show what it really is now.
       void queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY })
     },
@@ -67,7 +67,7 @@ export function useRetryPayment(orderId: string) {
 /** The bank account a refund goes to when MoMo could not send it back (process-refund.md). */
 export function useRefundDestination(orderId: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (body: { bankName: string; accountNumber: string; accountName: string }) => {
       const { data, error } = await api.PUT('/api/orders/{orderId}/refund-destination', { params: { path: { orderId } }, body })
@@ -75,10 +75,10 @@ export function useRefundDestination(orderId: string) {
       return data
     },
     onSuccess: () => {
-      toast.show('Đã nhận tài khoản. Chúng tôi sẽ chuyển khoản trong 24 giờ.')
+      feedback.success('Đã nhận tài khoản hoàn tiền. bonbon chuyển khoản trong 24 giờ và báo bạn khi xong.')
       void queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY })
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 

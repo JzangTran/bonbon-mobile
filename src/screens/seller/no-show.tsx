@@ -2,7 +2,7 @@ import { Image } from 'expo-image'
 import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { CASE_STATUS_LABEL, useReportNoShow, useShopNoShow, type PickedPhoto } from '@/entities/order-case'
-import { Button, Card, Input, Sheet, Text, radius, spacing, useToast } from '@/shared/ui'
+import { Button, Card, Input, Sheet, Text, radius, spacing, useFeedback } from '@/shared/ui'
 import { formatDateTime } from '@/shared/lib/format'
 import { pickImages } from '@/shared/lib/pick-image'
 
@@ -12,7 +12,7 @@ import { pickImages } from '@/shared/lib/pick-image'
  */
 export function NoShowCard({ orderId }: { orderId: string }) {
   const existing = useShopNoShow(orderId)
-  const toast = useToast()
+  const feedback = useFeedback()
   const report = useReportNoShow(orderId)
   const [open, setOpen] = useState(false)
   const [note, setNote] = useState('')
@@ -20,7 +20,7 @@ export function NoShowCard({ orderId }: { orderId: string }) {
 
   const pick = async () => {
     const { images, problems } = await pickImages({ limit: 1 })
-    problems.forEach((p) => toast.show(p))
+    problems.forEach((p) => feedback.warning(p))
     if (images[0]) setPhoto(images[0])
   }
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { ScrollView, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { FeedbackRegion } from './feedback'
 import { PageHeader } from './page-header'
 import { useTheme } from './theme'
 import { spacing } from './tokens'
@@ -16,7 +17,10 @@ export function Screen({ children, backdrop, title, onBack }: { children: ReactN
     <SafeAreaView style={[styles.root, { backgroundColor: theme.background }]} edges={['top']}>
       {backdrop ? <WaveBackdrop /> : null}
       {title !== undefined || onBack ? <PageHeader title={title} onBack={onBack} inset={false} /> : null}
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">{children}</ScrollView>
+      {/* results and errors of this screen show here, under the header and outside the scroll, so they are always in view */}
+      <FeedbackRegion>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">{children}</ScrollView>
+      </FeedbackRegion>
     </SafeAreaView>
   )
 }

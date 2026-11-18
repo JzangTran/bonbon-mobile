@@ -7,7 +7,7 @@ import { ReportSheet, type ReportTarget } from '@/features/report-content'
 import { problemMessage } from '@/shared/api'
 import { formatDateTime } from '@/shared/lib/format'
 import { pickImages } from '@/shared/lib/pick-image'
-import { SkeletonGroup, Skeleton, Button, Notice, Text, fonts, radius, spacing, touchTarget, typography, useTheme, useToast } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Button, Notice, Text, fonts, radius, spacing, touchTarget, typography, useTheme, useFeedback } from '@/shared/ui'
 
 type Props = {
   /** An existing conversation; a customer opening a shop's chat for the first time passes {@code vendorId} instead. */
@@ -23,7 +23,7 @@ type Props = {
 /** One conversation: newest message at the bottom, older ones on demand, a composer with one image and reply-to (send-message.md). */
 export function ChatThread({ conversationId: given, vendorId, live, topInset = false, header }: Props) {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const existing = useShopConversation(given ? undefined : vendorId)
   const conversationId = given ?? existing.data?.id ?? null
   const list = useConversations(live)
@@ -49,7 +49,7 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
 
   const pickImage = async () => {
     const { images, problems } = await pickImages({ limit: 1 })
-    problems.forEach((p) => toast.show(p))
+    problems.forEach((p) => feedback.warning(p))
     if (images[0]) setImage(images[0])
   }
 

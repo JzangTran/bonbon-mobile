@@ -5,7 +5,7 @@ import { TICKET_STATUS_LABEL, useCloseTicket, useMyTicket, useMyTickets, useOpen
 import { problemMessage } from '@/shared/api'
 import { formatAgo, formatDateTime } from '@/shared/lib/format'
 import { pickImages } from '@/shared/lib/pick-image'
-import { Button, Card, Input, Notice, Text, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Text, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 const MAX_IMAGES = 3
 
@@ -162,10 +162,10 @@ export function TicketThread({ id }: { id: string }) {
 
 function ImageStrip({ images, onChange }: { images: PickedImage[]; onChange: (images: PickedImage[]) => void }) {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const add = async () => {
     const { images: added, problems } = await pickImages({ limit: MAX_IMAGES - images.length })
-    problems.forEach((p) => toast.show(p))
+    problems.forEach((p) => feedback.success(p))
     onChange([...images, ...added].slice(0, MAX_IMAGES))
   }
   return (

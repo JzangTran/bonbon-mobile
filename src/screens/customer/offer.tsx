@@ -1,14 +1,14 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useCart } from '@/entities/cart'
 import { useShopVouchers, voucherCondition, voucherEnds, voucherTitle } from '@/entities/vendor'
-import { Button, Card, ErrorState, Screen, Text, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, ErrorState, Screen, Text, useTheme, useFeedback } from '@/shared/ui'
 
 /** One voucher in full: what it takes off, its conditions and dates, and the way to use it on this shop's cart. */
 export default function OfferScreen() {
   const { vendorId, id } = useLocalSearchParams<{ vendorId: string; id: string }>()
   const router = useRouter()
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const cart = useCart()
   const vouchers = useShopVouchers(vendorId)
   const voucher = vouchers.data?.find((v) => v.id === id)
@@ -37,7 +37,7 @@ export default function OfferScreen() {
             disabled={applied}
             onPress={() => {
               cart.setVoucher({ vendorId, code: voucher.code!, discountType: voucher.discountType!, discountValue: voucher.discountValue!, maxDiscount: voucher.maxDiscount, minOrderValue: voucher.minOrderValue })
-              toast.show('Đã chọn ưu đãi cho giỏ hàng.')
+              feedback.success('Đã áp dụng ưu đãi. Số tiền giảm hiện trong giỏ trước khi bạn đặt.')
               router.dismissTo({ pathname: '/customer/vendor', params: { id: vendorId } })
             }}
           />

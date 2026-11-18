@@ -5,10 +5,9 @@ import { memo, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { ratingCountLabel, useFavoriteToggle, useHideShop, type FeedCard, type FeedDish } from '@/entities/feed'
 import { useSession } from '@/entities/session'
-import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
 import { mockPhoto } from '@/shared/lib/mock-photos'
-import { SkeletonGroup, Skeleton, Sheet, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Sheet, Text, fonts, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 
 const TILE = 116
 
@@ -121,7 +120,7 @@ function DishTile({ dish, onPress }: { dish: FeedDish; onPress: () => void }) {
 function ShopActions({ shopId, name, favorite, visible, onClose }: { shopId: string; name: string; favorite: boolean; visible: boolean; onClose: () => void }) {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const { session } = useSession()
   const toggle = useFavoriteToggle()
   const hide = useHideShop(!!session)
@@ -135,16 +134,16 @@ function ShopActions({ shopId, name, favorite, visible, onClose }: { shopId: str
     toggle.mutate(
       { shopId, favorite: !favorite },
       {
-        onSuccess: () => toast.show(favorite ? 'Đã bỏ khỏi mục yêu thích.' : 'Đã thêm vào mục yêu thích.'),
-        onError: (e) => toast.show(problemMessage(e)),
+        onSuccess: () => feedback.success(favorite ? 'Đã bỏ quán khỏi mục yêu thích. Quán vẫn hiện bình thường trong danh sách quán.' : 'Đã thêm quán vào mục yêu thích. Mở Tài khoản › Quán yêu thích để đặt lại nhanh.'),
+        onError: (e) => feedback.error(e),
       },
     )
   }
   const onHide = () => {
     onClose()
     hide.mutate(shopId, {
-      onSuccess: () => toast.show(`Đã ẩn ${name} trong 30 ngày.`),
-      onError: (e) => toast.show(problemMessage(e)),
+      onSuccess: () => feedback.success(`Đã ẩn ${name} trong 30 ngày. Quán không hiện trong danh sách của bạn cho tới khi hết hạn.`),
+      onError: (e) => feedback.error(e),
     })
   }
 

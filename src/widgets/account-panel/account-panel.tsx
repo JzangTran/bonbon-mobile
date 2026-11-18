@@ -130,7 +130,7 @@ function ProfileCard({ profile }: { profile: Profile | undefined }) {
     onSuccess: async (data) => {
       queryClient.setQueryData(['account', 'me'], data)
       if (session && data.name) await signIn({ ...session, name: data.name })
-      feedback.success('Đã lưu thông tin cá nhân. Quán thấy tên và số điện thoại mới ở đơn tiếp theo.')
+      feedback.success('Đã lưu thông tin cá nhân. Tên và số điện thoại mới dùng cho các đơn từ bây giờ.')
     },
   })
 

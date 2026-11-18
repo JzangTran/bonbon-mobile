@@ -49,7 +49,7 @@ export function ChatThread({ conversationId: given, vendorId, live, topInset = f
 
   const pickImage = async () => {
     const { images, problems } = await pickImages({ limit: 1 })
-    problems.forEach((p) => feedback.success(p))
+    problems.forEach((p) => feedback.warning(p))
     if (images[0]) setImage(images[0])
   }
 

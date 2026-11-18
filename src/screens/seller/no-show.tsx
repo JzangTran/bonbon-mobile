@@ -20,7 +20,7 @@ export function NoShowCard({ orderId }: { orderId: string }) {
 
   const pick = async () => {
     const { images, problems } = await pickImages({ limit: 1 })
-    problems.forEach((p) => feedback.success(p))
+    problems.forEach((p) => feedback.warning(p))
     if (images[0]) setPhoto(images[0])
   }
 

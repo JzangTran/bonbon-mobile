@@ -7,7 +7,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ADDRESSES_QUERY_KEY, addressWithSingleLabel, resolvePlace, useAddresses, useLocatedPlace, type RecentPlace } from '@/entities/address'
 import { api, problemFieldErrors, problemMessage } from '@/shared/api'
-import { Input, Notice, OsmMap, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { Input, Notice, OsmMap, Text, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 import { FooterButton, PlaceSearchHeader, PlaceSuggestions, type Suggestion } from './place-parts'
 
 const MAP_HEIGHT = 170
@@ -19,7 +19,7 @@ export default function SavePlaceScreen() {
   const [place, setPlace] = useState<RecentPlace | null>(() => (params.place ? (JSON.parse(params.place) as RecentPlace) : null))
   const [searching, setSearching] = useState(!params.place)
   const [text, setText] = useState('')
-  const toast = useToast()
+  const feedback = useFeedback()
   const resolve = useMutation({
     mutationFn: (found: Suggestion) => resolvePlace(found),
     onSuccess: (found) => {
@@ -27,7 +27,7 @@ export default function SavePlaceScreen() {
       setText('')
       setSearching(false)
     },
-    onError: (e) => toast.show(problemMessage(e), 'error'),
+    onError: (e) => feedback.error(problemMessage(e)),
   })
   if (searching) {
     return (
@@ -45,7 +45,7 @@ export default function SavePlaceScreen() {
 function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace; presetName: string; onChangeAddress: () => void }) {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const insets = useSafeAreaInsets()
   const queryClient = useQueryClient()
   const here = useLocatedPlace()
@@ -85,7 +85,7 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY })
-      toast.show('Đã lưu địa chỉ.')
+      feedback.success('Đã lưu địa chỉ. Địa chỉ dùng được ngay cho đơn tiếp theo.')
       router.back()
     },
   })

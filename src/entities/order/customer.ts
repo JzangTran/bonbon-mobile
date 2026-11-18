@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 import type { OrderStatus } from './model'
 import type { OrderDetail } from './place'
 
@@ -49,7 +49,7 @@ export function useMyOrder(id: string, live: boolean) {
 /** Cancel (free until the shop starts preparing; an unpaid order can be abandoned) or confirm received; the answer is the updated order. */
 export function useCustomerOrderAction(id: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (kind: 'cancel' | 'received') => {
       const path = { params: { path: { id } } }
@@ -63,7 +63,7 @@ export function useCustomerOrderAction(id: string) {
       void queryClient.invalidateQueries({ queryKey: [...MY_ORDERS_KEY, 'list'] })
     },
     onError: (error) => {
-      toast.show(problemMessage(error), 'error')
+      feedback.error(problemMessage(error))
       // The shop may have moved it first: show what it really is now.
       void queryClient.invalidateQueries({ queryKey: MY_ORDERS_KEY })
     },

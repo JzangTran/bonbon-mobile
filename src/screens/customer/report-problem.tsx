@@ -7,7 +7,7 @@ import { CASE_TYPE_LABEL, useIncidentQuote, useReportIncident, type IncidentType
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
 import { pickImages } from '@/shared/lib/pick-image'
-import { Button, Card, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 
 const TYPES: IncidentType[] = ['MISSING_ITEM', 'WRONG_ITEM', 'QUALITY']
 const MAX_PHOTOS = 3
@@ -17,7 +17,7 @@ export default function ReportProblemScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const order = useMyOrder(id, false)
   const report = useReportIncident(id)
   const [type, setType] = useState<IncidentType>('MISSING_ITEM')
@@ -37,7 +37,7 @@ export default function ReportProblemScreen() {
 
   const addPhotos = async () => {
     const { images, problems } = await pickImages({ limit: MAX_PHOTOS - photos.length })
-    problems.forEach((p) => toast.show(p))
+    problems.forEach((p) => feedback.success(p))
     setPhotos((current) => [...current, ...images].slice(0, MAX_PHOTOS))
   }
 
@@ -47,7 +47,7 @@ export default function ReportProblemScreen() {
       { type, lines, photos, note },
       {
         onSuccess: () => {
-          toast.show('Đã gửi báo cáo. Quán sẽ trả lời sớm.')
+          feedback.success('Đã gửi báo cáo cho quán. Quán có 12 giờ để trả lời; bạn nhận thông báo khi có kết quả.')
           router.back()
         },
         onError: (e) => setError(problemMessage(e, 'Không gửi được báo cáo lúc này. Hãy thử lại.')),

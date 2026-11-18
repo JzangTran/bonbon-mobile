@@ -9,7 +9,7 @@ import { registerForPush } from '@/features/push'
 import { problemCode, problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
-import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 
 /**
  * The cart and checkout (place-order.md): the customer reviews the lines, picks one of their addresses, adds a
@@ -19,7 +19,7 @@ import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touc
 export default function CartScreen() {
   const router = useRouter()
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const cart = useCart()
   const { session } = useSession()
   const guest = !session
@@ -76,7 +76,7 @@ export default function CartScreen() {
           cart.clear()
           // After the first order the customer has a reason to hear about it: the moment to ask for permission.
           void registerForPush({ ask: true })
-          toast.show(
+          feedback.success(
             payMethod === 'ONLINE'
               ? 'Đã tạo đơn. Hãy hoàn tất thanh toán MoMo.'
               : payMethod === 'BANK_TRANSFER'

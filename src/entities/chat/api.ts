@@ -1,7 +1,7 @@
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Platform } from 'react-native'
 import { api, isApiProblem, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 
 export type Conversation = components['schemas']['ConversationSummary']
 export type ChatMessage = components['schemas']['ChatMessage']
@@ -92,7 +92,7 @@ type SendInput = { text: string; image: PickedImage | null; replyToMessageId?: s
  */
 export function useSendMessage(target: { conversationId?: string | null; vendorId?: string }) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (input: SendInput) => {
       const imageKey = input.image ? await uploadImage(input.image) : undefined
@@ -104,7 +104,7 @@ export function useSendMessage(target: { conversationId?: string | null; vendorI
       return result.data
     },
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: CHAT_KEY }),
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 

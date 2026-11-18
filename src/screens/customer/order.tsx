@@ -6,7 +6,7 @@ import { OrderStatusBadge, useCustomerLive, useCustomerOrderAction, useMyOrder, 
 import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
-import { radius, SkeletonGroup, Skeleton, Button, Card, Notice, Screen, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { radius, SkeletonGroup, Skeleton, Button, Card, Notice, Screen, Text, fonts, spacing, useTheme, useFeedback } from '@/shared/ui'
 import { NoShowAnswerCard } from './no-show-answer'
 import { OrderCaseCard } from './order-case'
 import { PaymentCard, RefundCard } from './order-payment'
@@ -35,7 +35,7 @@ export default function CustomerOrderScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const cart = useCart()
   const live = useCustomerLive() === 'live'
   const order = useMyOrder(id, live)
@@ -47,13 +47,13 @@ export default function CustomerOrderScreen() {
   const previous = useRef<OrderStatus | undefined>(undefined)
   // The server has the payment: that, and only that, is the proof (the return from MoMo is not).
   useEffect(() => {
-    if (previous.current === 'PENDING_PAYMENT' && status === 'PLACED') toast.show('Đã thanh toán. Quán sẽ xác nhận đơn trong ít phút.')
+    if (previous.current === 'PENDING_PAYMENT' && status === 'PLACED') feedback.success('Đã thanh toán. Quán xác nhận đơn trong vài phút; sau đó bạn thấy giờ giao dự kiến.')
     previous.current = status
-  }, [status, toast])
+  }, [status, feedback])
 
   const askCancel = async () => {
     if (await confirm('Huỷ đơn này?', 'Bạn có thể huỷ miễn phí cho đến khi quán bắt đầu chuẩn bị.', 'Huỷ đơn')) {
-      action.mutate('cancel', { onSuccess: () => toast.show('Đã huỷ đơn.') })
+      action.mutate('cancel', { onSuccess: () => feedback.success('Đã huỷ đơn. Nếu bạn đã trả trước, bonbon hoàn tiền và báo bạn khi xong.') })
     }
   }
 
@@ -81,7 +81,7 @@ export default function CustomerOrderScreen() {
         result.repriced.length ? `Giá đã đổi: ${result.repriced.join(', ')}.` : null,
         result.shopOpen ? null : 'Quán đang đóng cửa, bạn chưa đặt được lúc này.',
       ].filter(Boolean)
-      if (warnings.length > 0) toast.show(warnings.join(' '), 'info')
+      if (warnings.length > 0) feedback.info(warnings.join(' '))
       router.push('/customer/cart')
     } finally {
       setReordering(false)
@@ -107,7 +107,7 @@ export default function CustomerOrderScreen() {
             <Button title={status === 'PENDING_PAYMENT' ? 'Huỷ đơn chưa thanh toán' : 'Huỷ đơn'} variant="outline" size="lg" fullWidth loading={action.isPending} onPress={() => void askCancel()} />
           ) : null}
           {status === 'OUT_FOR_DELIVERY' ? (
-            <Button title="Đã nhận được món" size="lg" fullWidth loading={action.isPending} onPress={() => action.mutate('received', { onSuccess: () => toast.show('Cảm ơn bạn! Chúc bạn ngon miệng.') })} />
+            <Button title="Đã nhận được món" size="lg" fullWidth loading={action.isPending} onPress={() => action.mutate('received', { onSuccess: () => feedback.success('Đã xác nhận bạn nhận được món. Chúc bạn ngon miệng; bạn có thể đánh giá quán ở trang đơn.') })} />
           ) : null}
           {REORDERABLE.includes(status) ? (
             <Button title="Đặt lại đơn này" size="lg" fullWidth loading={reordering} onPress={() => void startReorder()} />

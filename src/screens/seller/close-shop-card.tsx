@@ -3,14 +3,14 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { CLOSE_REASON_LABEL, useCloseShop, type CloseReason } from '@/entities/shop'
 import { useReauthGate } from '@/features/reauthenticate'
 import { problemMessage } from '@/shared/api'
-import { Button, Card, Checkbox, Input, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Checkbox, Input, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 const REASONS = Object.keys(CLOSE_REASON_LABEL) as CloseReason[]
 
 /** Closing for good (close-shop.md): irreversible, so it says what will happen first and asks for a recent sign-in. */
 export function CloseShopCard() {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const close = useCloseShop()
   const gate = useReauthGate()
   const [open, setOpen] = useState(false)
@@ -28,7 +28,7 @@ export function CloseShopCard() {
         {
           onSuccess: () => {
             setOpen(false)
-            toast.show('Cửa hàng đang đóng. Bạn vẫn hoàn tất các đơn đang làm.')
+            feedback.success('Đã đóng cửa hàng. Khách không đặt được món mới; bạn vẫn hoàn tất các đơn đang làm.')
           },
           onError: (e) => {
             if (!gate.handle(e, attempt)) setError(problemMessage(e))

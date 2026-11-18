@@ -6,7 +6,7 @@ import { useShopCases } from '@/entities/order-case'
 import { SHOP_QUERY_KEY, shopStatus, useShop } from '@/entities/shop'
 import { api, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
-import { Button, Card, Text, Screen, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Text, Screen, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
 import { AccountPanel } from '@/widgets/account-panel'
 import { CloseShopCard } from './close-shop-card'
 import { ClosingCard } from './closing-card'
@@ -26,7 +26,7 @@ function todayHours(hours: { weekday?: number; opensAt?: string; closesAt?: stri
 /** The approved shop at a glance (pause-orders.md): open state, the intake switch, and the main settings. */
 export default function SellerShopScreen() {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const queryClient = useQueryClient()
   const router = useRouter()
   const shop = useShop()
@@ -42,9 +42,9 @@ export default function SellerShopScreen() {
     },
     onSuccess: (view) => {
       queryClient.setQueryData(SHOP_QUERY_KEY, view)
-      toast.show(view.acceptingOrders ? 'Đã nhận đơn trở lại.' : 'Đã tạm ngưng nhận đơn.')
+      feedback.success(view.acceptingOrders ? 'Đã nhận đơn trở lại. Khách đặt được món ngay từ bây giờ.' : 'Đã tạm ngưng nhận đơn. Khách vẫn thấy quán nhưng không đặt được cho tới khi bạn bật lại.')
     },
-    onError: (e) => toast.show(problemMessage(e), 'error'),
+    onError: (e) => feedback.error(problemMessage(e)),
   })
   const s = data?.shipping
 

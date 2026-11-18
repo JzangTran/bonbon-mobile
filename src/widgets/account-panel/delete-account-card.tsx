@@ -5,7 +5,7 @@ import { useDeleteAccount, useDeletionCheck } from '@/entities/account-deletion'
 import { useSession, type Role } from '@/entities/session'
 import { useReauthGate } from '@/features/reauthenticate'
 import { problemMessage } from '@/shared/api'
-import { Button, Card, Input, Notice, Sheet, Text, fonts, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Sheet, Text, fonts, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 /** Where each blocker is dealt with, by the role the person is using. */
 const BLOCKER_ROUTE: Record<Role, Record<string, string>> = {
@@ -22,7 +22,7 @@ const vnDate = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'short', timeStyle:
 export function DeleteAccountCard() {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const { session, signOut } = useSession()
   const check = useDeletionCheck(true)
   const remove = useDeleteAccount()
@@ -44,7 +44,7 @@ export function DeleteAccountCard() {
             setOpen(false)
             // Every session ended on the server already.
             await signOut({ alreadyRevoked: true })
-            toast.show(`Tài khoản sẽ được xoá vào ${vnDate.format(new Date(scheduled.executesAt ?? Date.now()))}. Đăng nhập lại trước đó sẽ huỷ việc xoá.`)
+            feedback.success(`Tài khoản sẽ được xoá vào ${vnDate.format(new Date(scheduled.executesAt ?? Date.now()))}. Đăng nhập lại trước đó sẽ huỷ việc xoá.`)
           },
           onError: (e) => {
             if (!gate.handle(e, attempt)) setError(problemMessage(e))

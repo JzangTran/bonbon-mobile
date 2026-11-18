@@ -11,7 +11,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState, type ReactNode } from 'react'
 import { SessionProvider } from '@/entities/session'
 import { isApiProblem } from '@/shared/api'
-import { TextScaleProvider, ToastProvider } from '@/shared/ui'
+import { FeedbackHost, TextScaleProvider, ToastProvider } from '@/shared/ui'
 import { AppGate } from './app-gate'
 import { DocumentTitle } from './document-title'
 
@@ -53,8 +53,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       <TextScaleProvider>
         <SessionProvider>
           <ToastProvider>
-            <DocumentTitle />
-            <AppGate>{children}</AppGate>
+            <FeedbackHost>
+              <DocumentTitle />
+              <AppGate>{children}</AppGate>
+            </FeedbackHost>
           </ToastProvider>
         </SessionProvider>
       </TextScaleProvider>

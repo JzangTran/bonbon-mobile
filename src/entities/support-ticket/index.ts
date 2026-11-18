@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Platform } from 'react-native'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 
 export type TicketSummary = components['schemas']['SupportTicketSummary']
 export type TicketDetail = components['schemas']['SupportTicketDetail']
@@ -67,7 +67,7 @@ export function useOpenTicket() {
 
 export function useReplyTicket(id: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (input: { body: string; images: PickedImage[] }) => {
       const attachmentKeys: string[] = []
@@ -77,13 +77,13 @@ export function useReplyTicket(id: string) {
       return data
     },
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: TICKETS_KEY }),
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 
 export function useCloseTicket(id: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async () => {
       const { data, error } = await api.POST('/api/support/tickets/{id}/close', { params: { path: { id } } })
@@ -91,9 +91,9 @@ export function useCloseTicket(id: string) {
       return data
     },
     onSuccess: () => {
-      toast.show('Đã đóng phiếu.')
+      feedback.success('Đã đóng phiếu hỗ trợ. Bạn vẫn mở lại được nếu vấn đề còn.')
       void queryClient.invalidateQueries({ queryKey: TICKETS_KEY })
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }

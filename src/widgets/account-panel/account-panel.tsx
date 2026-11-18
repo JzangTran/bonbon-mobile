@@ -7,7 +7,7 @@ import { useSession, type Role } from '@/entities/session'
 import { unregisterPush } from '@/features/push'
 import { api, problemMessage, type components } from '@/shared/api'
 import { Pressable, StyleSheet, View } from 'react-native'
-import { Button, Card, Input, Notice, PasswordStrength, Sheet, TEXT_SCALES, Text, radius, spacing, touchTarget, useTextScale, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, PasswordStrength, Sheet, TEXT_SCALES, Text, radius, spacing, touchTarget, useTextScale, useTheme, useFeedback } from '@/shared/ui'
 import { compactPhone, isPersonName, isVnPhone, passwordProblem } from '@/shared/lib/validate'
 import { DeleteAccountCard } from './delete-account-card'
 import { PrivacyCard } from './privacy-card'
@@ -116,7 +116,7 @@ const sizeStyles = StyleSheet.create({
 function ProfileCard({ profile }: { profile: Profile | undefined }) {
   const queryClient = useQueryClient()
   const { session, signIn } = useSession()
-  const toast = useToast()
+  const feedback = useFeedback()
   const form = useForm<z.infer<typeof profileSchema>>({ resolver: zodResolver(profileSchema), defaultValues: { name: '', phone: '' } })
   useEffect(() => {
     if (profile) form.reset({ name: profile.name ?? '', phone: profile.phone ?? '' })
@@ -130,7 +130,7 @@ function ProfileCard({ profile }: { profile: Profile | undefined }) {
     onSuccess: async (data) => {
       queryClient.setQueryData(['account', 'me'], data)
       if (session && data.name) await signIn({ ...session, name: data.name })
-      toast.show('Đã lưu thông tin.')
+      feedback.success('Đã lưu thông tin cá nhân. Quán thấy tên và số điện thoại mới ở đơn tiếp theo.')
     },
   })
 
@@ -194,7 +194,7 @@ function RoleCard() {
 
 function PasswordCard() {
   const { session, signIn } = useSession()
-  const toast = useToast()
+  const feedback = useFeedback()
   const [error, setError] = useState<string | null>(null)
   const form = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
@@ -217,7 +217,7 @@ function PasswordCard() {
     // Every other device is signed out; this one continues with the fresh pair.
     await signIn({ ...session, accessToken: data.accessToken, refreshToken: data.refreshToken })
     form.reset()
-    toast.show('Đã đổi mật khẩu.')
+    feedback.success('Đã đổi mật khẩu. Các thiết bị khác bị đăng xuất; thiết bị này vẫn đăng nhập.')
   })
 
   return (

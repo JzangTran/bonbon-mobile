@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 import type { OrderStatus } from './model'
 
 export type ShopOrderSummary = components['schemas']['ShopOrderSummary']
@@ -46,7 +46,7 @@ export type OrderAction =
 /** Confirm, reject, move to the next step or cancel one order; the answer is the updated order. */
 export function useOrderAction(id: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (action: OrderAction) => {
       const path = { params: { path: { id } } }
@@ -73,7 +73,7 @@ export function useOrderAction(id: string) {
       void queryClient.invalidateQueries({ queryKey: [...SHOP_ORDERS_KEY, 'list'] })
     },
     onError: (error) => {
-      toast.show(problemMessage(error), 'error')
+      feedback.error(problemMessage(error))
       // Somebody else may have moved it first: show what it really is now.
       void queryClient.invalidateQueries({ queryKey: SHOP_ORDERS_KEY })
     },

@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 
 export type Review = components['schemas']['Review']
 export type ReviewReply = components['schemas']['ReviewReply']
@@ -62,7 +62,7 @@ export function useMyOrderReview(orderId: string, enabled: boolean) {
 /** Posting, editing and deleting the customer's review of one order. */
 export function useOrderReviewActions(orderId: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   const refresh = () => {
     // The order shows "đã đánh giá" and the shop shows its new average.
     void queryClient.invalidateQueries({ queryKey: ['orders'] })
@@ -70,7 +70,7 @@ export function useOrderReviewActions(orderId: string) {
     void queryClient.invalidateQueries({ queryKey: REVIEWS_KEY })
   }
   const onError = (error: unknown) => {
-    toast.show(problemMessage(error), 'error')
+    feedback.error(problemMessage(error))
     // The window may have closed or the review been hidden meanwhile: show what it really is now.
     refresh()
   }
@@ -99,10 +99,10 @@ export function useOrderReviewActions(orderId: string) {
 /** The shop's reply to a review: write, rewrite or remove it (within 24 hours of posting). */
 export function useReplyActions() {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   const refresh = () => queryClient.invalidateQueries({ queryKey: [...REVIEWS_KEY, 'seller'] })
   const onError = (error: unknown) => {
-    toast.show(problemMessage(error), 'error')
+    feedback.error(problemMessage(error))
     void refresh()
   }
   const save = useMutation({

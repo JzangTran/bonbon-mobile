@@ -4,7 +4,7 @@ import { ReviewItem, StarPicker, useMyOrderReview, useOrderReviewActions } from 
 import { confirm } from '@/shared/lib/confirm'
 import { useNow } from '@/shared/lib/countdown'
 import { formatDateTime } from '@/shared/lib/format'
-import { CardListSkeleton, Button, Card, Input, Sheet, Text, spacing, useToast } from '@/shared/ui'
+import { CardListSkeleton, Button, Card, Input, Sheet, Text, spacing, useFeedback } from '@/shared/ui'
 
 const PROMPTS = ['', 'Rất tệ', 'Chưa tốt', 'Bình thường', 'Tốt', 'Rất tốt']
 
@@ -13,7 +13,7 @@ const PROMPTS = ['', 'Rất tệ', 'Chưa tốt', 'Bình thường', 'Tốt', 'R
  * for 24 hours (the server decides; {@code editableUntil} only tells us when to stop offering them).
  */
 export function OrderReviewCard({ orderId, reviewed }: { orderId: string; reviewed: boolean }) {
-  const toast = useToast()
+  const feedback = useFeedback()
   const now = useNow(60_000)
   const mine = useMyOrderReview(orderId, reviewed)
   const { save, remove } = useOrderReviewActions(orderId)
@@ -36,7 +36,7 @@ export function OrderReviewCard({ orderId, reviewed }: { orderId: string; review
       {
         onSuccess: () => {
           setOpen(false)
-          toast.show(existing ? 'Đã cập nhật đánh giá.' : 'Cảm ơn bạn đã đánh giá!')
+          feedback.success(existing ? 'Đã cập nhật đánh giá. Đánh giá mới hiện trên trang quán.' : 'Đã gửi đánh giá. Đánh giá hiện trên trang quán và quán có thể trả lời.')
         },
       },
     )
@@ -44,7 +44,7 @@ export function OrderReviewCard({ orderId, reviewed }: { orderId: string; review
 
   const askDelete = async () => {
     if (await confirm('Xoá đánh giá này?', 'Phản hồi của quán (nếu có) cũng mất. Bạn vẫn có thể đánh giá lại.', 'Xoá')) {
-      remove.mutate(undefined, { onSuccess: () => toast.show('Đã xoá đánh giá.') })
+      remove.mutate(undefined, { onSuccess: () => feedback.success('Đã xoá đánh giá. Đánh giá không còn trên trang quán.') })
     }
   }
 

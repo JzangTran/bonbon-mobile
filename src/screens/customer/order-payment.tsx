@@ -5,7 +5,7 @@ import { countdown, useNow } from '@/shared/lib/countdown'
 import { formatVnd } from '@/shared/lib/format'
 import { BANK_ACCOUNT, isPersonName } from '@/shared/lib/validate'
 import { BankPicker } from '@/entities/bank'
-import { Button, Card, Input, Notice, Text, spacing, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Input, Notice, Text, spacing, useTheme, useFeedback } from '@/shared/ui'
 
 /**
  * An online order that is still unpaid: the way into MoMo, the time left and a retry. The screen refreshes every
@@ -14,7 +14,7 @@ import { Button, Card, Input, Notice, Text, spacing, useTheme, useToast } from '
  */
 export function PaymentCard({ orderId, payment }: { orderId: string; payment: OrderPayment | undefined }) {
   const theme = useTheme()
-  const toast = useToast()
+  const feedback = useFeedback()
   const now = useNow()
   const retry = useRetryPayment(orderId)
   const [opening, setOpening] = useState(false)
@@ -25,7 +25,7 @@ export function PaymentCard({ orderId, payment }: { orderId: string; payment: Or
   const open = async (target: OrderPayment | undefined) => {
     setOpening(true)
     try {
-      if ((await openMomo(target)) === 'none') toast.show('Không mở được MoMo. Hãy thử thanh toán lại.', 'error')
+      if ((await openMomo(target)) === 'none') feedback.error('Không mở được MoMo. Hãy thử thanh toán lại.')
     } finally {
       setOpening(false)
     }

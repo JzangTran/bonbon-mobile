@@ -22,7 +22,7 @@ import { useSession } from '@/entities/session'
 import { afterSignIn } from '@/features/after-sign-in'
 import { api, problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
-import { CardListSkeleton, Text, fonts, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { CardListSkeleton, Text, fonts, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 import { PlaceSearchHeader, PlaceSuggestions, type Suggestion } from './place-parts'
 
 type Tab = 'recent' | 'saved'
@@ -33,7 +33,7 @@ const km = (value: number) => `${value.toFixed(1)} km`
 export default function DeliveryAddressScreen() {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const { session } = useSession()
   const here = useLocatedPlace()
   const point = useDeliveryPoint(!!session)
@@ -50,7 +50,7 @@ export default function DeliveryAddressScreen() {
       chooseDeliveryPlace(place)
       home()
     },
-    onError: (e) => toast.show(problemMessage(e), 'error'),
+    onError: (e) => feedback.error(problemMessage(e)),
   })
 
   const [locating, setLocating] = useState(false)
@@ -61,9 +61,9 @@ export default function DeliveryAddressScreen() {
       const result = await locateNow()
       setLocating(false)
       if (!result.ok) {
-        if (result.reason === 'unavailable') toast.show('Chưa lấy được vị trí. Hãy bật Dịch vụ định vị rồi thử lại.', 'error')
+        if (result.reason === 'unavailable') feedback.error('Chưa lấy được vị trí. Hãy bật Dịch vụ định vị rồi thử lại.')
         else if (!result.canAskAgain) {
-          toast.show('bonbon chưa được phép dùng vị trí. Hãy bật trong Cài đặt.', 'error')
+          feedback.error('bonbon chưa được phép dùng vị trí. Hãy bật trong Cài đặt.')
           void Linking.openSettings()
         }
         return
@@ -161,7 +161,7 @@ function PlaceRow({ icon: Icon, title, distance, detail, onPress, onMore, moreIc
 function SavedTab({ signedIn, onDone }: { signedIn: boolean; onDone: () => void }) {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const queryClient = useQueryClient()
   const addresses = useAddresses({ enabled: signedIn })
   const add = (label?: string) => {
@@ -182,7 +182,7 @@ function SavedTab({ signedIn, onDone }: { signedIn: boolean; onDone: () => void 
       await queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY })
       onDone()
     },
-    onError: (e) => toast.show(problemMessage(e), 'error'),
+    onError: (e) => feedback.error(problemMessage(e)),
   })
   const remove = useMutation({
     mutationFn: async (id: string) => {
@@ -190,10 +190,10 @@ function SavedTab({ signedIn, onDone }: { signedIn: boolean; onDone: () => void 
       if (error) throw error
     },
     onSuccess: async () => {
-      toast.show('Đã gỡ địa chỉ.')
+      feedback.success('Đã gỡ địa chỉ. Địa chỉ không còn trong danh sách giao hàng của bạn.')
       await queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY })
     },
-    onError: (e) => toast.show(problemMessage(e), 'error'),
+    onError: (e) => feedback.error(problemMessage(e)),
   })
   const askRemove = async (id: string, label: string) => {
     if (await confirm(`Gỡ "${label}"?`, 'Địa chỉ này sẽ bị xoá khỏi danh sách đã lưu. Đơn đã đặt không bị ảnh hưởng.', 'Gỡ')) remove.mutate(id)

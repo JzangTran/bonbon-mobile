@@ -6,7 +6,7 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { ADDRESSES_QUERY_KEY, useAddresses, type DeliveryAddress } from '@/entities/address'
 import { api, problemFieldErrors, problemMessage } from '@/shared/api'
-import { Button, Card, Checkbox, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useToast } from '@/shared/ui'
+import { Button, Card, Checkbox, Input, Notice, Screen, Text, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
 
 const LABELS = ['Nhà', 'Công ty', 'Khác'] as const
 
@@ -31,7 +31,7 @@ export default function AddressFormScreen() {
 function AddressForm({ existing }: { existing?: DeliveryAddress }) {
   const theme = useTheme()
   const router = useRouter()
-  const toast = useToast()
+  const feedback = useFeedback()
   const queryClient = useQueryClient()
   const [label, setLabel] = useState(existing?.label ?? 'Nhà')
   const [query, setQuery] = useState('')
@@ -83,7 +83,7 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ADDRESSES_QUERY_KEY })
-      toast.show(existing ? 'Đã lưu địa chỉ.' : 'Đã thêm địa chỉ.')
+      feedback.success(existing ? 'Đã lưu địa chỉ. Địa chỉ dùng được ngay cho đơn tiếp theo.' : 'Đã thêm địa chỉ. Chọn địa chỉ này khi đặt món để thấy quán giao tới đó.')
       router.back()
     },
   })

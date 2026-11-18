@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, problemMessage, type components } from '@/shared/api'
-import { useToast } from '@/shared/ui'
+import { useFeedback } from '@/shared/ui'
 
 export type Menu = components['schemas']['MenuView']
 export type MenuSection = components['schemas']['MenuSectionView']
@@ -37,7 +37,7 @@ export function useOptionGroups() {
 /** A menu endpoint answers with the whole menu; keep it as the cached copy and refresh the option attachments. */
 export function useMenuMutation<T>(call: (input: T) => Promise<{ data?: Menu; error?: unknown }>, success?: string) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (input: T) => {
       const { data, error } = await call(input)
@@ -47,16 +47,16 @@ export function useMenuMutation<T>(call: (input: T) => Promise<{ data?: Menu; er
     onSuccess: (data) => {
       queryClient.setQueryData(MENU_QUERY_KEY, data)
       void queryClient.invalidateQueries({ queryKey: OPTIONS_QUERY_KEY })
-      if (success) toast.show(success)
+      if (success) feedback.success(success)
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }
 
 /** An option-group endpoint answers with all groups; a sold-out option can also change a dish, so refresh the menu. */
 export function useOptionMutation<T>(call: (input: T) => Promise<{ data?: OptionGroups; error?: unknown }>) {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const feedback = useFeedback()
   return useMutation({
     mutationFn: async (input: T) => {
       const { data, error } = await call(input)
@@ -67,6 +67,6 @@ export function useOptionMutation<T>(call: (input: T) => Promise<{ data?: Option
       queryClient.setQueryData(OPTIONS_QUERY_KEY, data)
       void queryClient.invalidateQueries({ queryKey: MENU_QUERY_KEY })
     },
-    onError: (error) => toast.show(problemMessage(error), 'error'),
+    onError: (error) => feedback.error(problemMessage(error)),
   })
 }

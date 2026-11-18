@@ -15,7 +15,7 @@ import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
 import { mockPhoto } from '@/shared/lib/mock-photos'
-import { SkeletonGroup, Skeleton, Button, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useToast } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Button, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
 import { CartBar } from '@/widgets/cart-bar'
 import { DishSheet } from './dish-sheet'
 import { ShopReviewsCard } from './shop-reviews'
@@ -48,7 +48,7 @@ export default function VendorScreen() {
   const outOfRange = shop?.distanceKm != null && shop.deliveryRadiusKm != null && shop.distanceKm > Number(shop.deliveryRadiusKm)
   const orderable = Boolean(shop?.open) && !outOfRange
   const cart = useCart()
-  const toast = useToast()
+  const feedback = useFeedback()
   const favorite = (favorites.data ?? []).some((c) => c.shop.id === id)
   const cartShop: CartShop | null = shop
     ? {
@@ -68,7 +68,7 @@ export default function VendorScreen() {
       if (!ok) return
       cart.replaceWith(cartShop, line)
     }
-    toast.show('Đã thêm vào giỏ.')
+    feedback.success('Đã thêm vào giỏ. Mở giỏ ở cuối màn hình để xem tổng tiền và đặt món.')
     setDish(null)
   }
 
@@ -88,7 +88,7 @@ export default function VendorScreen() {
     }
     toggleFavorite.mutate(
       { shopId: id, favorite: !favorite },
-      { onSuccess: () => toast.show(favorite ? 'Đã bỏ khỏi mục yêu thích.' : 'Đã thêm vào mục yêu thích.'), onError: (e) => toast.show(problemMessage(e)) },
+      { onSuccess: () => feedback.success(favorite ? 'Đã bỏ quán khỏi mục yêu thích. Quán vẫn hiện bình thường trong danh sách quán.' : 'Đã thêm quán vào mục yêu thích. Mở Tài khoản › Quán yêu thích để đặt lại nhanh.'), onError: (e) => feedback.error(e) },
     )
   }
 

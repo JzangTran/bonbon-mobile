@@ -8,6 +8,7 @@ import { Input as TextField } from '../input'
 import { Banner, InlineMessage, ResultPage } from '../message'
 import { Text } from '../text'
 import { colors } from '../tokens'
+import { FeedbackHost, FeedbackRegion, splitMessage, useFeedback } from '../feedback'
 import { ToastProvider, useSnackbar } from '../toast'
 
 const light = colors.light
@@ -165,5 +166,80 @@ describe('feedback', () => {
     })
     expect(screen.queryByText('Đã xoá món Trà đá')).toBeNull()
     jest.useRealTimers()
+  })
+})
+
+describe('feedback ladder', () => {
+  it('splits one message into a title and what it means', () => {
+    expect(splitMessage('Đã lưu địa chỉ. Địa chỉ dùng được ngay.')).toEqual({ title: 'Đã lưu địa chỉ', body: 'Địa chỉ dùng được ngay.' })
+  })
+  it('a sheet keeps errors by its buttons and sends successes up to the screen', async () => {
+    function Actions() {
+      const feedback = useFeedback()
+      return (
+        <>
+          <Pressable accessibilityRole="button" accessibilityLabel="ok" onPress={() => feedback.success('Đã lưu địa chỉ. Địa chỉ dùng được ngay.')} />
+          <Pressable accessibilityRole="button" accessibilityLabel="fail" onPress={() => feedback.error('Chưa lưu được địa chỉ')} />
+        </>
+      )
+    }
+    await render(
+      <ToastProvider>
+        <FeedbackRegion>
+          <Text>screen</Text>
+          <FeedbackRegion errorsOnly placement="bottom">
+            <Actions />
+          </FeedbackRegion>
+        </FeedbackRegion>
+      </ToastProvider>,
+    )
+    await fireEvent.press(screen.getByRole('button', { name: 'ok' }))
+    expect(screen.getByText('Đã lưu địa chỉ')).toBeTruthy()
+    expect(screen.getByText('Địa chỉ dùng được ngay.')).toBeTruthy()
+    await fireEvent.press(screen.getByRole('button', { name: 'fail' }))
+    // the error stays inside the sheet's region, next to its buttons; the success is still shown above
+    expect(screen.getByText('Chưa lưu được địa chỉ')).toBeTruthy()
+    expect(screen.getByText('Đã lưu địa chỉ')).toBeTruthy()
+  })
+})
+
+describe('feedback carry-over', () => {
+  it('a message from a screen that closes right after saving moves to the screen underneath', async () => {
+    function Form({ onDone }: { onDone: () => void }) {
+      const feedback = useFeedback()
+      return (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="save"
+          onPress={() => {
+            feedback.success('Đã lưu địa chỉ. Địa chỉ dùng được ngay.')
+            onDone()
+          }}
+        />
+      )
+    }
+    function Stack() {
+      const [formOpen, setFormOpen] = useState(true)
+      return (
+        <FeedbackRegion>
+          <Text>list</Text>
+          {formOpen ? (
+            <FeedbackRegion>
+              <Form onDone={() => setFormOpen(false)} />
+            </FeedbackRegion>
+          ) : null}
+        </FeedbackRegion>
+      )
+    }
+    await render(
+      <ToastProvider>
+        <FeedbackHost>
+          <Stack />
+        </FeedbackHost>
+      </ToastProvider>,
+    )
+    await fireEvent.press(screen.getByRole('button', { name: 'save' }))
+    expect(screen.queryByRole('button', { name: 'save' })).toBeNull()
+    expect(screen.getByText('Đã lưu địa chỉ')).toBeTruthy()
   })
 })

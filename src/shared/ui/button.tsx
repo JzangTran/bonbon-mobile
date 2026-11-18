@@ -20,10 +20,10 @@ export function Button({ title, variant = 'primary', size = 'md', loading, fullW
   const isDisabled = disabled || loading
 
   const palette: Record<Variant, { bg: string; bgPressed: string; fg: string; border?: string }> = {
-    // after gitbook.com: the main action in ink (the text colour, so it flips in dark mode), the second one on a pale fill
-    primary: { bg: theme.text, bgPressed: theme.textMuted, fg: theme.background },
-    outline: { bg: theme.surfaceMuted, bgPressed: theme.border, fg: theme.text },
-    ghost: { bg: 'transparent', bgPressed: theme.surfaceMuted, fg: theme.text },
+    // design v5: the one main action in the accent; the second one on the surface with a strong outline; ghost is text only
+    primary: { bg: theme.accent, bgPressed: theme.accentPressed, fg: theme.onAccent },
+    outline: { bg: theme.surface, bgPressed: theme.surfaceSubtle, fg: theme.text, border: theme.borderStrong },
+    ghost: { bg: 'transparent', bgPressed: theme.surfaceSubtle, fg: theme.text },
     destructive: { bg: theme.danger, bgPressed: theme.danger, fg: theme.onDanger },
   }
   const p = palette[variant]
@@ -49,7 +49,7 @@ export function Button({ title, variant = 'primary', size = 'md', loading, fullW
       {loading ? (
         <ActivityIndicator color={p.fg} />
       ) : (
-        <Text variant={size === 'lg' ? 'titleSm' : 'body'} color={p.fg} style={styles.label}>
+        <Text variant={size === 'lg' ? 'body' : 'label'} color={p.fg} style={styles.label}>
           {title}
         </Text>
       )}
@@ -60,7 +60,7 @@ export function Button({ title, variant = 'primary', size = 'md', loading, fullW
 const styles = StyleSheet.create({
   base: {
     paddingHorizontal: spacing.xl,
-    borderRadius: radius.pill,
+    borderRadius: radius.control,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',

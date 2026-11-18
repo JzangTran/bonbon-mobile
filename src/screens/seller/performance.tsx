@@ -37,11 +37,7 @@ export default function SellerPerformanceScreen() {
   const danger = s?.consequence === 'RESTRICTED' || s?.consequence === 'RESTRICTION_SCHEDULED'
 
   return (
-    <Screen>
-      <View>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller/shop')} />
-      </View>
-      <Text variant="headline">Hiệu suất cửa hàng</Text>
+    <Screen title="Hiệu suất cửa hàng" onBack={() => router.replace('/seller/shop')}>
       <Text variant="bodySm" muted>
         Đơn thất bại do quán. Đơn khách huỷ, thanh toán quá hạn và hoàn một phần không bị tính.
       </Text>

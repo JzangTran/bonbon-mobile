@@ -35,10 +35,7 @@ export default function SellerOrderDetailScreen() {
   const handover = countdown(data?.handoverDeadline, now)
 
   return (
-    <Screen>
-      <View style={styles.header}>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller')} />
-      </View>
+    <Screen title="Chi tiết đơn" onBack={() => router.replace('/seller')}>
       {order.isError ? <Notice tone="error" message={problemMessage(order.error, 'Không tìm thấy đơn hàng này.')} /> : null}
       {data && status ? (
         <>

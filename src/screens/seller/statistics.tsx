@@ -6,7 +6,7 @@ import { problemMessage } from '@/shared/api'
 import { useNow } from '@/shared/lib/countdown'
 import { formatVnd } from '@/shared/lib/format'
 import { addDays, shortDay, vietnamToday } from '@/shared/lib/ledger'
-import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
+import { Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme } from '@/shared/ui'
 
 const PRESETS = [
   { id: 'today', label: 'Hôm nay', days: 0 },
@@ -34,11 +34,7 @@ export default function SellerStatisticsScreen() {
   const every = Math.max(1, Math.ceil(buckets.length / 6))
 
   return (
-    <Screen>
-      <View>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller/shop')} />
-      </View>
-      <Text variant="headline">Thống kê</Text>
+    <Screen title="Thống kê" onBack={() => router.replace('/seller/shop')}>
       <Text variant="bodySm" muted>
         Chỉ tính đơn đã giao. Đây là tiền khách đã trả, gồm phí giao và chưa trừ hoa hồng.
       </Text>

@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useChangePaymentPin, usePaymentPin } from '@/entities/payment-method'
 import { problemCode, problemMessage } from '@/shared/api'
-import { Button, Skeleton, SkeletonGroup, Text, fonts, radius, spacing, useTheme, useToast } from '@/shared/ui'
-import { PageHeader } from './payment-settings'
+import { Button, Skeleton, SkeletonGroup, Text, fonts, radius, spacing, useTheme, useToast , PageHeader } from '@/shared/ui'
+
 
 const LENGTH = 6
 type Step = 'current' | 'new' | 'repeat' | 'done'

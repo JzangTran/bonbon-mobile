@@ -5,7 +5,7 @@ import { CASE_STATUS_LABEL, CASE_TYPE_LABEL, useShopCases, type CaseStatus } fro
 import { problemMessage } from '@/shared/api'
 import { useNow } from '@/shared/lib/countdown'
 import { formatDateTime, formatVnd } from '@/shared/lib/format'
-import { Button, Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme , EmptyState } from '@/shared/ui'
+import { Card, Notice, Screen, Text, radius, spacing, touchTarget, useTheme , EmptyState } from '@/shared/ui'
 
 const TABS: { id: CaseStatus; label: string }[] = [
   { id: 'AWAITING_SHOP', label: 'Chờ trả lời' },
@@ -24,11 +24,7 @@ export default function SellerOrderCasesScreen() {
   const items = cases.data?.items ?? []
 
   return (
-    <Screen>
-      <View>
-        <Button title="← Quay lại" variant="ghost" onPress={() => router.replace('/seller/shop')} />
-      </View>
-      <Text variant="headline">Khiếu nại của khách</Text>
+    <Screen title="Khiếu nại của khách" onBack={() => router.replace('/seller/shop')}>
       <Text variant="bodySm" muted>
         Bạn có 12 giờ để chấp nhận (khách được hoàn tiền) hoặc phản đối (quản trị viên quyết định).
       </Text>

@@ -1,15 +1,4 @@
-import {
-  Ban,
-  Bike,
-  Check,
-  ChefHat,
-  CircleCheck,
-  CircleX,
-  Clock,
-  PackageX,
-  Wallet,
-  type LucideIcon,
-} from 'lucide-react-native'
+import { Ban, Bike, Check, ChefHat, CircleCheck, CircleX, Clock, PackageX, Wallet, type LucideIcon } from 'lucide-react-native'
 import { StyleSheet, View } from 'react-native'
 import { Text, fonts, radius, spacing, useTheme, type ColorScheme } from '@/shared/ui'
 import type { OrderStatus } from '../model'

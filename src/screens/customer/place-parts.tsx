@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router'
-import { ArrowLeft, MapPin } from 'lucide-react-native'
+import { ChevronLeft, MapPin } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, TextInput, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -18,7 +18,7 @@ export function PlaceSearchHeader({ value, onChange, onBack }: { value: string; 
   return (
     <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
       <Pressable accessibilityRole="button" accessibilityLabel="Quay lại" hitSlop={8} onPress={onBack ?? (() => router.back())} style={styles.back}>
-        <ArrowLeft size={24} color={theme.text} />
+        <ChevronLeft size={24} color={theme.text} />
       </Pressable>
       <View style={[styles.search, { backgroundColor: theme.surfaceMuted }]}>
         <MapPin size={18} color={theme.textMuted} />

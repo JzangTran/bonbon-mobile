@@ -189,7 +189,7 @@ function AddressForm({ existing }: { existing?: DeliveryAddress }) {
           </Checkbox>
         ) : null}
         {save.isError && Object.keys(fieldErrors).length === 0 ? <Notice tone="error" message={problemMessage(save.error)} /> : null}
-        <Button title="Lưu địa chỉ" size="lg" fullWidth disabled={!canSave} loading={save.isPending} onPress={() => save.mutate()} />
+        <Button title="Lưu địa chỉ" size="lg" fullWidth style={{ marginTop: spacing.md }} disabled={!canSave} loading={save.isPending} onPress={() => save.mutate()} />
       </Card>
     </Screen>
   )

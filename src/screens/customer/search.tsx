@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { ArrowLeft, History, Search, Star, Store, TrendingUp, type LucideIcon } from 'lucide-react-native'
+import { ChevronLeft, History, Search, Star, Store, TrendingUp, type LucideIcon } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -113,7 +113,7 @@ export default function SearchScreen() {
           onPress={() => (router.canGoBack() ? router.back() : router.replace('/customer'))}
           style={styles.back}
         >
-          <ArrowLeft size={24} color={theme.text} />
+          <ChevronLeft size={24} color={theme.text} />
         </Pressable>
         <View style={[styles.search, { backgroundColor: theme.surfaceMuted }]}>
           <Search size={18} color={theme.textMuted} />

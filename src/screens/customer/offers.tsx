@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { ArrowLeft, TicketPercent } from 'lucide-react-native'
+import { ChevronLeft, TicketPercent } from 'lucide-react-native'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useShopVouchers, voucherCondition, voucherEnds, voucherTitle } from '@/entities/vendor'
@@ -17,7 +17,7 @@ export default function OffersScreen() {
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <View style={[styles.head, { paddingTop: insets.top + spacing.sm, borderBottomColor: theme.border }]}>
         <Pressable accessibilityRole="button" accessibilityLabel="Quay lại" hitSlop={8} onPress={() => router.back()} style={styles.back}>
-          <ArrowLeft size={24} color={theme.text} />
+          <ChevronLeft size={24} color={theme.text} />
         </Pressable>
         <Text variant="title" accessibilityRole="header">
           Ưu đãi

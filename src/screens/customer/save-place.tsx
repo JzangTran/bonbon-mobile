@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { compactPhone, isVnPhone } from '@/shared/lib/validate'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { ArrowLeft } from 'lucide-react-native'
+import { ChevronLeft } from 'lucide-react-native'
 import { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -95,7 +95,7 @@ function PlaceForm({ place, presetName, onChangeAddress }: { place: RecentPlace;
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <Pressable accessibilityRole="button" accessibilityLabel="Quay lại" hitSlop={8} onPress={() => router.back()} style={styles.back}>
-          <ArrowLeft size={24} color={theme.text} />
+          <ChevronLeft size={24} color={theme.text} />
         </Pressable>
         <Text variant="titleSm" numberOfLines={1} style={styles.flex}>
           Thêm vào Địa điểm đã lưu

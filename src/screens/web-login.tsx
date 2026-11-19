@@ -210,7 +210,7 @@ function Scanner({ onCode, onClose }: { onCode: (data: string) => boolean; onClo
 
 const styles = StyleSheet.create({
   row: { gap: 2, paddingVertical: spacing.xs },
-  camera: { flex: 1, backgroundColor: '#000' },
+  camera: { flex: 1, backgroundColor: '#141414' },
   overlay: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, alignItems: 'center', justifyContent: 'center', gap: spacing.lg, padding: spacing.lg },
   frame: { width: 240, height: 240, borderRadius: radius.card, borderWidth: 3, borderColor: '#FFFFFF' },
   hint: { textAlign: 'center' },

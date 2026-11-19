@@ -6,10 +6,9 @@ import { z } from 'zod'
 import { useSession, type Role } from '@/entities/session'
 import { unregisterPush } from '@/features/push'
 import { api, problemMessage, type components } from '@/shared/api'
-import { Pressable, StyleSheet, View } from 'react-native'
-import { Button, Card, Input, Notice, PasswordStrength, Sheet, TEXT_SCALES, Text, radius, spacing, touchTarget, useTextScale, useTheme, useFeedback } from '@/shared/ui'
+import { Pressable, StyleSheet, View, type ViewProps } from 'react-native'
+import { Button, Card, Input, Notice, PasswordStrength, Sheet, TEXT_SCALES, Text, fonts, radius, spacing, touchTarget, useTextScale, useTheme, useFeedback } from '@/shared/ui'
 import { compactPhone, isPersonName, isVnPhone, passwordProblem } from '@/shared/lib/validate'
-import { DeleteAccountCard } from './delete-account-card'
 import { PrivacyCard } from './privacy-card'
 
 type Profile = components['schemas']['Profile']
@@ -30,7 +29,10 @@ const passwordSchema = z
 
 const ROLE_NAME: Record<Role, string> = { CUSTOMER: 'Khách hàng', SELLER: 'Người bán' }
 
-/** Account basics shared by the customer Account tab and the seller Shop tab. */
+/**
+ * Account basics on one page, for the seller Shop tab. The customer's Hồ sơ shows the same parts one per page (ProfileCard,
+ * PasswordCard, PrivacyCard), so filling one form never runs into the next. Accounts are never deleted (owner 2026-11-19).
+ */
 export function AccountPanel() {
   const { session } = useSession()
   // a main account or member is not the shop owner: the owner's personal pages are closed to it
@@ -38,12 +40,12 @@ export function AccountPanel() {
   return <PersonalPanel />
 }
 
-function TeamCard() {
+export function TeamCard() {
   const { session, signOut } = useSession()
   const team = session?.team
   return (
     <Card>
-      <Text variant="title">{team?.kind === 'MAIN_ACCOUNT' ? 'Tài khoản chính' : 'Thành viên'}</Text>
+      <Text variant="title3" accessibilityRole="header">{team?.kind === 'MAIN_ACCOUNT' ? 'Tài khoản chính' : 'Thành viên'}</Text>
       <Text variant="body">{team?.login}</Text>
       <Text variant="bodySm" muted>
         {team?.shopName ? `Đang làm việc ở ${team.shopName}. ` : ''}Thông tin cá nhân, mật khẩu và thành viên do chủ tài khoản chính quản lý trên trang người bán.
@@ -70,18 +72,40 @@ function PersonalPanel() {
       {profile.data?.hasPassword !== false ? <PasswordCard /> : null}
       <SessionCard hasPassword={profile.data?.hasPassword !== false} />
       <PrivacyCard />
-      <DeleteAccountCard />
     </>
   )
 }
 
+/** A part of the account: a card with a title, or bare under the title of its own page. */
+function Block({ bare, title, children, ...props }: ViewProps & { bare?: boolean; title: string }) {
+  if (bare) return <View style={blockStyles.bare} {...props}>{children}</View>
+  return (
+    <Card {...props}>
+      <Text variant="title3" accessibilityRole="header">
+        {title}
+      </Text>
+      {children}
+    </Card>
+  )
+}
+
+/** The main button of a form, a clear step below the last field (never stuck to it). */
+export function FormActions({ children }: { children: React.ReactNode }) {
+  return <View style={blockStyles.actions}>{children}</View>
+}
+
+const blockStyles = StyleSheet.create({
+  bare: { gap: spacing.lg },
+  actions: { marginTop: spacing.md, gap: spacing.sm },
+})
+
 /** "Cỡ chữ": three sizes on top of the phone's own font size setting; saved on this device. */
-function TextSizeCard() {
+export function TextSizeCard() {
   const theme = useTheme()
   const { id, setId } = useTextScale()
   return (
     <Card>
-      <Text variant="title">Cỡ chữ</Text>
+      <Text variant="title3" accessibilityRole="header">Cỡ chữ</Text>
       <Text variant="bodySm" muted>
         Chọn cỡ chữ dễ đọc với bạn. Cỡ chữ trong cài đặt của điện thoại vẫn được áp dụng thêm.
       </Text>
@@ -97,7 +121,7 @@ function TextSizeCard() {
               onPress={() => setId(s.id)}
               style={[sizeStyles.option, { backgroundColor: selected ? theme.primary : theme.surfaceMuted }]}
             >
-              <Text variant="bodySm" color={selected ? theme.onPrimary : theme.text} style={{ fontWeight: '600' }}>
+              <Text variant="bodySm" color={selected ? theme.onPrimary : theme.text} style={{ fontFamily: fonts.semibold }}>
                 {s.label}
               </Text>
             </Pressable>
@@ -113,7 +137,7 @@ const sizeStyles = StyleSheet.create({
   option: { flex: 1, minHeight: touchTarget.min, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
 })
 
-function ProfileCard({ profile }: { profile: Profile | undefined }) {
+export function ProfileCard({ profile, bare }: { profile: Profile | undefined; bare?: boolean }) {
   const queryClient = useQueryClient()
   const { session, signIn } = useSession()
   const feedback = useFeedback()
@@ -135,8 +159,7 @@ function ProfileCard({ profile }: { profile: Profile | undefined }) {
   })
 
   return (
-    <Card>
-      <Text variant="title">Thông tin cá nhân</Text>
+    <Block bare={bare} title="Thông tin cá nhân">
       <Text variant="bodySm" muted>
         Email đăng nhập: {profile?.email ?? '…'}
       </Text>
@@ -149,13 +172,15 @@ function ProfileCard({ profile }: { profile: Profile | undefined }) {
           onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} />
       )} />
       <Notice tone="error" message={save.isError ? problemMessage(save.error) : null} />
-      <Button title="Lưu thay đổi" loading={save.isPending} disabled={!profile}
-        onPress={() => void form.handleSubmit((values) => save.mutate(values))()} />
-    </Card>
+      <FormActions>
+        <Button title="Lưu thay đổi" loading={save.isPending} disabled={!profile}
+          onPress={() => void form.handleSubmit((values) => save.mutate(values))()} />
+      </FormActions>
+    </Block>
   )
 }
 
-function RoleCard() {
+export function RoleCard() {
   const { session, signIn } = useSession()
   const [error, setError] = useState<string | null>(null)
   const [switching, setSwitching] = useState(false)
@@ -179,7 +204,7 @@ function RoleCard() {
 
   return (
     <Card>
-      <Text variant="title">Vai trò</Text>
+      <Text variant="title3" accessibilityRole="header">Vai trò</Text>
       <Text variant="bodySm" muted>
         Đang dùng với vai trò {ROLE_NAME[session.role].toLowerCase()}.
         {holdsOther || other === 'SELLER' ? '' : ' Muốn đặt món? Đăng xuất rồi tạo tài khoản bằng cùng email và mật khẩu.'}
@@ -192,7 +217,7 @@ function RoleCard() {
   )
 }
 
-function PasswordCard() {
+export function PasswordCard({ bare, onDone }: { bare?: boolean; onDone?: () => void } = {}) {
   const { session, signIn } = useSession()
   const feedback = useFeedback()
   const [error, setError] = useState<string | null>(null)
@@ -218,11 +243,11 @@ function PasswordCard() {
     await signIn({ ...session, accessToken: data.accessToken, refreshToken: data.refreshToken })
     form.reset()
     feedback.success('Đã đổi mật khẩu. Các thiết bị khác bị đăng xuất; thiết bị này vẫn đăng nhập.')
+    onDone?.()
   })
 
   return (
-    <Card>
-      <Text variant="title">Đổi mật khẩu</Text>
+    <Block bare={bare} title="Đổi mật khẩu">
       <Text variant="bodySm" muted>
         Các thiết bị khác sẽ bị đăng xuất; thiết bị này vẫn giữ đăng nhập.
       </Text>
@@ -237,12 +262,14 @@ function PasswordCard() {
       ))}
       <PasswordStrength password={typedNew} email={session?.email} name={session?.name} />
       <Notice tone="error" message={error} />
-      <Button title="Đổi mật khẩu" loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
-    </Card>
+      <FormActions>
+        <Button title="Đổi mật khẩu" loading={form.formState.isSubmitting} onPress={() => void onSubmit()} />
+      </FormActions>
+    </Block>
   )
 }
 
-function SessionCard({ hasPassword }: { hasPassword: boolean }) {
+export function SessionCard({ hasPassword }: { hasPassword: boolean }) {
   const { signOut } = useSession()
   const [confirming, setConfirming] = useState(false)
   const [password, setPassword] = useState('')
@@ -286,8 +313,10 @@ function SessionCard({ hasPassword }: { hasPassword: boolean }) {
             onChangeText={setPassword} />
         ) : null}
         <Notice tone="error" message={error} />
-        <Button title="Đăng xuất mọi thiết bị" variant="destructive" loading={busy} disabled={hasPassword && !password}
-          onPress={logoutAll} />
+        <FormActions>
+          <Button title="Đăng xuất mọi thiết bị" variant="destructive" loading={busy} disabled={hasPassword && !password}
+            onPress={logoutAll} />
+        </FormActions>
       </Sheet>
     </Card>
   )

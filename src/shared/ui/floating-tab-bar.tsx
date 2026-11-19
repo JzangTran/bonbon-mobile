@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react'
 import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native'
 import { Tabs } from 'expo-router'
-import Animated, { makeMutable, useAnimatedStyle, withTiming } from 'react-native-reanimated'
+import Animated, { makeMutable, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Text } from './text'
 import { useTheme } from './theme'
@@ -9,8 +9,10 @@ import { fonts, radius } from './tokens'
 
 type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0]
 
-const BAR_HEIGHT = 60
-const ICON = 22
+const BAR_HEIGHT = 56
+/** Icon size of every tab bar; the label under it stays a fixed 10 pt whatever the icon (owner 2026-11-19). */
+export const TAB_ICON = 24
+const ICON = TAB_ICON
 const SLIDE_MS = 220
 /** Pixels of scroll in one direction before the bar reacts, so a resting finger does not make it flicker. */
 const SCROLL_SLOP = 4
@@ -52,8 +54,9 @@ export function showTabBar() {
 }
 
 /**
- * The tab bar: one item per tab, an icon with its name in small type under it (owner decision 2026-11-03); the current tab in
- * orange. It sits in the layout (not over the content), so screens need no extra bottom padding. A screen hides it the usual
+ * The tab bar (design v6.1, after Teams mobile): a flat white bar with a thin top line; one item per tab, a 24 pt icon with its
+ * name in a fixed 10 pt under it, so the icon leads and the label only confirms. Idle tabs in a light grey, the current one in the
+ * signal blue; choosing a tab gives its icon a quick little wiggle. It sits in the layout (not over the content), so screens need no extra bottom padding. A screen hides it the usual
  * way, with `tabBarStyle: { display: 'none' }`, and a tab with `href: null` is not a tab. With `tabBarStyle: { position: 'absolute' }`
  * it floats over the screen instead, which can then slide it away while scrolling (tabBarFollowScroll).
  */
@@ -67,9 +70,9 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: T
   return (
     <Animated.View
       onLayout={(e) => tabBarMotion.height.set(e.nativeEvent.layout.height)}
-      style={[styles.wrap, focusedStyle?.position === 'absolute' ? styles.floating : undefined, { backgroundColor: theme.background, paddingBottom: Math.max(insets.bottom, 12) + 4 }, slide]}
+      style={[styles.wrap, focusedStyle?.position === 'absolute' ? styles.floating : undefined, { backgroundColor: theme.surface, borderTopColor: theme.border, paddingBottom: Math.max(insets.bottom, 8) }, slide]}
     >
-      <View accessibilityRole="tablist" style={[styles.bar, { backgroundColor: theme.surface }]}>
+      <View accessibilityRole="tablist" style={styles.bar}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key]
           const href = (options as { href?: string | null }).href
@@ -77,36 +80,24 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: T
           const focused = state.index === index
           const title = typeof options.title === 'string' ? options.title : route.name
           const label = options.tabBarAccessibilityLabel ?? title
-          const color = focused ? theme.primary : theme.textMuted
+          const color = focused ? theme.accent : theme.textTertiary
           const badge = options.tabBarBadge
           const onPress = () => {
             const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true })
             if (!focused && !event.defaultPrevented) navigateToTab(route.key)
           }
           return (
-            <Pressable
+            <TabItem
               key={route.key}
-              accessibilityRole="tab"
-              accessibilityLabel={label}
-              accessibilityState={{ selected: focused }}
+              label={label}
+              title={title}
+              focused={focused}
+              color={color}
+              badge={badge}
+              icon={options.tabBarIcon({ focused, color, size: ICON })}
               onPress={onPress}
               onLongPress={() => emitter.emit({ type: 'tabLongPress', target: route.key })}
-              style={({ pressed }) => [styles.item, pressed && !focused && styles.pressed]}
-            >
-              <View>
-                {options.tabBarIcon({ focused, color, size: ICON })}
-                {badge !== undefined && badge !== '' ? (
-                  <View style={[styles.badge, { backgroundColor: theme.danger }]}>
-                    <Text variant="caption" color={theme.onDanger} style={styles.badgeText}>
-                      {String(badge)}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-              <Text variant="caption" color={color} numberOfLines={1} style={[styles.label, focused && styles.labelOn]}>
-                {title}
-              </Text>
-            </Pressable>
+            />
           )
         })}
       </View>
@@ -114,20 +105,54 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: T
   )
 }
 
+function TabItem({ label, title, focused, color, badge, icon, onPress, onLongPress }: {
+  label: string
+  title: string
+  focused: boolean
+  color: string
+  badge: string | number | undefined
+  icon: React.ReactNode
+  onPress: () => void
+  onLongPress: () => void
+}) {
+  const theme = useTheme()
+  const turn = useSharedValue(0)
+  const wiggle = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.value}deg` }, { scale: 1 + Math.abs(turn.value) / 150 }] }))
+  return (
+    <Pressable
+      accessibilityRole="tab"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: focused }}
+      onPress={() => {
+        if (!focused) turn.set(withSequence(withTiming(-12, { duration: 70 }), withTiming(9, { duration: 90 }), withTiming(-4, { duration: 80 }), withTiming(0, { duration: 80 })))
+        onPress()
+      }}
+      onLongPress={onLongPress}
+      style={({ pressed }) => [styles.item, pressed && !focused && styles.pressed]}
+    >
+      <Animated.View style={wiggle}>
+        {icon}
+        {badge !== undefined && badge !== '' ? (
+          <View style={[styles.badge, { backgroundColor: theme.danger }]}>
+            <Text variant="caption" color={theme.onDanger} allowFontScaling={false} style={styles.badgeText}>
+              {String(badge)}
+            </Text>
+          </View>
+        ) : null}
+      </Animated.View>
+      <Text variant="caption" color={color} numberOfLines={1} allowFontScaling={false} style={[styles.label, focused && styles.labelOn]}>
+        {title}
+      </Text>
+    </Pressable>
+  )
+}
+
 const styles = StyleSheet.create({
-  wrap: { paddingHorizontal: 12, paddingTop: 6 },
+  wrap: { paddingHorizontal: 4, paddingTop: 4, borderTopWidth: StyleSheet.hairlineWidth },
   floating: { position: 'absolute', left: 0, right: 0, bottom: 0 },
-  bar: {
-    height: BAR_HEIGHT,
-    borderRadius: radius.lg,
-    paddingHorizontal: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    // flat: no cast shadow, no border (owner 2026-11-09)
-  },
+  bar: { height: BAR_HEIGHT, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
   item: { flex: 1, height: BAR_HEIGHT - 8, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', gap: 2 },
-  label: { fontSize: 11, lineHeight: 14 },
+  label: { fontSize: 10, lineHeight: 12, letterSpacing: 0.1 },
   labelOn: { fontFamily: fonts.semibold },
   pressed: { opacity: 0.7 },
   badge: { position: 'absolute', top: -6, right: -12, minWidth: 18, height: 18, borderRadius: 9, paddingHorizontal: 5, alignItems: 'center', justifyContent: 'center' },

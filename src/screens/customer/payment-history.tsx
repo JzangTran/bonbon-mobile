@@ -6,7 +6,7 @@ import { problemMessage } from '@/shared/api'
 import { formatDateTime } from '@/shared/lib/format'
 import { EmptyState, Notice, Skeleton, SkeletonGroup, Text, spacing, useTheme , PageHeader } from '@/shared/ui'
 
-import { TransactionRow } from './payments'
+import { TransactionRow } from './transaction-row'
 
 const ALL = [...ACTIVE_STATUSES, ...PAST_STATUSES]
 

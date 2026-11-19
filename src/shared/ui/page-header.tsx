@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router'
-import { ArrowLeft } from 'lucide-react-native'
+import { ChevronLeft } from 'lucide-react-native'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Text } from './text'
@@ -17,7 +17,7 @@ export function PageHeader({ title, onBack, inset = true }: { title?: string; on
   return (
     <View style={[styles.header, { paddingTop: (inset ? insets.top : 0) + spacing.sm, backgroundColor: theme.background }]}>
       <Pressable accessibilityRole="button" accessibilityLabel="Quay lại" hitSlop={8} onPress={onBack ?? (() => router.back())} style={styles.back}>
-        <ArrowLeft size={24} color={theme.text} />
+        <ChevronLeft size={24} color={theme.text} />
       </Pressable>
       {title ? (
         <Text variant="titleSm" style={[styles.title, { fontFamily: fonts.semibold }]} numberOfLines={1} accessibilityRole="header">

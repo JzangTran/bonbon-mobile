@@ -24,8 +24,8 @@ function withLegacy(c: V5) {
     primarySubtle: c.accentSubtle,
     primaryBorder: c.accentBorder,
     onPrimarySubtle: c.onAccentSubtle,
-    // the band at the top of the payments tab, under white text
-    payBand: c.success,
+    // the band at the top of the payments tab, under white text: the brand, not the success colour (status colours never decorate)
+    payBand: c.accent,
     highlightSubtle: c.promoSubtle,
     onHighlightSubtle: c.promo,
     ink: c.text,

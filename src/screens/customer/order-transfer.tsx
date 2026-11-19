@@ -1,10 +1,9 @@
-import * as Clipboard from 'expo-clipboard'
-import { CheckCircle2, Copy } from 'lucide-react-native'
-import { Pressable, StyleSheet, View } from 'react-native'
+import { CheckCircle2 } from 'lucide-react-native'
+import { StyleSheet, View } from 'react-native'
 import { useBankTransfer } from '@/entities/order'
 import { problemMessage } from '@/shared/api'
 import { formatVnd } from '@/shared/lib/format'
-import { Card, Notice, QrCode, Skeleton, Text, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
+import { Card, CopyButton, Notice, QrCode, Skeleton, Text, radius, spacing, useTheme } from '@/shared/ui'
 
 /**
  * A bank transfer order (VietQR): the money goes straight to the shop's own account. Scanning the code in any banking
@@ -12,14 +11,8 @@ import { Card, Notice, QrCode, Skeleton, Text, radius, spacing, useTheme, useFee
  */
 export function BankTransferCard({ orderId, active }: { orderId: string; active: boolean }) {
   const theme = useTheme()
-  const feedback = useFeedback()
   const transfer = useBankTransfer(orderId, true)
   const data = transfer.data
-
-  const copy = async (label: string, value: string) => {
-    await Clipboard.setStringAsync(value)
-    feedback.success(`Đã chép ${label}.`)
-  }
 
   if (transfer.isPending) {
     return (
@@ -84,14 +77,7 @@ export function BankTransferCard({ orderId, active }: { orderId: string; active:
             {row.value}
           </Text>
           {row.copyLabel ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Chép ${row.copyLabel}`}
-              hitSlop={10}
-              onPress={() => void copy(row.copyLabel!, row.label === 'Số tiền' ? String(data.amount) : row.value)}
-            >
-              <Copy size={16} color={theme.textMuted} />
-            </Pressable>
+            <CopyButton label={row.copyLabel} value={row.label === 'Số tiền' ? String(data.amount) : row.value} />
           ) : null}
         </View>
       ))}

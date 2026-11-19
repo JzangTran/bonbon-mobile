@@ -14,9 +14,9 @@ import { ToastProvider, useSnackbar } from '../toast'
 const light = colors.light
 
 describe('tokens', () => {
-  it('the v4 names point at the v5 roles', async () => {
+  it('the v4 names point at the v6 roles (Fluent blue signal)', async () => {
     expect(light.primary).toBe(light.accent)
-    expect(light.accent).toBe('#CF430D')
+    expect(light.accent).toBe('#0F6CBD')
     expect(light.textMuted).toBe(light.textSecondary)
     expect(light.borderInput).toBe(light.borderStrong)
   })

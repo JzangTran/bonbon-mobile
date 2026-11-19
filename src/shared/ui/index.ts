@@ -1,4 +1,5 @@
 export { Button } from './button'
+export { CopyButton } from './copy-button'
 export { Captcha } from './captcha'
 export { Card } from './card'
 export { OsmMap } from './osm-map'

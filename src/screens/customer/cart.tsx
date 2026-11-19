@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useAddresses } from '@/entities/address'
 import { lineTotal, unitPrice, useCart } from '@/entities/cart'
@@ -9,17 +10,21 @@ import { registerForPush } from '@/features/push'
 import { problemCode, problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
-import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touchTarget, useTheme, useFeedback } from '@/shared/ui'
+import { Button, Card, Input, Notice, Screen, Text, fonts, radius, spacing, touchTarget, useTheme, useFeedback , useSnackbar } from '@/shared/ui'
+
 
 /**
  * The cart and checkout (place-order.md): the customer reviews the lines, picks one of their addresses, adds a
  * delivery note, chooses cash on delivery or MoMo and places the order. Prices shown here are a preview; the server prices the order.
  * A guest fills the cart too; placing the order is where they sign in (the cart stays on the phone meanwhile).
  */
+const PAY_KEY = 'bonbon.lastPaymentMethod'
+
 export default function CartScreen() {
   const router = useRouter()
   const theme = useTheme()
   const feedback = useFeedback()
+  const { snackbar } = useSnackbar()
   const cart = useCart()
   const { session } = useSession()
   const guest = !session
@@ -27,7 +32,24 @@ export default function CartScreen() {
   const place = usePlaceOrder()
   const [note, setNote] = useState('')
   const [chosenAddress, setChosenAddress] = useState<string | null>(null)
-  const [method, setMethod] = useState<'COD' | 'ONLINE' | 'BANK_TRANSFER'>('COD')
+  const [method, setMethodState] = useState<'COD' | 'ONLINE' | 'BANK_TRANSFER'>('COD')
+  // the last way the customer paid is the default next time (recognition over recall)
+  useEffect(() => {
+    void AsyncStorage.getItem(PAY_KEY).then((v) => {
+      if (v === 'COD' || v === 'ONLINE' || v === 'BANK_TRANSFER') setMethodState(v)
+    })
+  }, [])
+  const setMethod = (m: 'COD' | 'ONLINE' | 'BANK_TRANSFER') => {
+    setMethodState(m)
+    void AsyncStorage.setItem(PAY_KEY, m)
+  }
+  /** fewer of a dish; taking the last one away can be undone */
+  const changeQuantity = (key: string, name: string, quantity: number) => {
+    if (quantity > 0 || !shop) return cart.setQuantity(key, quantity)
+    const before = cart.lines
+    cart.setQuantity(key, 0)
+    snackbar({ message: `Đã bỏ ${name} khỏi giỏ`, onUndo: () => cart.replaceAll(shop, before) })
+  }
   // One key per checkout attempt: a retry after a timeout returns the same order instead of a second one.
   const [key, setKey] = useState(newIdempotencyKey)
 
@@ -122,9 +144,9 @@ export default function CartScreen() {
               </Text>
             </View>
             <View style={styles.stepper}>
-              <Button title="−" variant="outline" accessibilityLabel={`Giảm ${line.name}`} onPress={() => cart.setQuantity(line.key, line.quantity - 1)} />
+              <Button title="−" variant="outline" accessibilityLabel={`Giảm ${line.name}`} onPress={() => changeQuantity(line.key, line.name, line.quantity - 1)} />
               <Text style={styles.qty}>{line.quantity}</Text>
-              <Button title="+" variant="outline" accessibilityLabel={`Tăng ${line.name}`} onPress={() => cart.setQuantity(line.key, line.quantity + 1)} />
+              <Button title="+" variant="outline" accessibilityLabel={`Tăng ${line.name}`} onPress={() => changeQuantity(line.key, line.name, line.quantity + 1)} />
             </View>
           </View>
         ))}
@@ -253,7 +275,15 @@ export default function CartScreen() {
         {guest ? (
           <Button title="Đăng nhập để đặt món" size="lg" fullWidth onPress={() => router.push('/login')} />
         ) : (
-          <Button title={`${payMethod === 'ONLINE' ? 'Thanh toán MoMo' : 'Đặt đơn'} · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
+          <>
+            <Button title={`${payMethod === 'ONLINE' ? 'Thanh toán MoMo' : 'Đặt đơn'} · ${formatVnd(totals.grandTotal)}`} size="lg" fullWidth disabled={!canOrder} loading={place.isPending} onPress={submit} />
+            {/* a disabled button says what is missing (UX checklist 20) */}
+            {!address && !addresses.isPending ? (
+              <Text variant="bodySm" tone="secondary" style={styles.why}>
+                Thêm địa chỉ giao hàng ở mục Giao đến để đặt đơn.
+              </Text>
+            ) : null}
+          </>
         )}
       </Card>
     </Screen>
@@ -269,4 +299,5 @@ const styles = StyleSheet.create({
   sum: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   address: { minHeight: touchTarget.min, padding: spacing.md, borderRadius: radius.lg, borderWidth: 1, gap: 2 },
   bold: { fontFamily: fonts.semibold },
+  why: { textAlign: 'center' },
 })

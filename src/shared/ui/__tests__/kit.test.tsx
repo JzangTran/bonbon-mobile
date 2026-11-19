@@ -243,3 +243,50 @@ describe('feedback carry-over', () => {
     expect(screen.getByText('Đã lưu địa chỉ')).toBeTruthy()
   })
 })
+
+describe('feedback layers', () => {
+  it('a screen that renders its own region still gets its messages (the hook sits above the region)', async () => {
+    function OwnScreen() {
+      const feedback = useFeedback()
+      return (
+        <FeedbackRegion>
+          <Pressable accessibilityRole="button" accessibilityLabel="save" onPress={() => feedback.success('Đã lưu món. Khách thấy thay đổi ngay.')} />
+        </FeedbackRegion>
+      )
+    }
+    await render(
+      <ToastProvider>
+        <FeedbackHost>
+          <OwnScreen />
+        </FeedbackHost>
+      </ToastProvider>,
+    )
+    await fireEvent.press(screen.getByRole('button', { name: 'save' }))
+    expect(screen.getByText('Đã lưu món')).toBeTruthy()
+  })
+  it('an open sheet takes the error; the success goes to the screen under it', async () => {
+    function Page() {
+      const feedback = useFeedback()
+      return (
+        <FeedbackRegion>
+          <Text>page</Text>
+          <FeedbackRegion errorsOnly placement="bottom">
+            <Pressable accessibilityRole="button" accessibilityLabel="fail" onPress={() => feedback.error('Chưa lưu được món')} />
+            <Pressable accessibilityRole="button" accessibilityLabel="ok" onPress={() => feedback.success('Đã lưu món')} />
+          </FeedbackRegion>
+        </FeedbackRegion>
+      )
+    }
+    await render(
+      <ToastProvider>
+        <FeedbackHost>
+          <Page />
+        </FeedbackHost>
+      </ToastProvider>,
+    )
+    await fireEvent.press(screen.getByRole('button', { name: 'fail' }))
+    await fireEvent.press(screen.getByRole('button', { name: 'ok' }))
+    expect(screen.getByText('Chưa lưu được món')).toBeTruthy()
+    expect(screen.getByText('Đã lưu món')).toBeTruthy()
+  })
+})

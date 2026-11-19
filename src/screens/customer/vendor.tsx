@@ -15,7 +15,8 @@ import { problemMessage } from '@/shared/api'
 import { confirm } from '@/shared/lib/confirm'
 import { formatVnd } from '@/shared/lib/format'
 import { mockPhoto } from '@/shared/lib/mock-photos'
-import { SkeletonGroup, Skeleton, Button, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useFeedback } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Button, Notice, Sheet, Text, fonts, radius, spacing, useTheme, useFeedback , FeedbackRegion } from '@/shared/ui'
+
 import { CartBar } from '@/widgets/cart-bar'
 import { DishSheet } from './dish-sheet'
 import { ShopReviewsCard } from './shop-reviews'
@@ -97,6 +98,7 @@ export default function VendorScreen() {
   const offers = vouchers.data ?? []
 
   return (
+    <FeedbackRegion placement="float">
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.page}>
@@ -233,6 +235,7 @@ export default function VendorScreen() {
       <ReportSheet target={reporting} onClose={() => setReporting(null)} />
       <CartBar />
     </View>
+    </FeedbackRegion>
   )
 }
 

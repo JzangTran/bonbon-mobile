@@ -10,7 +10,8 @@ import { useDeliveryPoint, useLocateOnAppOpen } from '@/entities/address'
 import { NO_FILTERS, sameFilters, streetOf, useDisplayCategories, useFavoriteShops, useGuestHiddenShops, useHomeFeed, type FeedCard, type HomeFilters } from '@/entities/feed'
 import { useSession } from '@/entities/session'
 import { afterSignIn } from '@/features/after-sign-in'
-import { SkeletonGroup, Skeleton, Button, Card, ErrorState, Text, fonts, radius, showTabBar, spacing, tabBarFollowScroll, tabBarMotion, touchTarget, useTheme } from '@/shared/ui'
+import { SkeletonGroup, Skeleton, Button, Card, ErrorState, Text, fonts, radius, showTabBar, spacing, tabBarFollowScroll, tabBarMotion, touchTarget, useTheme , FeedbackRegion } from '@/shared/ui'
+
 import { useCart } from '@/entities/cart'
 import { CartBar } from '@/widgets/cart-bar'
 import { HomeHeader, HomeHeaderCompact } from '@/widgets/home-header'
@@ -149,6 +150,7 @@ export default function CustomerHomeScreen() {
   )
 
   return (
+    <FeedbackRegion placement="float">
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <StatusBar style={compact ? 'auto' : 'light'} />
       <Animated.FlatList
@@ -227,6 +229,7 @@ export default function CustomerHomeScreen() {
         <CartBar />
       </Animated.View>
     </View>
+    </FeedbackRegion>
   )
 }
 

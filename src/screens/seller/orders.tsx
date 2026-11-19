@@ -154,8 +154,8 @@ function OrderCard({ order }: { order: ShopOrderSummary }) {
 
 const styles = StyleSheet.create({
   title: { fontFamily: fonts.semibold, letterSpacing: -0.4 },
-  tabs: { flexDirection: 'row', gap: 4, padding: 4, borderRadius: radius.pill },
-  tab: { flex: 1, minHeight: 44, borderRadius: radius.pill, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
+  tabs: { flexDirection: 'row', gap: 4, padding: 4, borderRadius: radius.control },
+  tab: { flex: 1, minHeight: 44, borderRadius: radius.control, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center' },
   tabLabel: { fontFamily: fonts.semibold },
   count: { minWidth: 20, height: 20, borderRadius: 10, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center' },
   banner: { padding: spacing.lg, borderRadius: radius.lg, gap: spacing.xs },

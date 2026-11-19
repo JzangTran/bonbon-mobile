@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   dim: { backgroundColor: 'rgba(0,0,0,0.38)' },
   topBar: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.lg },
   glass: { width: 40, height: 40, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: GLASS },
-  delivery: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, height: 40, paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: GLASS },
+  delivery: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, height: 40, paddingHorizontal: spacing.md, borderRadius: radius.control, backgroundColor: GLASS },
   deliveryText: { fontFamily: fonts.semibold },
   info: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginHorizontal: spacing.lg, marginTop: -64, padding: spacing.md, borderRadius: radius.lg, borderWidth: 1 },
   logo: { width: 76, height: 76, borderRadius: radius.md, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },

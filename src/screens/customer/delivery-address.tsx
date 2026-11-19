@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   // room under the header, so the two tabs do not sit against it
   page: { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xxxl, gap: spacing.md },
   tabs: { flexDirection: 'row', gap: spacing.sm },
-  tab: { height: 36, paddingHorizontal: spacing.lg, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  tab: { height: 36, paddingHorizontal: spacing.lg, borderRadius: radius.control, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: touchTarget.min },
   rowMain: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.md },
   more: { width: 36, height: touchTarget.min, alignItems: 'center', justifyContent: 'center' },

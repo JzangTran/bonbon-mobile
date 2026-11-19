@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   strong: { fontFamily: fonts.semibold },
   bar: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, gap: spacing.sm, alignItems: 'center' },
-  pill: { height: 36, paddingHorizontal: spacing.md, borderRadius: radius.pill, borderWidth: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  pill: { height: 36, paddingHorizontal: spacing.md, borderRadius: radius.control, borderWidth: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   // half a gap on each side of a cell, cancelled at the edges, so the outer columns line up with the sheet's title
   cuisines: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -CUISINE_GAP / 2, rowGap: spacing.md },
   cuisine: { paddingHorizontal: CUISINE_GAP / 2, alignItems: 'center', gap: spacing.xs },
@@ -293,5 +293,5 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
-  applyButton: { flex: 1, height: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  applyButton: { flex: 1, height: 48, borderRadius: radius.control, alignItems: 'center', justifyContent: 'center' },
 })

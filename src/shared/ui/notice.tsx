@@ -1,29 +1,16 @@
-import { StyleSheet, View } from 'react-native'
-import { Text } from './text'
-import { useTheme } from './theme'
-import { radius, spacing } from './tokens'
+import { splitMessage } from './feedback'
+import { InlineMessage } from './message'
 
-/** v4 inline message, kept for the screens that use it; new code uses InlineMessage (title, what it means, action). */
+/**
+ * A form's result or problem under it (design v5, rung 2), kept under its v4 name for the screens that use it: an InlineMessage with
+ * an icon, the first sentence as the title and the rest as what it means / what to do. Announced to screen readers.
+ */
 export function Notice({ tone, message }: { tone: 'error' | 'success' | 'warning'; message: string | null }) {
-  const theme = useTheme()
   if (!message) return null
-  const colors =
-    tone === 'error' ? { bg: theme.dangerSubtle, fg: theme.onDangerSubtle }
-    : tone === 'warning' ? { bg: theme.warningSubtle, fg: theme.onWarningSubtle }
-    : { bg: theme.successSubtle, fg: theme.onSuccessSubtle }
+  const { title, body } = splitMessage(message)
   return (
-    <View
-      accessibilityRole={tone === 'error' ? 'alert' : undefined}
-      accessibilityLiveRegion="polite"
-      style={[styles.box, { backgroundColor: colors.bg }]}
-    >
-      <Text variant="bodySm" color={colors.fg}>
-        {message}
-      </Text>
-    </View>
+    <InlineMessage tone={tone === 'error' ? 'danger' : tone} title={title}>
+      {body}
+    </InlineMessage>
   )
 }
-
-const styles = StyleSheet.create({
-  box: { borderRadius: radius.lg, padding: spacing.md },
-})

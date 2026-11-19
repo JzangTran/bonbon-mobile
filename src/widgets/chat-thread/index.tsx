@@ -280,5 +280,5 @@ const styles = StyleSheet.create({
   toolbar: { flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: spacing.md, paddingVertical: spacing.xs, borderBottomWidth: StyleSheet.hairlineWidth },
   toolbarButton: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 32 },
   removed: { backgroundColor: 'transparent', borderWidth: 1, borderStyle: 'dashed' },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.control, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
 })

@@ -27,6 +27,6 @@ export function LanguageSwitch() {
 }
 
 const styles = StyleSheet.create({
-  button: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, height: touchTarget.min - 8, paddingHorizontal: spacing.md, borderRadius: radius.pill },
+  button: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, height: touchTarget.min - 8, paddingHorizontal: spacing.md, borderRadius: radius.control },
   label: { fontFamily: fonts.semibold },
 })

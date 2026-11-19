@@ -115,9 +115,9 @@ const styles = StyleSheet.create({
   lineGap: { marginTop: spacing.xs },
   header: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.sm, paddingBottom: spacing.sm },
   back: { width: touchTarget.min, height: touchTarget.min, alignItems: 'center', justifyContent: 'center' },
-  search: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.pill, paddingHorizontal: spacing.lg, height: touchTarget.min, marginRight: spacing.sm },
+  search: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderRadius: radius.control, paddingHorizontal: spacing.lg, height: touchTarget.min, marginRight: spacing.sm },
   input: { flex: 1, paddingVertical: 0 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.md, borderRadius: radius.md },
   footer: { paddingHorizontal: spacing.lg, paddingTop: spacing.md, borderTopWidth: StyleSheet.hairlineWidth },
-  footerButton: { height: touchTarget.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  footerButton: { height: touchTarget.min, borderRadius: radius.control, alignItems: 'center', justifyContent: 'center' },
 })

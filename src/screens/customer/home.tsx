@@ -273,7 +273,7 @@ function CategoryStrip({ selected, onSelect }: { selected: string[]; onSelect: (
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   backToTop: { position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center' },
-  backToTopButton: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.pill, borderWidth: 1 },
+  backToTopButton: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: touchTarget.min, paddingHorizontal: spacing.lg, borderRadius: radius.control, borderWidth: 1 },
   backToTopText: { fontFamily: fonts.semibold },
   compact: { position: 'absolute', top: 0, left: 0, right: 0, borderBottomWidth: StyleSheet.hairlineWidth },
   compactHeader: { paddingHorizontal: spacing.lg, gap: spacing.sm },

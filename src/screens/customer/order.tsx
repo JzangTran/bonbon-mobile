@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
+import { OrderNow } from './order-now'
 import { useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useCart } from '@/entities/cart'
@@ -94,14 +95,16 @@ export default function CustomerOrderScreen() {
       {order.isLoading ? <OrderSkeleton /> : null}
       {data && status ? (
         <>
-          <Text variant="headline">Đơn #{data.number}</Text>
-          <Text muted>{data.shop?.name}</Text>
-          <View style={styles.row}>
-            <OrderStatusBadge status={status} />
-            <Text variant="bodySm" muted>
-              Đặt lúc {formatDateTime(data.placedAt)}
-            </Text>
+          <View style={styles.head}>
+            <Text variant="title1">{data.shop?.name}</Text>
+            <View style={styles.row}>
+              <OrderStatusBadge status={status} />
+              <Text variant="bodySm" tone="secondary">
+                Đơn #{data.number} · đặt lúc {formatDateTime(data.placedAt)}
+              </Text>
+            </View>
           </View>
+          <OrderNow status={status} address={data.delivery?.address} payExpiresAt={data.payment?.expiresAt} />
 
           {CANCELLABLE.includes(status) ? (
             <Button title={status === 'PENDING_PAYMENT' ? 'Huỷ đơn chưa thanh toán' : 'Huỷ đơn'} variant="outline" size="lg" fullWidth loading={action.isPending} onPress={() => void askCancel()} />
@@ -245,6 +248,7 @@ const styles = StyleSheet.create({
   skeletonSpace: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: spacing.sm },
   flex: { flex: 1 },
+  head: { gap: spacing.xs },
   step: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },
   dot: { width: 10, height: 10, borderRadius: 5, marginTop: 6 },
   current: { fontFamily: fonts.semibold },

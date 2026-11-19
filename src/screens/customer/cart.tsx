@@ -78,10 +78,10 @@ export default function CartScreen() {
           void registerForPush({ ask: true })
           feedback.success(
             payMethod === 'ONLINE'
-              ? 'Đã tạo đơn. Hãy hoàn tất thanh toán MoMo.'
+              ? `Đã tạo đơn #${order.number}. Hoàn tất thanh toán MoMo để quán nhận đơn; quá hạn thì đơn tự huỷ.`
               : payMethod === 'BANK_TRANSFER'
-                ? 'Đã đặt đơn. Hãy quét mã để chuyển khoản cho quán.'
-                : 'Đã đặt đơn. Quán sẽ xác nhận trong ít phút.',
+                ? `Đã gửi đơn #${order.number} tới quán. Chuyển khoản theo mã bên dưới; đơn tự chuyển sang đã thanh toán khi quán nhận được tiền.`
+                : `Đã gửi đơn #${order.number} tới quán. Quán xác nhận trong vài phút; bạn trả tiền mặt khi nhận món.`,
           )
           router.replace({ pathname: '/customer/order', params: { id: order.id } })
           // The order screen waits for the server to confirm the payment; this only takes the customer to MoMo.

@@ -1,10 +1,11 @@
 /**
+ * v6 (owner decision 2026-11-20): Fluent 2 values (grey canvas, white cards lifted by `shadows.card`, Fluent blue signal, orange only for logo, mascot, promo).
  * bonbon design tokens v5 (owner decision 2026-11-19: direction A "Cam Bếp", 10 px controls, Be Vietnam Pro everywhere), the same
  * values as the web. They come from the bonbon-design repo (design/ in the umbrella), generated into ./generated/tokens.ts. This file
  * only adds the names the screens already use (v4) on top of the v5 roles, so no screen carries a colour, size or radius of its own.
  * To change a value, change bonbon-design/tokens and run `npm run sync` there.
  */
-import { colors as v5, fonts as v5fonts, layout, motion, overlayShadow, palette as v5palette, radius as v5radius, space, type } from './generated/tokens'
+import { colors as v5, fonts as v5fonts, layout, motion, overlayShadow, palette as v5palette, shadows, radius as v5radius, space, type } from './generated/tokens'
 
 /** The reference palettes (prefer the roles in `colors`); `amber400` stays for the rating stars. */
 export const palette = { ...v5palette, amber400: v5palette.amber['400'] } as const
@@ -38,7 +39,7 @@ export type ColorScheme = { [K in keyof ReturnType<typeof withLegacy>]: string }
 
 export const colors: { light: ColorScheme; dark: ColorScheme } = { light: withLegacy(v5.light), dark: withLegacy(v5.dark) }
 
-export { layout, motion, overlayShadow }
+export { layout, motion, overlayShadow, shadows }
 
 /** Be Vietnam Pro, loaded in app-shell; extrabold is for the wordmark only. */
 export const fonts = v5fonts

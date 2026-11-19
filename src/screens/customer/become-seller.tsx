@@ -4,7 +4,7 @@ import { Linking } from 'react-native'
 import { useSession } from '@/entities/session'
 import { api, problemMessage } from '@/shared/api'
 import { env } from '@/shared/config/env'
-import { Button, Card, Checkbox, Notice, Screen, Text, useTheme } from '@/shared/ui'
+import { Button, Card, Checkbox, Notice, Screen, Text, spacing, useTheme } from '@/shared/ui'
 
 function useDocument(type: 'SELLER_TERMS' | 'PRIVACY_POLICY') {
   return useQuery({
@@ -80,7 +80,7 @@ export default function BecomeSellerScreen() {
         .
       </Checkbox>
       <Notice tone="error" message={error} />
-      <Button title="Đăng ký trở thành người bán hàng" size="lg" fullWidth disabled={!accepted || !terms.data || !privacy.data} loading={busy} onPress={() => void submit()} />
+      <Button title="Đăng ký trở thành người bán hàng" size="lg" fullWidth style={{ marginTop: spacing.md }} disabled={!accepted || !terms.data || !privacy.data} loading={busy} onPress={() => void submit()} />
     </Screen>
   )
 }

@@ -18,7 +18,7 @@ const day = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'short' })
  * Personal data (data-subject-requests.md): a copy of everything at once, a short request for what needs a person, and the history
  * with deadlines. The same order as the privacy pages of Grab and Shopee: self-service first.
  */
-export function PrivacyCard() {
+export function PrivacyCard({ bare }: { bare?: boolean } = {}) {
   const theme = useTheme()
   const feedback = useFeedback()
   const queryClient = useQueryClient()
@@ -60,9 +60,10 @@ export function PrivacyCard() {
     onError: (e) => setError(problemMessage(e)),
   })
 
+  const Wrap = bare ? View : Card
   return (
-    <Card>
-      <Text variant="title">Quyền riêng tư</Text>
+    <Wrap style={bare ? styles.bare : undefined}>
+      {bare ? null : <Text variant="title3" accessibilityRole="header">Quyền riêng tư</Text>}
       <Text variant="bodySm" muted>
         Tải bản sao dữ liệu bonbon lưu về bạn (mỗi giờ một lần), hoặc gửi yêu cầu sửa, rút lại đồng ý, hạn chế hay phản đối xử lý.
       </Text>
@@ -104,6 +105,7 @@ export function PrivacyCard() {
         <Input label="Mô tả yêu cầu" multiline maxLength={2000} value={details} onChangeText={setDetails} />
         <Notice tone="error" message={error} />
         <Button
+          style={{ marginTop: spacing.sm }}
           title="Gửi yêu cầu"
           fullWidth
           disabled={ask.isPending}
@@ -114,12 +116,13 @@ export function PrivacyCard() {
           }}
         />
       </Sheet>
-    </Card>
+    </Wrap>
   )
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
+  bare: { gap: spacing.lg },
+  row: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap', marginTop: spacing.xs },
   item: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: spacing.sm, gap: 2 },
   itemHead: { flexDirection: 'row', justifyContent: 'space-between' },
   option: { borderWidth: 1, borderRadius: radius.sm, padding: spacing.md, gap: 2 },

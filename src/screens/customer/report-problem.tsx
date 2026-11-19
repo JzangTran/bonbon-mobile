@@ -127,7 +127,7 @@ export default function ReportProblemScreen() {
       ) : null}
       {quote.isError ? <Notice tone="error" message={problemMessage(quote.error, 'Không tính được số tiền hoàn.')} /> : null}
       <Notice tone="error" message={error} />
-      <Button title="Gửi báo cáo" size="lg" fullWidth disabled={!ready} loading={report.isPending} onPress={submit} />
+      <Button title="Gửi báo cáo" size="lg" fullWidth style={{ marginTop: spacing.md }} disabled={!ready} loading={report.isPending} onPress={submit} />
     </Screen>
   )
 }

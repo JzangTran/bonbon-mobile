@@ -22,6 +22,9 @@ export default function CustomerLayout() {
       <Stack.Screen name="pick-location" options={{ title: 'Nhập địa chỉ' }} />
       <Stack.Screen name="favorites" options={{ title: 'Quán yêu thích' }} />
       <Stack.Screen name="profile" options={{ title: 'Hồ sơ' }} />
+      <Stack.Screen name="profile-info" options={{ title: 'Thông tin cá nhân' }} />
+      <Stack.Screen name="change-password" options={{ title: 'Đổi mật khẩu' }} />
+      <Stack.Screen name="privacy" options={{ title: 'Quyền riêng tư và dữ liệu' }} />
       <Stack.Screen name="become-seller" options={{ title: 'Đăng ký bán hàng' }} />
       <Stack.Screen name="deals" options={{ title: 'Deal HOT' }} />
       <Stack.Screen name="search" options={{ title: 'Tìm món', headerShown: false }} />
@@ -31,11 +34,6 @@ export default function CustomerLayout() {
       <Stack.Screen name="save-place" options={{ title: 'Thêm vào Địa điểm đã lưu', headerShown: false }} />
       <Stack.Screen name="scan" options={{ title: 'Quét mã QR', headerShown: false, presentation: 'fullScreenModal', animation: 'fade' }} />
       <Stack.Screen name="web-login" options={{ title: 'Đăng nhập trang quản lý quán', headerShown: false }} />
-      {/* Cài đặt thanh toán and what opens from it slide up as full pages */}
-      <Stack.Screen name="payment-settings" options={{ title: 'Cài đặt thanh toán', headerShown: false, animation: 'slide_from_bottom' }} />
-      <Stack.Screen name="payment-method" options={{ title: 'Chi tiết', headerShown: false, animation: 'slide_from_bottom' }} />
-      <Stack.Screen name="link-payment-method" options={{ title: 'Thêm phương thức thanh toán', headerShown: false, animation: 'slide_from_bottom' }} />
-      <Stack.Screen name="payment-pin" options={{ title: 'Mã PIN', headerShown: false, animation: 'slide_from_bottom' }} />
       <Stack.Screen name="payment-history" options={{ title: 'Tất cả giao dịch', headerShown: false, animation: 'slide_from_bottom' }} />
       <Stack.Screen name="payment-detail" options={{ title: 'Chi tiết giao dịch', headerShown: false, animation: 'slide_from_bottom' }} />
       <Stack.Screen name="vendor" options={{ title: 'Quán', headerShown: false }} />
@@ -46,7 +44,7 @@ export default function CustomerLayout() {
       <Stack.Screen name="report-problem" options={{ title: 'Báo vấn đề' }} />
       <Stack.Screen name="notifications" options={{ title: 'Thông báo' }} />
       <Stack.Screen name="chat" options={{ title: 'Trò chuyện' }} />
-      <Stack.Screen name="help" options={{ title: 'Trợ giúp' }} />
+      <Stack.Screen name="help" options={{ title: 'Trung tâm trợ giúp' }} />
       <Stack.Screen name="support" options={{ title: 'Liên hệ hỗ trợ' }} />
       <Stack.Screen name="ticket" options={{ title: 'Phiếu hỗ trợ' }} />
       <Stack.Screen name="notification-settings" options={{ title: 'Cài đặt thông báo' }} />

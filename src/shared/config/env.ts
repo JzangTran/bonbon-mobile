@@ -25,3 +25,13 @@ export const env = {
    */
   recaptchaSiteKey: process.env.EXPO_PUBLIC_RECAPTCHA_SITE_KEY ?? '',
 } as const
+
+/**
+ * The help center, embedded in the app (owner 2026-11-19: no separate native help pages, the web help center inside a web view).
+ * `?embed=app` leaves out the site's own header and footer. On a local web app it lives under /help; on a real host on help.*.
+ */
+export function helpCenterUrl(): string {
+  const url = new URL(env.webUrl)
+  const local = url.hostname === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(url.hostname)
+  return local ? `${url.origin}/help?embed=app` : `${url.protocol}//help.${url.host}/?embed=app`
+}

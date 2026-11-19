@@ -2,7 +2,7 @@ import { Image } from 'expo-image'
 import { ReportSheet, type ReportTarget } from '@/features/report-content'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { ArrowLeft, ArrowRight, BadgePercent, Heart, Motorbike, Plus, Star, Store } from 'lucide-react-native'
+import { ChevronLeft, ChevronRight, BadgePercent, Heart, Motorbike, Plus, Star, Store } from 'lucide-react-native'
 import { useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -107,7 +107,7 @@ export default function VendorScreen() {
           <View style={[StyleSheet.absoluteFill, styles.dim]} />
           <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
             <Glass label="Quay lại" onPress={() => router.back()}>
-              <ArrowLeft size={22} color={WHITE} />
+              <ChevronLeft size={22} color={WHITE} />
             </Glass>
             <View style={styles.flex} />
             <Glass label={favorite ? 'Bỏ khỏi mục yêu thích' : 'Thêm vào mục yêu thích'} onPress={onHeart}>
@@ -176,7 +176,7 @@ export default function VendorScreen() {
                 onPress={() => router.push({ pathname: '/customer/offers', params: { vendorId: id } })}
                 style={[styles.more, { backgroundColor: theme.primarySubtle }]}
               >
-                <ArrowRight size={22} color={theme.primary} />
+                <ChevronRight size={22} color={theme.primary} />
               </Pressable>
             ) : null}
           </ScrollView>

@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Clock, MapPin, type LucideIcon } from 'lucide-react-native'
+import { ChevronLeft, ChevronRight, Clock, MapPin, type LucideIcon } from 'lucide-react-native'
 import { useEffect, useRef, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import Animated, { Extrapolation, interpolate, runOnJS, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated'
@@ -96,7 +96,7 @@ function BackCircle({ onPress }: { onPress: () => void }) {
   const theme = useTheme()
   return (
     <Pressable accessibilityRole="button" accessibilityLabel="Quay lại" onPress={onPress} style={[styles.backCircle, { backgroundColor: theme.surface }]}>
-      <ArrowLeft size={22} color={theme.text} />
+      <ChevronLeft size={22} color={theme.text} />
     </Pressable>
   )
 }
@@ -116,7 +116,7 @@ function Option({ title, icon: Icon, detail, onPress }: { title: string; icon: L
           </View>
         ) : null}
       </View>
-      <ArrowRight size={22} color={theme.text} />
+      <ChevronRight size={22} color={theme.text} />
     </Pressable>
   )
 }

@@ -1,6 +1,6 @@
 import { Image } from 'expo-image'
 import { useFocusEffect, useRouter } from 'expo-router'
-import { ArrowUp } from 'lucide-react-native'
+import { Check, ChevronUp } from 'lucide-react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { FlatList, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
@@ -140,11 +140,21 @@ export default function CustomerHomeScreen() {
         </Card>
       ) : null}
       {outOfArea ? (
-        <Card style={[styles.inset, { backgroundColor: theme.warningSubtle }]}>
+        <Card style={[styles.inset, { backgroundColor: theme.warningSubtle, borderColor: theme.warningSubtle }]}>
           <Text variant="titleSm">Chưa có quán giao tới đây</Text>
           <Text variant="bodySm">Bạn vẫn xem được các quán gần nhất dưới đây, nhưng chưa đặt được. Đổi địa chỉ giao nếu bạn đang ở nơi khác.</Text>
           <Button title="Đổi địa chỉ giao" variant="outline" fullWidth onPress={() => setDeliveryOpen(true)} />
         </Card>
+      ) : null}
+      {cards.length > 0 ? (
+        <View style={styles.listHead}>
+          <Text variant="title2" accessibilityRole="header">
+            {outOfArea ? 'Quán gần nhất, ngoài phạm vi giao' : filtering ? 'Quán phù hợp' : 'Quán quanh bạn'}
+          </Text>
+          <Text variant="caption" color={theme.textTertiary}>
+            {outOfArea ? 'Chưa giao tới địa chỉ của bạn' : point.position ? 'Gần nhất trước' : 'Được đánh giá cao'}
+          </Text>
+        </View>
       ) : null}
     </View>
   )
@@ -219,7 +229,7 @@ export default function CustomerHomeScreen() {
           onPress={() => list.current?.scrollToOffset({ offset: 0, animated: true })}
           style={[styles.backToTopButton, { backgroundColor: theme.surface, borderColor: theme.border }]}
         >
-          <ArrowUp size={18} color={theme.text} />
+          <ChevronUp size={18} color={theme.text} strokeWidth={1.5} />
           <Text variant="bodySm" style={styles.backToTopText}>
             Trở về trang đầu
           </Text>
@@ -233,7 +243,10 @@ export default function CustomerHomeScreen() {
   )
 }
 
-/** The display categories: a picture with its name under it, swiped sideways (no bar, no buttons). Pressing one again clears it. */
+/**
+ * The display categories: a round picture with its name under it, swiped sideways. The chosen ones get a blue ring and a white tick
+ * on a blue dot at the lower right of the ring (owner 2026-11-19). Pressing one again clears it.
+ */
 function CategoryStrip({ selected, onSelect }: { selected: string[]; onSelect: (id: string) => void }) {
   const theme = useTheme()
   const categories = useDisplayCategories()
@@ -243,7 +256,7 @@ function CategoryStrip({ selected, onSelect }: { selected: string[]; onSelect: (
       <SkeletonGroup style={[styles.categories, styles.categoriesLoading]}>
         {[0, 1, 2, 3, 4, 5].map((c) => (
           <View key={c} style={styles.category}>
-            <Skeleton width={64} height={64} radius={radius.lg} />
+            <Skeleton width={PICTURE} height={PICTURE} radius={radius.full} />
             <Skeleton width={48} height={12} />
           </View>
         ))}
@@ -257,10 +270,17 @@ function CategoryStrip({ selected, onSelect }: { selected: string[]; onSelect: (
         const on = selected.includes(c.id)
         return (
           <Pressable key={c.id} accessibilityRole="button" aria-pressed={on} accessibilityLabel={c.name} onPress={() => onSelect(c.id)} style={styles.category}>
-            <View style={[styles.categoryPicture, { backgroundColor: theme.surfaceMuted, borderColor: on ? theme.primary : 'transparent' }]}>
-              {c.imageUrl ? <Image source={{ uri: c.imageUrl }} accessibilityLabel="" contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+            <View style={[styles.ring, { borderColor: on ? theme.accent : 'transparent' }]}>
+              <View style={[styles.categoryPicture, { backgroundColor: theme.imageSlot }]}>
+                {c.imageUrl ? <Image source={{ uri: c.imageUrl }} accessibilityLabel="" contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+              </View>
+              {on ? (
+                <View style={[styles.tick, { backgroundColor: theme.accent, borderColor: theme.background }]}>
+                  <Check size={11} color={theme.onAccent} strokeWidth={3} />
+                </View>
+              ) : null}
             </View>
-            <Text variant="caption" numberOfLines={1} color={on ? theme.primary : theme.text} style={on ? styles.categoryOn : undefined}>
+            <Text variant="caption" numberOfLines={1} color={on ? theme.text : theme.textSecondary} style={on ? styles.categoryOn : undefined}>
               {c.name}
             </Text>
           </Pressable>
@@ -270,6 +290,8 @@ function CategoryStrip({ selected, onSelect }: { selected: string[]; onSelect: (
   )
 }
 
+const PICTURE = 60
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   backToTop: { position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center' },
@@ -278,12 +300,16 @@ const styles = StyleSheet.create({
   compact: { position: 'absolute', top: 0, left: 0, right: 0, borderBottomWidth: StyleSheet.hairlineWidth },
   compactHeader: { paddingHorizontal: spacing.lg, gap: spacing.sm },
   overscroll: { position: 'absolute', left: 0, right: 0, top: -1000, height: 1000 },
-  inset: { marginHorizontal: spacing.lg, marginBottom: spacing.md },
+  inset: { marginHorizontal: spacing.lg, marginBottom: spacing.xxl },
   separator: { height: 8 },
   bottom: { height: 120 },
-  categories: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md, gap: spacing.md },
+  // the header, the categories, the notices and the list are different things: more room between them than inside them
+  categories: { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xxl, gap: spacing.md },
+  listHead: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md, gap: 2 },
   categoriesLoading: { flexDirection: 'row', overflow: 'hidden' },
-  category: { width: 72, alignItems: 'center', gap: spacing.xs },
-  categoryPicture: { width: 64, height: 64, borderRadius: radius.lg, overflow: 'hidden', borderWidth: 2 },
+  category: { width: 72, alignItems: 'center', gap: spacing.sm },
+  ring: { width: PICTURE + 8, height: PICTURE + 8, borderRadius: radius.full, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  categoryPicture: { width: PICTURE, height: PICTURE, borderRadius: radius.full, overflow: 'hidden' },
+  tick: { position: 'absolute', right: -1, bottom: -1, width: 20, height: 20, borderRadius: radius.full, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   categoryOn: { fontFamily: fonts.semibold },
 })

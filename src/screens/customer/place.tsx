@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { ArrowLeft, ChevronDown, Heart, Navigation } from 'lucide-react-native'
+import { ChevronLeft, ChevronDown, Heart, Navigation } from 'lucide-react-native'
 import { useState } from 'react'
 import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -92,7 +92,7 @@ export default function PlaceScreen() {
     <View style={[styles.flex, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <Circle label="Quay lại" onPress={() => router.back()}>
-          <ArrowLeft size={22} color={theme.onPrimary} />
+          <ChevronLeft size={22} color={theme.onPrimary} />
         </Circle>
         <Circle label="Lưu địa điểm" onPress={onHeart}>
           <Heart size={20} color={theme.onPrimary} fill={favorite ? theme.onPrimary : 'transparent'} />

@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import { Image, type ImageSource } from 'expo-image'
-import { ArrowRight, BadgePercent, ChevronDown, ClipboardList, Heart, ScanLine, Search } from 'lucide-react-native'
+import { ChevronRight, BadgePercent, ChevronDown, ClipboardList, Heart, ScanLine, Search } from 'lucide-react-native'
 import { useEffect, useState } from 'react'
 import { AccessibilityInfo, Pressable, StyleSheet, View, type ViewStyle } from 'react-native'
 import Animated, { Easing, ReduceMotion, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
@@ -101,7 +101,7 @@ export function HomeHeader({ deliveryLabel, guest, onSignIn, street, onAddress, 
                   Các quán ăn Giảm đến {dealMaxPercent}%
                 </Text>
                 <Nudge>
-                  <ArrowRight size={18} color={WHITE} strokeWidth={2.25} />
+                  <ChevronRight size={18} color={WHITE} strokeWidth={2.25} />
                 </Nudge>
               </View>
             </View>

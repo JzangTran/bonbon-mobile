@@ -31,11 +31,11 @@ function SellerTabs({ closing }: { closing: boolean }) {
     <Tabs tabBar={(props) => <FloatingTabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tabs.Screen
         name="index"
-        options={{ title: 'Đơn hàng', tabBarBadge: waiting > 0 ? waiting : undefined, tabBarIcon: ({ color }) => <ClipboardList color={color} size={22} /> }}
+        options={{ title: 'Đơn hàng', tabBarBadge: waiting > 0 ? waiting : undefined, tabBarIcon: ({ color }) => <ClipboardList color={color} size={24} strokeWidth={1.5} /> }}
       />
       <Tabs.Screen
         name="menu"
-        options={{ title: 'Thực đơn', href: closing ? null : undefined, tabBarIcon: ({ color }) => <UtensilsCrossed color={color} size={22} /> }}
+        options={{ title: 'Thực đơn', href: closing ? null : undefined, tabBarIcon: ({ color }) => <UtensilsCrossed color={color} size={24} strokeWidth={1.5} /> }}
       />
       {/* Screens on top of their tabs, not tabs of their own. */}
       <Tabs.Screen name="notifications" options={{ href: null, tabBarStyle: { display: 'none' } }} />
@@ -53,8 +53,8 @@ function SellerTabs({ closing }: { closing: boolean }) {
       <Tabs.Screen name="ticket" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="notification-settings" options={{ href: null, tabBarStyle: { display: 'none' } }} />
       <Tabs.Screen name="web-login" options={{ href: null, tabBarStyle: { display: 'none' } }} />
-      <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
-      <Tabs.Screen name="shop" options={{ title: 'Cửa hàng', tabBarIcon: ({ color }) => <Store color={color} size={22} /> }} />
+      <Tabs.Screen name="messages" options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={24} strokeWidth={1.5} /> }} />
+      <Tabs.Screen name="shop" options={{ title: 'Cửa hàng', tabBarIcon: ({ color }) => <Store color={color} size={24} strokeWidth={1.5} /> }} />
     </Tabs>
   )
 }

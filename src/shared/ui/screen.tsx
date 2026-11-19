@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { ScrollView, StyleSheet } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { FeedbackRegion } from './feedback'
 import { PageHeader } from './page-header'
 import { useTheme } from './theme'
@@ -13,13 +13,22 @@ import { WaveBackdrop } from './wave-backdrop'
  */
 export function Screen({ children, backdrop, title, onBack }: { children: ReactNode; backdrop?: boolean; title?: string; onBack?: () => void }) {
   const theme = useTheme()
+  const insets = useSafeAreaInsets()
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: theme.background }]} edges={['top']}>
       {backdrop ? <WaveBackdrop /> : null}
       {title !== undefined || onBack ? <PageHeader title={title} onBack={onBack} inset={false} /> : null}
       {/* results and errors of this screen show here, under the header and outside the scroll, so they are always in view */}
       <FeedbackRegion>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">{children}</ScrollView>
+        {/* the keyboard and the home indicator never cover the last field or button */}
+        <ScrollView
+          contentContainerStyle={[styles.content, { paddingBottom: spacing.xxxl + insets.bottom }]}
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets
+          keyboardDismissMode="interactive"
+        >
+          {children}
+        </ScrollView>
       </FeedbackRegion>
     </SafeAreaView>
   )

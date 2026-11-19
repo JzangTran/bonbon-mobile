@@ -1,9 +1,13 @@
 import { Tabs, useRouter, type Href } from 'expo-router'
-import { ClipboardList, House, MessageCircle, UserRound, WalletCards } from 'lucide-react-native'
+import { ClipboardList, Dices, MessageCircle, UserRound, UtensilsCrossed } from 'lucide-react-native'
 import { useSession } from '@/entities/session'
 import { afterSignIn } from '@/features/after-sign-in'
-import { FloatingTabBar } from '@/shared/ui'
+import { FloatingTabBar, TAB_ICON } from '@/shared/ui'
 
+/**
+ * The customer tabs (owner 2026-11-19): Khám phá (fork and spoon), Tin nhắn, Vòng quay in the middle, Hoạt động, Tài khoản. The
+ * payments tab is gone: there is no wallet to link any more.
+ */
 export default function CustomerTabsLayout() {
   const { session } = useSession()
   const router = useRouter()
@@ -18,11 +22,11 @@ export default function CustomerTabsLayout() {
   })
   return (
     <Tabs tabBar={(props) => <FloatingTabBar {...props} />} screenOptions={{ headerShown: false }}>
-      <Tabs.Screen name="index" options={{ title: 'Trang chủ', tabBarStyle: { position: 'absolute' }, tabBarIcon: ({ color }) => <House color={color} size={22} /> }} />
-      <Tabs.Screen name="messages" listeners={needsAccount('/customer/messages')} options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} /> }} />
-      <Tabs.Screen name="payments" listeners={needsAccount('/customer/payments')} options={{ title: 'Thanh toán', tabBarIcon: ({ color }) => <WalletCards color={color} size={22} /> }} />
-      <Tabs.Screen name="orders" listeners={needsAccount('/customer/orders')} options={{ title: 'Hoạt động', tabBarIcon: ({ color }) => <ClipboardList color={color} size={22} /> }} />
-      <Tabs.Screen name="account" listeners={needsAccount('/customer/account')} options={{ title: 'Tài khoản', tabBarIcon: ({ color }) => <UserRound color={color} size={22} /> }} />
+      <Tabs.Screen name="index" options={{ title: 'Khám phá', tabBarStyle: { position: 'absolute' }, tabBarIcon: ({ color }) => <UtensilsCrossed color={color} size={TAB_ICON} strokeWidth={1.5} /> }} />
+      <Tabs.Screen name="messages" listeners={needsAccount('/customer/messages')} options={{ title: 'Tin nhắn', tabBarIcon: ({ color }) => <MessageCircle color={color} size={TAB_ICON} strokeWidth={1.5} /> }} />
+      <Tabs.Screen name="lucky" options={{ title: 'Vòng quay', tabBarIcon: ({ color }) => <Dices color={color} size={TAB_ICON} strokeWidth={1.5} /> }} />
+      <Tabs.Screen name="orders" listeners={needsAccount('/customer/orders')} options={{ title: 'Hoạt động', tabBarIcon: ({ color }) => <ClipboardList color={color} size={TAB_ICON} strokeWidth={1.5} /> }} />
+      <Tabs.Screen name="account" listeners={needsAccount('/customer/account')} options={{ title: 'Tài khoản', tabBarIcon: ({ color }) => <UserRound color={color} size={TAB_ICON} strokeWidth={1.5} /> }} />
     </Tabs>
   )
 }
